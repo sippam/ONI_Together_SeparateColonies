@@ -35,6 +35,9 @@ your buildings/dupes.
 The host's rules are used for the session (sent to clients, stored in the save). Switching research back to
 shared hard-syncs everyone to the host's tree.
 
+## v0.8.3 notes
+- Colony food calories are host-authoritative: every 3 s the host sends the per-world kcal total (and per-food units) that RationTracker counts; clients use it for the top-left kcal meter, its tooltip, the Food diagnostic and the kcal graph. Falls back to the local count if no update arrived for 20 s. Dupe stomach calories were already synced by VitalStatsPacket (1/s).
+
 ## v0.8.2 notes
 - The water geyser placed next to every newly founded colony is gone. Instead the option "Water geysers near the host's base" (0-4, default 1) places geysers 12-30 cells from the host's Printing Pod, once per save (existing saves too).
 
