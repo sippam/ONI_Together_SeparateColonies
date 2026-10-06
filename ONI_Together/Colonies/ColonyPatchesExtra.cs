@@ -33,7 +33,7 @@ namespace ONI_Together.Colonies
 
         public static bool LocalOwnsIdentity(IAssignableIdentity id)
         {
-            if (!On || id == null) return true;
+            if (!On || id == null || ColonyRules.SharedDupeManagement) return true;
             int owner = OwnerOfIdentity(id);
             return owner == ColonyRegistry.NoColony || owner == ColonyRegistry.LocalColonyId;
         }

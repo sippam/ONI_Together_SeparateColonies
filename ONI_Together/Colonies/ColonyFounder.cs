@@ -96,7 +96,7 @@ namespace ONI_Together.Colonies
                     return false;
                 }
             }
-            int minDist = Math.Max(10, ColonyRegistry.TerritoryRadius * 2 + 4);
+            int minDist = ColonyRules.TerritoryProtection ? Math.Max(10, ColonyRegistry.TerritoryRadius * 2 + 4) : 10;
             Grid.CellToXY(cell, out int x, out int y);
             foreach (var c in ColonyRegistry.Colonies)
             {
@@ -133,6 +133,7 @@ namespace ONI_Together.Colonies
             }
 
             var info = NewInfo(ColonyRegistry.NextColonyId(), colonyName, requester, ownerName, homeCell);
+            ColonyResearch.InitNewColony(info);
             ColonyRegistry.AddColony(info);
             using (ColonyContext.Enter(info.Id))
                 SpawnBase(info);

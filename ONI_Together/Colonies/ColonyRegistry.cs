@@ -228,6 +228,7 @@ namespace ONI_Together.Colonies
         /// <summary>True if the cell is inside another colony's protected territory.</summary>
         public static bool IsForeignTerritory(int cell, int colonyId)
         {
+            if (!ColonyRules.TerritoryProtection) return false;
             int t = GetTerritoryOwner(cell);
             return t != NoColony && t != colonyId;
         }

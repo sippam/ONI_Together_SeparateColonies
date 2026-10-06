@@ -17,6 +17,7 @@ namespace ONI_Together.Patches.World
 			using var _ = Profiler.Scope();
 
 			if (!MultiplayerSession.IsHost) return;
+			if (ONI_Together.Colonies.ColonyResearch.SeparateActive) return;
 			if (__instance?.tech == null) return;
 
 			// Prevent sending completion if we're applying state from a received packet

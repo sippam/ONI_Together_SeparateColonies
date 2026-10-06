@@ -63,6 +63,7 @@ namespace ONI_Together.Colonies
             if (inSession)
             {
                 ColonyNet.Tick();
+                ColonyResearch.Tick();
 
                 // client: keep asking until the host answered (registry may arrive before/after the world)
                 if (MultiplayerSession.IsClient && ColonyRegistry.Enabled == false)
@@ -88,6 +89,7 @@ namespace ONI_Together.Colonies
             if (MultiplayerSession.IsHost)
             {
                 ColonyRegistry.TerritoryRadius = TerritoryRadiusSetting;
+                ColonyRules.Apply(ColonyRules.FromConfig());
                 bool want = Configuration.Instance?.Colonies?.SeparateColonies ?? true;
                 if (want && !ColonyRegistry.Enabled) ColonyFounder.HostSetMode(true);
                 else if (ColonyRegistry.Enabled)

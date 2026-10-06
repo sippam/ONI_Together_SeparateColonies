@@ -29,6 +29,7 @@ namespace ONI_Together.Colonies
             public List<ColonyInfo> Colonies = new List<ColonyInfo>();
             public List<int> OwnedIds = new List<int>();
             public List<int> OwnedColonies = new List<int>();
+            public ColonyRulesData Rules;
         }
 
         public override void OnPrefabInit()
@@ -56,6 +57,7 @@ namespace ONI_Together.Colonies
                     Enabled = ColonyRegistry.Enabled,
                     TerritoryRadius = ColonyRegistry.TerritoryRadius,
                     Colonies = new List<ColonyInfo>(ColonyRegistry.Colonies),
+                    Rules = ColonyRules.Data,
                 };
                 foreach (var kv in ColonyRegistry.SnapshotOwnership(pruneDead: true))
                 {
@@ -82,6 +84,7 @@ namespace ONI_Together.Colonies
                 for (int i = 0; i < p.OwnedIds.Count && i < p.OwnedColonies.Count; i++)
                     owned[p.OwnedIds[i]] = p.OwnedColonies[i];
                 ColonyRegistry.LoadFromSave(p.Enabled, p.Colonies, owned, p.TerritoryRadius);
+                if (p.Rules != null) ColonyRules.Data = p.Rules;
                 Debug.Log($"[ONIT-Colonies] Loaded {p.Colonies.Count} colonies, {owned.Count} owned objects (enabled={p.Enabled})");
             }
             catch (Exception ex)

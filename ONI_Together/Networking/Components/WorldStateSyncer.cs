@@ -493,6 +493,7 @@ namespace ONI_Together.Networking.Components
 		// --- Research Progress Logic ---
 		private void SyncResearchProgress()
 		{
+			if (ONI_Together.Colonies.ColonyResearch.SeparateActive) return;
 			using var _ = Profiler.Scope();
 
 			if (Research.Instance == null) return;

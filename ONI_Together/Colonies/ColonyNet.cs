@@ -48,6 +48,8 @@ namespace ONI_Together.Colonies
             {
                 PacketSender.SendToPlayer(player, ColonyRegistryPacket.FromRegistry());
                 PacketSender.SendToPlayer(player, ColonyOwnersPacket.FullSnapshot());
+                if (ColonyResearch.SeparateActive)
+                    ColonyResearch.SendProfileNow(ColonyRegistry.GetColonyOfPlayer(player));
             }
             catch (Exception ex) { Debug.LogWarning($"[ONIT-Colonies] SendRegistryTo failed: {ex.Message}"); }
         }
@@ -127,16 +129,18 @@ namespace ONI_Together.Colonies
         public bool Enabled;
         public int TerritoryRadius;
         public string ColoniesJson = "[]";
+        public string RulesJson = "";
 
         public static ColonyRegistryPacket FromRegistry() => new ColonyRegistryPacket
         {
             Enabled = ColonyRegistry.Enabled,
             TerritoryRadius = ColonyRegistry.TerritoryRadius,
-            ColoniesJson = JsonConvert.SerializeObject(ColonyRegistry.Colonies)
+            ColoniesJson = JsonConvert.SerializeObject(ColonyRegistry.Colonies),
+            RulesJson = JsonConvert.SerializeObject(ColonyRules.Data)
         };
 
-        public void Serialize(BinaryWriter w) { w.Write(Enabled); w.Write(TerritoryRadius); w.Write(ColoniesJson ?? "[]"); }
-        public void Deserialize(BinaryReader r) { Enabled = r.ReadBoolean(); TerritoryRadius = r.ReadInt32(); ColoniesJson = r.ReadString(); }
+        public void Serialize(BinaryWriter w) { w.Write(Enabled); w.Write(TerritoryRadius); w.Write(ColoniesJson ?? "[]"); w.Write(RulesJson ?? ""); }
+        public void Deserialize(BinaryReader r) { Enabled = r.ReadBoolean(); TerritoryRadius = r.ReadInt32(); ColoniesJson = r.ReadString(); RulesJson = r.ReadString(); }
 
         public void OnDispatched()
         {
@@ -144,8 +148,13 @@ namespace ONI_Together.Colonies
             try
             {
                 var list = JsonConvert.DeserializeObject<List<ColonyInfo>>(ColoniesJson) ?? new List<ColonyInfo>();
+                if (!string.IsNullOrEmpty(RulesJson))
+                {
+                    var rules = JsonConvert.DeserializeObject<ColonyRulesData>(RulesJson);
+                    if (rules != null) ColonyRules.Data = rules; // client: research is driven by ColonyResearchPacket
+                }
                 ColonyRegistry.ApplyRemote(Enabled, TerritoryRadius, list);
-                Debug.Log($"[ONIT-Colonies] Registry from host: enabled={Enabled} colonies={list.Count} local=#{ColonyRegistry.LocalColonyId}");
+                Debug.Log($"[ONIT-Colonies] Registry from host: enabled={Enabled} colonies={list.Count} local=#{ColonyRegistry.LocalColonyId} rules: {ColonyRules.Describe()}");
             }
             catch (Exception ex) { Debug.LogWarning($"[ONIT-Colonies] Bad registry packet: {ex.Message}"); }
         }

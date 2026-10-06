@@ -17,6 +17,8 @@ namespace ONI_Together.Colonies
     public static class ColonyPatches
     {
         private static bool On => ColonyRegistry.Active;
+        /// <summary>Errand/fetch separation (ColonyRules.SeparateErrands).</summary>
+        private static bool Errands => ColonyRegistry.Active && ColonyRules.SeparateErrands;
 
         // =====================================================================
         // Save data
@@ -53,7 +55,7 @@ namespace ONI_Together.Colonies
             canExecuteOnAnyThread = false, // uses GetComponent
             fn = (ref Chore.Precondition.Context context, object data) =>
             {
-                if (!ColonyRegistry.Active) return true;
+                if (!ColonyRegistry.Active || !ColonyRules.SeparateErrands) return true;
                 int worker = ColonyRegistry.GetOwner(context.consumerState.prefabid);
                 if (worker == ColonyRegistry.NoColony) return true;
                 var chore = context.chore;
@@ -96,7 +98,7 @@ namespace ONI_Together.Colonies
         {
             public static void Postfix(Pickupable __instance, int carrierID, ref bool __result)
             {
-                if (!__result || !On) return;
+                if (!__result || !Errands) return;
                 int carrier = ColonyRegistry.GetOwner(carrierID);
                 if (carrier == ColonyRegistry.NoColony) return;
                 int src = SourceOwner(__instance);
@@ -109,7 +111,7 @@ namespace ONI_Together.Colonies
         {
             public static void Postfix(Pickupable __instance, int carrierID, ref bool __result)
             {
-                if (!__result || !On) return;
+                if (!__result || !Errands) return;
                 int carrier = ColonyRegistry.GetOwner(carrierID);
                 if (carrier == ColonyRegistry.NoColony) return;
                 int src = SourceOwner(__instance);
@@ -122,7 +124,7 @@ namespace ONI_Together.Colonies
         {
             public static void Postfix(Pickupable pickup, Storage destination, ref bool __result)
             {
-                if (!__result || !On || pickup == null) return;
+                if (!__result || !Errands || pickup == null) return;
                 int dest = ColonyRegistry.GetOwner(destination);
                 if (dest == ColonyRegistry.NoColony) return;
                 int src = SourceOwner(pickup);
@@ -136,7 +138,7 @@ namespace ONI_Together.Colonies
         {
             public static void Postfix(KPrefabID pickup_id, Storage source, Storage destination, ref bool __result)
             {
-                if (!__result || !On) return;
+                if (!__result || !Errands) return;
                 int dest = ColonyRegistry.GetOwner(destination);
                 if (dest == ColonyRegistry.NoColony) return;
                 int src = ColonyRegistry.GetOwner(source);
@@ -404,6 +406,192 @@ namespace ONI_Together.Colonies
         public static class UserMenu_AddSlider
         {
             public static bool Prefix(GameObject go) => !On || ColonyGuard.LocalCanControl(go);
+        }
+
+        // =====================================================================
+        // Separate research: research buildings of another colony feed that colony's profile (host)
+        // =====================================================================
+
+        [ThreadStatic] private static int _researchRedirect;
+
+        /// <summary>Colony whose research tree receives Research.AddResearchPoints right now (0 = local/vanilla).</summary>
+        public static int ResearchRedirect
+        {
+            get => _researchRedirect;
+            set => _researchRedirect = value;
+        }
+
+        private static int ForeignOwner(Component c) => ColonyResearch.ForeignOwner(c);
+
+        [HarmonyPatch(typeof(ResearchCenter), "ConvertMassToResearchPoints")]
+        public static class ResearchCenter_ConvertMassToResearchPoints
+        {
+            public static void Prefix(ResearchCenter __instance, ref int __state)
+            {
+                __state = _researchRedirect;
+                _researchRedirect = ForeignOwner(__instance);
+            }
+
+            public static Exception Finalizer(int __state, Exception __exception)
+            {
+                _researchRedirect = __state;
+                return __exception;
+            }
+        }
+
+        [HarmonyPatch(typeof(Research), nameof(Research.AddResearchPoints))]
+        public static class Research_AddResearchPoints
+        {
+            public static bool Prefix(string researchTypeID, float points)
+            {
+                if (_researchRedirect == ColonyRegistry.NoColony) return true;
+                ColonyResearch.AddPoints(_researchRedirect, researchTypeID, points);
+                return false;
+            }
+        }
+
+        [HarmonyPatch(typeof(ResearchCenter), nameof(ResearchCenter.GetPercentComplete))]
+        public static class ResearchCenter_GetPercentComplete
+        {
+            public static bool Prefix(ResearchCenter __instance, ref float __result)
+            {
+                int owner = ForeignOwner(__instance);
+                if (owner == ColonyRegistry.NoColony) return true;
+                __result = ColonyResearch.GetPercentComplete(owner, __instance.research_point_type_id);
+                return false;
+            }
+        }
+
+        [HarmonyPatch(typeof(ResearchCenter), "ResearchComponentCompleted")]
+        public static class ResearchCenter_ResearchComponentCompleted
+        {
+            public static bool Prefix(ResearchCenter __instance, ref bool __result)
+            {
+                int owner = ForeignOwner(__instance);
+                if (owner == ColonyRegistry.NoColony) return true;
+                __result = ColonyResearch.ComponentCompleted(owner, __instance.research_point_type_id);
+                return false;
+            }
+        }
+
+        /// <summary>Re-implementation of ResearchCenter.UpdateWorkingState against the colony's profile.</summary>
+        [HarmonyPatch(typeof(ResearchCenter), "UpdateWorkingState")]
+        public static class ResearchCenter_UpdateWorkingState
+        {
+            private static readonly FieldInfo F_operational = AccessTools.Field(typeof(ResearchCenter), "operational");
+
+            public static bool Prefix(ResearchCenter __instance)
+            {
+                int owner = ForeignOwner(__instance);
+                if (owner == ColonyRegistry.NoColony) return true;
+                var colony = ColonyRegistry.Get(owner);
+                var op = F_operational?.GetValue(__instance) as Operational;
+                if (colony == null || op == null) return true;
+
+                string type = __instance.research_point_type_id;
+                Tech active = ColonyResearch.GetActiveTech(colony.Research);
+                bool hasActive = active != null;
+                bool needsThisType = hasActive && active.costsByResearchTypeID.TryGetValue(type, out float cost)
+                                     && ColonyResearch.GetPoints(colony.Research, active.Id, type) < cost;
+
+                var sel = __instance.GetComponent<KSelectable>();
+                var items = Db.Get().BuildingStatusItems;
+                if (sel != null)
+                {
+                    if (op.GetFlag(EnergyConsumer.PoweredFlag) && !hasActive)
+                    {
+                        sel.AddStatusItem(items.NoResearchSelected);
+                        sel.RemoveStatusItem(items.NoApplicableResearchSelected);
+                    }
+                    else if (op.GetFlag(EnergyConsumer.PoweredFlag) && !needsThisType)
+                    {
+                        sel.RemoveStatusItem(items.NoResearchSelected);
+                        sel.AddStatusItem(items.NoApplicableResearchSelected);
+                    }
+                    else
+                    {
+                        sel.RemoveStatusItem(items.NoResearchSelected);
+                        sel.RemoveStatusItem(items.NoApplicableResearchSelected);
+                    }
+                }
+                op.SetFlag(ResearchCenter.ResearchSelectedFlag, hasActive && needsThisType);
+                if ((!hasActive || !needsThisType) && __instance.worker != null)
+                    __instance.StopWork(__instance.worker, aborted: true);
+                return false;
+            }
+        }
+
+        private const string Nuclear = "nuclear";
+
+        [HarmonyPatch(typeof(NuclearResearchCenterWorkable), "OnWorkTick")]
+        public static class NuclearResearchCenterWorkable_OnWorkTick
+        {
+            private static readonly FieldInfo F_storage = AccessTools.Field(typeof(NuclearResearchCenterWorkable), "radiationStorage");
+
+            public static void Prefix(NuclearResearchCenterWorkable __instance, ref int __state)
+            {
+                __state = ResearchRedirect;
+                ResearchRedirect = ColonyResearch.ForeignOwner(__instance);
+            }
+
+            public static void Postfix(NuclearResearchCenterWorkable __instance, ref bool __result)
+            {
+                int owner = ResearchRedirect;
+                if (owner == ColonyRegistry.NoColony) return;
+                // vanilla decided "done?" from the LOCAL tree; recompute from the owner's tree
+                var storage = F_storage?.GetValue(__instance) as HighEnergyParticleStorage;
+                var colony = ColonyRegistry.Get(owner);
+                Tech active = colony != null ? ColonyResearch.GetActiveTech(colony.Research) : null;
+                __result = (storage != null && storage.IsEmpty()) || active == null
+                           || ColonyResearch.GetPercentComplete(owner, Nuclear) >= 1f;
+            }
+
+            public static Exception Finalizer(int __state, Exception __exception)
+            {
+                ResearchRedirect = __state;
+                return __exception;
+            }
+        }
+
+        [HarmonyPatch(typeof(NuclearResearchCenterWorkable), nameof(NuclearResearchCenterWorkable.GetPercentComplete))]
+        public static class NuclearResearchCenterWorkable_GetPercentComplete
+        {
+            public static bool Prefix(NuclearResearchCenterWorkable __instance, ref float __result)
+            {
+                int owner = ColonyResearch.ForeignOwner(__instance);
+                if (owner == ColonyRegistry.NoColony) return true;
+                __result = ColonyResearch.GetPercentComplete(owner, Nuclear);
+                return false;
+            }
+        }
+
+        [HarmonyPatch(typeof(NuclearResearchCenter.States), "IsResearchSelected")]
+        public static class NuclearResearchCenter_IsResearchSelected
+        {
+            public static bool Prefix(NuclearResearchCenter.StatesInstance smi, ref bool __result)
+            {
+                int owner = ColonyResearch.ForeignOwner(smi?.master);
+                if (owner == ColonyRegistry.NoColony) return true;
+                var colony = ColonyRegistry.Get(owner);
+                __result = colony != null && ColonyResearch.GetActiveTech(colony.Research) != null;
+                return false;
+            }
+        }
+
+        [HarmonyPatch(typeof(NuclearResearchCenter.States), "IsResearchApplicable")]
+        public static class NuclearResearchCenter_IsResearchApplicable
+        {
+            public static bool Prefix(NuclearResearchCenter.StatesInstance smi, ref bool __result)
+            {
+                int owner = ColonyResearch.ForeignOwner(smi?.master);
+                if (owner == ColonyRegistry.NoColony) return true;
+                var colony = ColonyRegistry.Get(owner);
+                Tech active = colony != null ? ColonyResearch.GetActiveTech(colony.Research) : null;
+                string type = smi.master.researchTypeID;
+                __result = active != null && active.costsByResearchTypeID.TryGetValue(type, out float cost)
+                           && ColonyResearch.GetPoints(colony.Research, active.Id, type) < cost;
+                return false;
+            }
         }
 
         // =====================================================================

@@ -31,6 +31,10 @@ namespace ONI_Together.Networking.Packets.World
 
 			if (!MultiplayerSession.IsHost) return;
 
+			// Separate colonies: the request goes into the sender's own research tree
+			if (ONI_Together.Colonies.ColonyResearch.HostHandleRequest(ONI_Together.Colonies.ColonyContext.Current, TechId))
+				return;
+
 			// Host received request from client
 			if (!string.IsNullOrEmpty(TechId))
 			{

@@ -71,6 +71,7 @@ namespace ONI_Together.Colonies
         {
             if (!ColonyRegistry.Active || !ColonyContext.IsPlayerAction || go == null) return true;
             if (ColonyContext.Current == ColonyContext.Spectator) return false;
+            if (!ColonyRules.BuildingProtection) return true;
             int owner = ColonyRegistry.GetOwner(go);
             return owner == ColonyRegistry.NoColony || owner == ColonyContext.Current;
         }
@@ -83,6 +84,7 @@ namespace ONI_Together.Colonies
             if (!ColonyRegistry.Active || go == null) return true;
             int local = ColonyRegistry.LocalColonyId;
             if (local == ColonyRegistry.NoColony) return false; // spectator until a colony is founded
+            if (!ColonyRules.BuildingProtection) return true;
             int owner = ColonyRegistry.GetOwner(go);
             return owner == ColonyRegistry.NoColony || owner == local;
         }
@@ -90,6 +92,7 @@ namespace ONI_Together.Colonies
         /// <summary>May a worker of colony `workerColony` use/work on an object owned by `targetColony`?</summary>
         public static bool CanWork(int workerColony, int targetColony)
         {
+            if (!ColonyRules.SeparateErrands) return true;
             if (targetColony == ColonyRegistry.NoColony) return true;   // world-owned
             if (workerColony == ColonyRegistry.NoColony) return true;   // unowned workers (e.g. legacy) — don't break them
             return workerColony == targetColony;

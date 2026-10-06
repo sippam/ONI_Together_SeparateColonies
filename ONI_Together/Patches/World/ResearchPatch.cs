@@ -14,6 +14,8 @@ namespace ONI_Together.Patches.World
 			using var _ = Profiler.Scope();
 
 			if (!MultiplayerSession.IsHost) return;
+			// separate colonies: every colony has its own tree, the host's tree is not broadcast
+			if (ONI_Together.Colonies.ColonyResearch.SeparateActive) return;
 
 			// Don't send packets if we're applying state from a received packet (prevents loop)
 			if (ResearchStatePacket.IsApplying) return;

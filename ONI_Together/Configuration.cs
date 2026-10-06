@@ -33,6 +33,46 @@ namespace ONI_Together
             set => Colonies.SeparateColonies = value;
         }
 
+        [Option("Territory protection", "On: other colonies can't build or dig inside your territory circle. Off: anyone can build/dig anywhere.", "0) Separate colonies")]
+        [JsonIgnore]
+        public bool ColonyTerritoryProtection
+        {
+            get => Colonies.TerritoryProtection;
+            set => Colonies.TerritoryProtection = value;
+        }
+
+        [Option("Building protection", "On: other colonies can't deconstruct, prioritize, configure or cancel orders on your buildings and dupes. Off: anyone can.", "0) Separate colonies")]
+        [JsonIgnore]
+        public bool ColonyBuildingProtection
+        {
+            get => Colonies.BuildingProtection;
+            set => Colonies.BuildingProtection = value;
+        }
+
+        [Option("Separate errands", "On: dupes only do their own colony's errands (a dig order by player 1 is never done by player 2's dupes) and don't take items from other colonies' storage. Off: every dupe can do every errand.", "0) Separate colonies")]
+        [JsonIgnore]
+        public bool ColonySeparateErrands
+        {
+            get => Colonies.SeparateErrands;
+            set => Colonies.SeparateErrands = value;
+        }
+
+        [Option("Separate research", "On: every colony has its own research tree. Off: one shared research tree.", "0) Separate colonies")]
+        [JsonIgnore]
+        public bool ColonySeparateResearch
+        {
+            get => Colonies.SeparateResearch;
+            set => Colonies.SeparateResearch = value;
+        }
+
+        [Option("Shared dupe priorities", "On: Priorities/Consumables/Vitals/Skills screens show and edit every colony's dupes. Off: each player only sees their own dupes.", "0) Separate colonies")]
+        [JsonIgnore]
+        public bool ColonySharedDupeManagement
+        {
+            get => Colonies.SharedDupeManagement;
+            set => Colonies.SharedDupeManagement = value;
+        }
+
         [Option("Territory radius (cells)", "Other colonies can't build/dig within this distance of a colony's Printing Pod. 0 = off.", "0) Separate colonies")]
         [Limit(0, 64)]
         [JsonIgnore]
@@ -233,6 +273,11 @@ namespace ONI_Together
         [JsonProperty] public bool SeparateColonies { get; set; } = true;
         [JsonProperty] public int TerritoryRadius { get; set; } = 14;
         [JsonProperty] public int WorldScalePercent { get; set; } = 100;
+        [JsonProperty] public bool TerritoryProtection { get; set; } = true;
+        [JsonProperty] public bool BuildingProtection { get; set; } = true;
+        [JsonProperty] public bool SeparateErrands { get; set; } = true;
+        [JsonProperty] public bool SeparateResearch { get; set; } = true;
+        [JsonProperty] public bool SharedDupeManagement { get; set; } = false;
     }
 
     public class HostSettings

@@ -21,7 +21,7 @@ namespace ONI_Together.Colonies
         private bool _autoOpened;
         private bool _showTerritory = true;
         private bool _showHoverOwner = true;
-        private Rect _window = new Rect(20, 120, 380, 460);
+        private Rect _window = new Rect(20, 120, 400, 560);
         private Vector2 _scroll;
 
         // placement mode
@@ -90,7 +90,7 @@ namespace ONI_Together.Colonies
 
             if (ColonyRegistry.Active)
             {
-                if (_showTerritory && Event.current.type == EventType.Repaint) DrawTerritories();
+                if (_showTerritory && ColonyRules.TerritoryProtection && Event.current.type == EventType.Repaint) DrawTerritories();
                 if (_showHoverOwner && !_placing) DrawHoverOwner();
             }
 
@@ -147,6 +147,29 @@ namespace ONI_Together.Colonies
                 return;
             }
 
+            // ---- rules (host edits, everyone sees) ----
+            GUILayout.Space(4);
+            GUILayout.Label("<b>Rules</b>" + (MultiplayerSession.IsHost ? " (click to change)" : " (set by host)"), Rich());
+            var cur = ColonyRules.Data;
+            var next = new ColonyRulesData
+            {
+                TerritoryProtection = RuleToggle(cur.TerritoryProtection, "Territory protection (no building/digging near other colonies)"),
+                BuildingProtection = RuleToggle(cur.BuildingProtection, "Building protection (no orders on other colonies' buildings/dupes)"),
+                SeparateErrands = RuleToggle(cur.SeparateErrands, "Separate errands (dupes only work for their own colony)"),
+                SeparateResearch = RuleToggle(cur.SeparateResearch, "Separate research trees"),
+                SharedDupeManagement = RuleToggle(cur.SharedDupeManagement, "Shared dupe priorities / management screens"),
+            };
+            bool changed = next.TerritoryProtection != cur.TerritoryProtection || next.BuildingProtection != cur.BuildingProtection
+                           || next.SeparateErrands != cur.SeparateErrands || next.SeparateResearch != cur.SeparateResearch
+                           || next.SharedDupeManagement != cur.SharedDupeManagement;
+            if (changed && MultiplayerSession.IsHost)
+            {
+                ColonyRules.Apply(next);
+                ColonyRules.SaveToConfig();
+                ColonyNet.BroadcastRegistry();
+                _status = "Rules updated";
+            }
+
             GUILayout.Space(4);
             GUILayout.Label("<b>Colonies</b>", Rich());
             int local = ColonyRegistry.LocalColonyId;
@@ -155,7 +178,8 @@ namespace ONI_Together.Colonies
                 var col = new Color(c.ColorR, c.ColorG, c.ColorB);
                 string hex = ColorUtility.ToHtmlStringRGB(col);
                 GUILayout.Label($"<color=#{hex}>■</color> #{c.Id} <b>{c.Name}</b>{(c.Id == local ? " (you)" : "")}\n" +
-                                $"    {c.OwnerName} · {CountDupes(c.Id)} dupes", Rich());
+                                $"    {c.OwnerName} · {CountDupes(c.Id)} dupes" +
+                                (ColonyRules.SeparateResearch && (c.Id == local || MultiplayerSession.IsHost) ? $" · researching: {ColonyResearch.ActiveName(c.Id)}" : ""), Rich());
             }
 
             if (local == ColonyRegistry.NoColony)
@@ -168,14 +192,23 @@ namespace ONI_Together.Colonies
                 GUILayout.EndHorizontal();
                 if (GUILayout.Button(_placing ? "Placing... (click the map)" : "Found my colony — pick a spot"))
                     _placing = !_placing;
-                GUILayout.Label($"Must be at least {System.Math.Max(10, ColonyRegistry.TerritoryRadius * 2 + 4)} cells from other colonies, on a floor with a free 4x4 area.");
+                GUILayout.Label($"Must be at least {(ColonyRules.TerritoryProtection ? System.Math.Max(10, ColonyRegistry.TerritoryRadius * 2 + 4) : 10)} cells from other colonies, on a floor with a free 4x4 area.");
             }
             else
             {
                 GUILayout.Space(4);
-                GUILayout.Label("Research and the Printing Pod timer are shared between colonies in this version; prints arrive at the pod you accept them on.");
+                GUILayout.Label((ColonyRules.SeparateResearch ? "Research: your own tree." : "Research: shared tree.") +
+                                " The Printing Pod timer is shared; prints arrive at the pod you accept them on.");
             }
             Footer();
+        }
+
+        /// <summary>Host: clickable toggle. Clients: read-only label.</summary>
+        private static bool RuleToggle(bool value, string label)
+        {
+            if (MultiplayerSession.IsHost) return GUILayout.Toggle(value, " " + label);
+            GUILayout.Label((value ? "[x] " : "[ ] ") + label);
+            return value;
         }
 
         private void Footer()
