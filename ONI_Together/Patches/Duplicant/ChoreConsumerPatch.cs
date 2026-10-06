@@ -27,7 +27,8 @@ namespace ONI_Together.Patches.Duplicant
 				{
 					NetId = identity.NetId,
 					ChoreGroupId = group.Id,
-					Priority = value
+					Priority = value,
+					DupeName = __instance.GetProperName()
 				};
 
 				if (MultiplayerSession.IsHost)

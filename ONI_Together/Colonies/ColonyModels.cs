@@ -69,5 +69,9 @@ namespace ONI_Together.Colonies
         public bool SeparatePrintingPod = true;
         /// <summary>Each colony has its own schedules; dupes can only be put on their colony's schedules.</summary>
         public bool SeparateSchedules = true;
+        /// <summary>With separate errands: dupes do their own colony's work first and help other colonies only when they have nothing of their own to do.</summary>
+        public bool HelpOtherColonies = true;
+        /// <summary>The cancel tool only removes your own colony's orders (dig/mop/build/deconstruct markers), even when building protection is off.</summary>
+        public bool CancelOnlyOwnOrders = true;
     }
 }

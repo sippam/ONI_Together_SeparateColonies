@@ -89,6 +89,39 @@ namespace ONI_Together
             set => Colonies.SeparateSchedules = value;
         }
 
+        [Option("Help other colonies when idle", "With separate errands: dupes do their own colony's errands first, and only help other colonies when they have nothing of their own to do. Off: never help.", "0) Separate colonies")]
+        [JsonIgnore]
+        public bool ColonyHelpOtherColonies
+        {
+            get => Colonies.HelpOtherColonies;
+            set => Colonies.HelpOtherColonies = value;
+        }
+
+        [Option("Cancel only your own orders", "The cancel tool only removes your colony's dig/mop/build/deconstruct orders, even when building protection is off.", "0) Separate colonies")]
+        [JsonIgnore]
+        public bool ColonyCancelOnlyOwnOrders
+        {
+            get => Colonies.CancelOnlyOwnOrders;
+            set => Colonies.CancelOnlyOwnOrders = value;
+        }
+
+        [Option("Extra water geysers (new games)", "Water geysers / cool steam vents added to a freshly generated world (host). 0 = vanilla.", "0) Separate colonies")]
+        [Limit(0, 12)]
+        [JsonIgnore]
+        public int ColonyExtraWaterGeysers
+        {
+            get => Colonies.ExtraWaterGeysers;
+            set => Colonies.ExtraWaterGeysers = Mathf.Clamp(value, 0, 12);
+        }
+
+        [Option("Water geyser near each new colony", "When a player founds a colony, a water geyser is placed 20-40 cells away from their Printing Pod.", "0) Separate colonies")]
+        [JsonIgnore]
+        public bool ColonyWaterGeyserPerColony
+        {
+            get => Colonies.WaterGeyserPerColony;
+            set => Colonies.WaterGeyserPerColony = value;
+        }
+
         [Option("Verbose multiplayer log (slower)", "Write every ONI Together info line to Player.log. Off = only warnings (max 10/s). Turn on only when reporting a bug.", "0) Separate colonies")]
         [JsonIgnore]
         public bool ColonyVerboseLogging
@@ -305,6 +338,10 @@ namespace ONI_Together
         [JsonProperty] public bool VerboseLogging { get; set; } = false;
         [JsonProperty] public bool SeparatePrintingPod { get; set; } = true;
         [JsonProperty] public bool SeparateSchedules { get; set; } = true;
+        [JsonProperty] public bool HelpOtherColonies { get; set; } = true;
+        [JsonProperty] public bool CancelOnlyOwnOrders { get; set; } = true;
+        [JsonProperty] public int ExtraWaterGeysers { get; set; } = 2;
+        [JsonProperty] public bool WaterGeyserPerColony { get; set; } = true;
     }
 
     public class HostSettings

@@ -78,6 +78,16 @@ namespace ONI_Together.Colonies
 
         public static bool CanActOn(Component c) => c == null || CanActOn(c.gameObject);
 
+        /// <summary>Cancel tool: with CancelOnlyOwnOrders only your own colony's (or unowned) orders, otherwise like CanActOn.</summary>
+        public static bool CanCancel(GameObject go)
+        {
+            if (!ColonyRegistry.Active || !ColonyContext.IsPlayerAction || go == null) return true;
+            if (ColonyContext.Current == ColonyContext.Spectator) return false;
+            if (!ColonyRules.CancelOnlyOwnOrders) return CanActOn(go);
+            int owner = ColonyRegistry.GetOwner(go);
+            return owner == ColonyRegistry.NoColony || owner == ColonyContext.Current;
+        }
+
         /// <summary>For local UI (details screen, user menu): may the LOCAL player control this object?</summary>
         public static bool LocalCanControl(GameObject go)
         {

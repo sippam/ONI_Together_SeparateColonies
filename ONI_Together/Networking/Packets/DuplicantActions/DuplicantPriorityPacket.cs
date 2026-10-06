@@ -12,6 +12,7 @@ namespace ONI_Together.Networking.Packets.DuplicantActions
 		public int NetId;
 		public string ChoreGroupId;
 		public int Priority;
+		public string DupeName = "";
 
 		public void Serialize(BinaryWriter writer)
 		{
@@ -20,6 +21,7 @@ namespace ONI_Together.Networking.Packets.DuplicantActions
 			writer.Write(NetId);
 			writer.Write(ChoreGroupId ?? string.Empty);
 			writer.Write(Priority);
+			writer.Write(DupeName ?? string.Empty);
 		}
 
 		public void Deserialize(BinaryReader reader)
@@ -29,6 +31,7 @@ namespace ONI_Together.Networking.Packets.DuplicantActions
 			NetId = reader.ReadInt32();
 			ChoreGroupId = reader.ReadString();
 			Priority = reader.ReadInt32();
+			DupeName = reader.ReadString();
 		}
 
 		public void OnDispatched()
@@ -59,6 +62,8 @@ namespace ONI_Together.Networking.Packets.DuplicantActions
 			{
 				// Not in registry - try to find and force-register
 				identity = TryFindAndRegisterIdentity(NetId);
+				if (identity == null)
+					identity = ONI_Together.Colonies.DupeLookup.Find(0, DupeName)?.GetComponent<NetworkIdentity>();
 				if (identity == null)
 				{
 					DebugConsole.LogWarning($"[DuplicantPriorityPacket] NetId {NetId} not found anywhere.");

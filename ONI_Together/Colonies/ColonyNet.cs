@@ -4,6 +4,7 @@ using System.IO;
 using Newtonsoft.Json;
 using ONI_Together.Networking;
 using ONI_Together.Networking.Components;
+using ONI_Together.Networking.Packets;
 using ONI_Together.Networking.Packets.Architecture;
 using UnityEngine;
 
@@ -283,6 +284,46 @@ namespace ONI_Together.Colonies
                         ColonyRegistry.SetOwner(ni.gameObject, Colonies[i]);
             }
             finally { Applying = false; }
+        }
+    }
+
+    /// <summary>
+    /// Host -> clients: a player-action packet tagged with the acting colony. The host wraps every relayed client
+    /// tool packet (and its own tool packets) in this, so clients tag new markers/blueprints with the right owner
+    /// and apply the same guards (e.g. "cancel only your own orders") as the host.
+    /// </summary>
+    public class ColonyActingPacket : IPacket
+    {
+        public int Colony;
+        public int InnerId;
+        public byte[] InnerData = new byte[0];
+
+        public ColonyActingPacket() { }
+
+        public ColonyActingPacket(IPacket inner, int colony)
+        {
+            Colony = colony;
+            InnerId = API_Helper.GetHashCode(inner.GetType());
+            using var ms = new MemoryStream();
+            using var w = new BinaryWriter(ms);
+            inner.Serialize(w);
+            InnerData = ms.ToArray();
+        }
+
+        public void Serialize(BinaryWriter w) { w.Write(Colony); w.Write(InnerId); w.Write(InnerData.Length); w.Write(InnerData); }
+        public void Deserialize(BinaryReader r) { Colony = r.ReadInt32(); InnerId = r.ReadInt32(); int n = r.ReadInt32(); InnerData = r.ReadBytes(n); }
+
+        public void OnDispatched()
+        {
+            if (!PacketRegistry.HasRegisteredPacket(InnerId)) return;
+            var inner = PacketRegistry.Create(InnerId);
+            using (var ms = new MemoryStream(InnerData))
+            using (var r = new BinaryReader(ms))
+                inner.Deserialize(r);
+            bool push = !MultiplayerSession.IsHost && Colony != ColonyRegistry.NoColony && ColonyRegistry.Active;
+            if (push) ColonyContext.Push(Colony);
+            try { inner.OnDispatched(); }
+            finally { if (push) ColonyContext.Pop(); }
         }
     }
 

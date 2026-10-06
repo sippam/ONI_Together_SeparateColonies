@@ -56,6 +56,8 @@ namespace ONI_Together.Colonies
             fn = (ref Chore.Precondition.Context context, object data) =>
             {
                 if (!ColonyRegistry.Active || !ColonyRules.SeparateErrands) return true;
+                // "help when idle": foreign errands stay available, ChoreConsumer_ChooseChore ranks them last
+                if (ColonyRules.HelpOtherColonies) return true;
                 int worker = ColonyRegistry.GetOwner(context.consumerState.prefabid);
                 if (worker == ColonyRegistry.NoColony) return true;
                 var chore = context.chore;
@@ -80,6 +82,46 @@ namespace ONI_Together.Colonies
             {
                 // Always added (cheap when mode is off) so chores created before the mode switch are covered.
                 __instance.AddPrecondition(SameColony);
+            }
+        }
+
+        /// <summary>
+        /// "Own colony first": before the dupe picks from its sorted candidate list (best = last), move other
+        /// colonies' errands below all of its own work, and idling below everything. So a dupe only helps another
+        /// colony when it has nothing of its own to do. Host only (clients don't run dupe AI in ONI Together).
+        /// </summary>
+        [HarmonyPatch(typeof(ChoreConsumer), "ChooseChore")]
+        public static class ChoreConsumer_ChooseChore
+        {
+            [ThreadStatic] private static List<Chore.Precondition.Context> _idle, _foreign, _own;
+
+            public static void Prefix(ChoreConsumer __instance, List<Chore.Precondition.Context> succeeded_contexts)
+            {
+                if (!ColonyRegistry.Active || !ColonyRules.SeparateErrands || !ColonyRules.HelpOtherColonies) return;
+                if (succeeded_contexts == null || succeeded_contexts.Count < 2 || __instance == null) return;
+                int worker = ColonyRegistry.GetOwner(__instance.gameObject);
+                if (worker == ColonyRegistry.NoColony) return;
+
+                var idleType = Db.Get().ChoreTypes.Idle;
+                if (_idle == null) { _idle = new List<Chore.Precondition.Context>(); _foreign = new List<Chore.Precondition.Context>(); _own = new List<Chore.Precondition.Context>(); }
+                _idle.Clear(); _foreign.Clear(); _own.Clear();
+                bool anyForeign = false;
+                foreach (var ctx in succeeded_contexts)
+                {
+                    var chore = ctx.chore;
+                    if (chore != null && chore.choreType == idleType) { _idle.Add(ctx); continue; }
+                    var go = chore?.gameObject;
+                    int owner = go != null ? ColonyRegistry.GetOwner(go) : ColonyRegistry.NoColony;
+                    if (owner != ColonyRegistry.NoColony && owner != worker) { _foreign.Add(ctx); anyForeign = true; }
+                    else _own.Add(ctx);
+                }
+                if (!anyForeign && _idle.Count == 0) return;
+                // ascending preference: idle < other colonies < own colony (each group keeps vanilla order)
+                succeeded_contexts.Clear();
+                succeeded_contexts.AddRange(_idle);
+                succeeded_contexts.AddRange(_foreign);
+                succeeded_contexts.AddRange(_own);
+                _idle.Clear(); _foreign.Clear(); _own.Clear();
             }
         }
 
@@ -338,7 +380,7 @@ namespace ONI_Together.Colonies
                 {
                     GameObject go = Grid.Objects[cell, i];
                     if (go == null) continue;
-                    if (!ColonyGuard.CanActOn(go)) continue;
+                    if (!ColonyGuard.CanCancel(go)) continue;
                     string layer = __instance.GetFilterLayerFromGameObject(go);
                     if (__instance.IsActiveLayer(layer)) go.Trigger(2127324410);
                 }

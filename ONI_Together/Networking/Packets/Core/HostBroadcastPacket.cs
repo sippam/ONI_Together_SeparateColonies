@@ -78,8 +78,11 @@ namespace ONI_Together.Networking.Packets.Core
 					if (colonyCtx != 0) ONI_Together.Colonies.ColonyContext.Pop();
 					ONI_Together.Colonies.ColonyNet.CurrentSender = prevSender;
 				}
-				//send it to all other clients except the sender
-				PacketSender.SendToAllExcluding(innerPacket, [MultiplayerSession.HostUserID, SenderId]);
+				//send it to all other clients except the sender (separate colonies: tagged with the acting colony)
+				if (colonyCtx > 0)
+					PacketSender.SendToAllExcluding(new ONI_Together.Colonies.ColonyActingPacket(innerPacket, colonyCtx), [MultiplayerSession.HostUserID, SenderId]);
+				else
+					PacketSender.SendToAllExcluding(innerPacket, [MultiplayerSession.HostUserID, SenderId]);
 			}
 		}
 

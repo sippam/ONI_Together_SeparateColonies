@@ -31,7 +31,7 @@ namespace ONI_Together.Patches.DuplicantActions
             if (identity != null)
                 id = identity.NetId;
 
-            PacketSender.SendToAllOtherPeers(new ConsumablePermissionPacket(widgetRow.rowType, consumableInfo.ConsumableId, new_value, id));
+            PacketSender.SendToAllOtherPeers(new ConsumablePermissionPacket(widgetRow.rowType, consumableInfo.ConsumableId, new_value, id, minionIdentity != null ? minionIdentity.GetProperName() : ""));
         }
     }
 }

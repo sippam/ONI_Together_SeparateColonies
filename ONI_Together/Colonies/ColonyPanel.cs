@@ -171,11 +171,14 @@ namespace ONI_Together.Colonies
                 SharedDupeManagement = RuleToggle(cur.SharedDupeManagement, "Shared dupe priorities / management screens"),
                 SeparatePrintingPod = RuleToggle(cur.SeparatePrintingPod, "Separate Printing Pod timers & choices"),
                 SeparateSchedules = RuleToggle(cur.SeparateSchedules, "Separate schedules"),
+                HelpOtherColonies = RuleToggle(cur.HelpOtherColonies, "Dupes help other colonies when they have nothing to do"),
+                CancelOnlyOwnOrders = RuleToggle(cur.CancelOnlyOwnOrders, "Cancel tool only removes your own orders"),
             };
             bool changed = next.TerritoryProtection != cur.TerritoryProtection || next.BuildingProtection != cur.BuildingProtection
                            || next.SeparateErrands != cur.SeparateErrands || next.SeparateResearch != cur.SeparateResearch
                            || next.SharedDupeManagement != cur.SharedDupeManagement
-                           || next.SeparatePrintingPod != cur.SeparatePrintingPod || next.SeparateSchedules != cur.SeparateSchedules;
+                           || next.SeparatePrintingPod != cur.SeparatePrintingPod || next.SeparateSchedules != cur.SeparateSchedules
+                           || next.HelpOtherColonies != cur.HelpOtherColonies || next.CancelOnlyOwnOrders != cur.CancelOnlyOwnOrders;
             if (changed && MultiplayerSession.IsHost)
             {
                 ColonyRules.Apply(next);
@@ -208,7 +211,8 @@ namespace ONI_Together.Colonies
                 DrawStarterPicker();
                 if (GUILayout.Button(_placing ? "Placing... (click the map)" : "Found my colony — pick a spot"))
                     _placing = !_placing;
-                GUILayout.Label($"Must be at least {(ColonyRules.TerritoryProtection ? System.Math.Max(10, ColonyRegistry.TerritoryRadius * 2 + 4) : 10)} cells from other colonies, on a floor with a free 4x4 area.");
+                GUILayout.Label($"Must be at least {(ColonyRules.TerritoryProtection ? System.Math.Max(10, ColonyRegistry.TerritoryRadius * 2 + 4) : 10)} cells from other colonies. " +
+                                (ColonyWorldTools.GetStartTemplate() != null ? "The area is cleared and you get the same starting room as the host." : "Needs a floor with a free 4x4 area."));
             }
             else
             {

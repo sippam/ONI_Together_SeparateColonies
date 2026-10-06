@@ -51,7 +51,14 @@ namespace ONI_Together.Colonies
             if (game == null) return;
             // wait a moment so the save (and ColonySaveData) is fully loaded and the world is spawned
             if (!_gameInitDone && Time.realtimeSinceStartup - _gameSeenAt > 2f)
+            {
                 _gameInitDone = true;
+                if (!MultiplayerSession.IsClient)
+                {
+                    try { ColonyWorldTools.AddExtraWaterIfNew(); }
+                    catch (Exception ex) { Debug.LogWarning($"[ONIT-Colonies] extra water failed: {ex.Message}"); }
+                }
+            }
             if (!_gameInitDone) return;
 
             if (inSession && !_sessionInitDone)

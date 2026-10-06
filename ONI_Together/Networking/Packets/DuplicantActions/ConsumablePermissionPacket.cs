@@ -11,13 +11,15 @@ namespace ONI_Together.Networking.Packets.DuplicantActions
         private string                   ConsumableID;
         private TableScreen.ResultValues NewValue;
         private int                      NetId;
+        private string                   DupeName = "";
 
         public ConsumablePermissionPacket()
         {
         }
 
-        public ConsumablePermissionPacket(TableRow.RowType rowType, string consumableID, TableScreen.ResultValues newValue, int netId)
+        public ConsumablePermissionPacket(TableRow.RowType rowType, string consumableID, TableScreen.ResultValues newValue, int netId, string dupeName = "")
         {
+            DupeName = dupeName ?? "";
             using var _ = Profiler.Scope();
 
             RowType      = rowType;
@@ -35,7 +37,10 @@ namespace ONI_Together.Networking.Packets.DuplicantActions
             writer.Write((int)NewValue);
 
             if (RowType == TableRow.RowType.Minion)
+            {
                 writer.Write(NetId);
+                writer.Write(DupeName ?? "");
+            }
         }
 
         public void Deserialize(BinaryReader reader)
@@ -47,7 +52,10 @@ namespace ONI_Together.Networking.Packets.DuplicantActions
             NewValue     = (TableScreen.ResultValues)reader.ReadInt32();
 
             if (RowType == TableRow.RowType.Minion)
+            {
                 NetId = reader.ReadInt32();
+                DupeName = reader.ReadString();
+            }
         }
 
         public void OnDispatched()
@@ -67,11 +75,11 @@ namespace ONI_Together.Networking.Packets.DuplicantActions
                 }
                 case TableRow.RowType.Minion:
                 {
-                    NetworkIdentity identity;
-                    if (!NetworkIdentityRegistry.TryGet(NetId, out identity))
+                    var dupe = ONI_Together.Colonies.DupeLookup.Find(NetId, DupeName);
+                    if (dupe == null)
                         return;
 
-                    ConsumableConsumer component   = identity.GetComponent<ConsumableConsumer>();
+                    ConsumableConsumer component   = dupe.GetComponent<ConsumableConsumer>();
                     bool               can_consume = NewValue is TableScreen.ResultValues.True or TableScreen.ResultValues.ConditionalGroup;
 
                     component?.SetPermitted(ConsumableID, can_consume);

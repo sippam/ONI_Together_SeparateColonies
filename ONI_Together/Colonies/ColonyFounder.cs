@@ -97,15 +97,24 @@ namespace ONI_Together.Colonies
         {
             reason = null;
             if (!Grid.IsValidCell(cell)) { reason = "Invalid cell"; return false; }
-            var def = Assets.GetBuildingDef(HeadquartersId);
-            if (def == null) { reason = "Headquarters def missing"; return false; }
-            // check placement without our own territory guard (the requester has no colony yet)
-            using (ColonyContext.Enter(ColonyRegistry.NoColony))
+            var tpl = ColonyWorldTools.GetStartTemplate();
+            if (tpl != null)
             {
-                if (!def.IsValidPlaceLocation(null, cell, Orientation.Neutral, out string fail))
+                // the start base is stamped like a new game (area cleared), so any spot works that doesn't wreck stuff
+                if (!ColonyWorldTools.ValidateTemplateArea(tpl, cell, out reason)) return false;
+            }
+            else
+            {
+                var def = Assets.GetBuildingDef(HeadquartersId);
+                if (def == null) { reason = "Headquarters def missing"; return false; }
+                // check placement without our own territory guard (the requester has no colony yet)
+                using (ColonyContext.Enter(ColonyRegistry.NoColony))
                 {
-                    reason = $"Can't place a Printing Pod here: {fail}";
-                    return false;
+                    if (!def.IsValidPlaceLocation(null, cell, Orientation.Neutral, out string fail))
+                    {
+                        reason = $"Can't place a Printing Pod here: {fail}";
+                        return false;
+                    }
                 }
             }
             int minDist = ColonyRules.TerritoryProtection ? Math.Max(10, ColonyRegistry.TerritoryRadius * 2 + 4) : 10;
@@ -148,12 +157,60 @@ namespace ONI_Together.Colonies
             ColonyResearch.InitNewColony(info);
             ColonyImmigration.InitFresh(info.Immigration);
             ColonyRegistry.AddColony(info);
+            ColonyNet.BroadcastRegistry();
+            var tpl = ColonyWorldTools.GetStartTemplate();
+            if (tpl != null)
+            {
+                // stamp the same starting base the host's asteroid began with (clears the area, places pod + room);
+                // the stamp completes over a few sim ticks, then the dupes arrive
+                ColonyNet.SendMessageTo(requester, $"Building '{info.Name}'... (the game must be unpaused for this)");
+                Grid.CellToXY(info.HomeCell, out int hx, out int hy);
+                var cells = ColonyWorldTools.TemplateCells(tpl, info.HomeCell);
+                TemplateLoader.Stamp(tpl, new Vector2(hx, hy), () =>
+                {
+                    try { FinishBase(info, starters, cells, requester); }
+                    catch (Exception ex) { Debug.LogWarning($"[ONIT-Colonies] finishing base failed: {ex}"); }
+                });
+                return;
+            }
             using (ColonyContext.Enter(info.Id))
-                SpawnBase(info, starters);
+                SpawnBase(info, starters, null);
+            AfterFounded(info, requester);
+        }
+
+        private static void FinishBase(ColonyInfo info, List<MinionStartingStats> starters, HashSet<int> cells, ulong requester)
+        {
+            using (ColonyContext.Enter(info.Id))
+            {
+                Telepad pad = null;
+                foreach (BuildingComplete b in global::Components.BuildingCompletes.Items)
+                {
+                    if (b == null || !cells.Contains(Grid.PosToCell(b))) continue;
+                    if (ColonyRegistry.GetOwner(b.gameObject) != ColonyRegistry.NoColony) continue;
+                    ColonyRegistry.SetOwner(b.gameObject, info.Id);
+                    if (pad == null) pad = b.GetComponent<Telepad>();
+                }
+                if (pad != null)
+                {
+                    int padCell = Grid.PosToCell(pad);
+                    if (padCell != info.HomeCell) { info.HomeCell = padCell; ColonyRegistry.RaiseChanged(); }
+                }
+                SpawnBase(info, starters, pad);
+            }
+            AfterFounded(info, requester);
+        }
+
+        private static void AfterFounded(ColonyInfo info, ulong requester)
+        {
+            if (Configuration.Instance?.Colonies?.WaterGeyserPerColony ?? false)
+            {
+                try { ColonyWorldTools.PlaceWaterGeyser(info.HomeCell, new System.Random(info.HomeCell * 31 + info.Id)); }
+                catch (Exception ex) { Debug.LogWarning($"[ONIT-Colonies] colony water geyser failed: {ex.Message}"); }
+            }
             ColonyNet.BroadcastRegistry();
             ColonyNet.SendMessageTo(requester, $"Colony '{info.Name}' founded — syncing the world...");
             // Clients don't simulate the new pod/dupes on their own; give everyone the host's exact world.
-            ColonySession.ScheduleHardSync(2f, $"colony #{info.Id} founded");
+            ColonySession.ScheduleHardSync(3f, $"colony #{info.Id} founded");
         }
 
         #endregion
@@ -190,19 +247,22 @@ namespace ONI_Together.Colonies
             return (x - cx) * (x - cx) + (y - cy) * (y - cy) <= radius * radius;
         }
 
-        private static void SpawnBase(ColonyInfo info, List<MinionStartingStats> starters)
+        private static void SpawnBase(ColonyInfo info, List<MinionStartingStats> starters, Telepad existingPad)
         {
-            var def = Assets.GetBuildingDef(HeadquartersId);
-            if (def == null)
+            var telepad = existingPad;
+            if (telepad == null)
             {
-                Debug.LogWarning("[ONIT-Colonies] Headquarters def not found — cannot spawn base");
-                return;
+                var def = Assets.GetBuildingDef(HeadquartersId);
+                if (def == null)
+                {
+                    Debug.LogWarning("[ONIT-Colonies] Headquarters def not found — cannot spawn base");
+                    return;
+                }
+                // Build() bypasses placement rules; ValidateHomeCell already checked them.
+                GameObject hq = def.Build(info.HomeCell, Orientation.Neutral, null, def.DefaultElements(), 293.15f, playsound: false, GameClock.Instance.GetTime());
+                if (hq != null) ColonyRegistry.SetOwner(hq, info.Id);
+                telepad = hq != null ? hq.GetComponent<Telepad>() : null;
             }
-
-            // Build() bypasses placement rules; ValidateHomeCell already checked them.
-            GameObject hq = def.Build(info.HomeCell, Orientation.Neutral, null, def.DefaultElements(), 293.15f, playsound: false, GameClock.Instance.GetTime());
-            if (hq != null) ColonyRegistry.SetOwner(hq, info.Id);
-            var telepad = hq != null ? hq.GetComponent<Telepad>() : null;
             if (ColonySchedules.SeparateActive) ColonySchedules.EnsureColonySchedule(info.Id);
 
             Grid.CellToXY(info.HomeCell, out int x, out int y);

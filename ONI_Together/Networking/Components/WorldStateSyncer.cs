@@ -749,6 +749,12 @@ namespace ONI_Together.Networking.Components
 				_bgScanIndex = (_bgScanIndex + 1) % Mathf.Max(1, totalChunks);
 			}
 
+			// Big asteroids: the 32x32 rotating background scan needs ~20 minutes to cover a 300% map, so dug /
+			// built / collapsed cells outside everyone's viewport reached clients very late. A cheap structural
+			// sweep walks a large slice of the map every tick but only sends cells whose element changed to or
+			// from a solid or liquid (gas mixing / mass jitter stays with the viewport scans).
+			cellsScanned += StructuralSweep();
+
 			// Flush the batcher
 			int packetSize = ONI_Together.Misc.World.WorldUpdateBatcher.Flush();
 
@@ -801,6 +807,42 @@ namespace ONI_Together.Networking.Components
 			_viewportBand[key] = band + 1;
 			ScanArea(x1, by1, x2, by2);
 			return w * (by2 - by1);
+		}
+
+		private const int STRUCTURAL_SWEEP_CELLS = 100000;
+		private int _structuralCursor;
+
+		private int StructuralSweep()
+		{
+			int total = Grid.CellCount;
+			if (_shadowElements == null || total <= 0) return 0;
+			var elements = ElementLoader.elements;
+			int budget = Mathf.Min(STRUCTURAL_SWEEP_CELLS, total);
+			int cell = _structuralCursor % total;
+			for (int n = 0; n < budget; n++, cell++)
+			{
+				if (cell >= total) cell = 0;
+				ushort cur = Grid.ElementIdx[cell];
+				ushort old = _shadowElements[cell];
+				if (cur == old) continue;
+				var eNew = cur < elements.Count ? elements[cur] : null;
+				var eOld = old < elements.Count ? elements[old] : null;
+				bool structural = (eNew != null && (eNew.IsSolid || eNew.IsLiquid)) || (eOld != null && (eOld.IsSolid || eOld.IsLiquid));
+				if (!structural) continue;
+				_shadowElements[cell] = cur;
+				_shadowMass[cell] = Grid.Mass[cell];
+				ONI_Together.Misc.World.WorldUpdateBatcher.Queue(new WorldUpdatePacket.CellUpdate
+				{
+					Cell = cell,
+					ElementIdx = cur,
+					Mass = Grid.Mass[cell],
+					Temperature = Grid.Temperature[cell],
+					DiseaseIdx = Grid.DiseaseIdx[cell],
+					DiseaseCount = Grid.DiseaseCount[cell]
+				});
+			}
+			_structuralCursor = cell % total;
+			return budget;
 		}
 
 		private void ScanArea(int x1, int y1, int x2, int y2)

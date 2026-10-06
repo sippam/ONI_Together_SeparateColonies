@@ -416,7 +416,14 @@ namespace ONI_Together.Networking
 			//DebugConsole.Log("[PacketSender] Sending packet to all other peers: " + packet.GetType().Name);
 
 			if (MultiplayerSession.IsHost)
-				SendToAllClients(packet);
+			{
+				// separate colonies: the host's own player actions carry its colony so clients tag/guard identically
+				if (ONI_Together.Colonies.ColonyRegistry.Active && ONI_Together.Colonies.ColonyContext.IsSet
+				    && packet is not ONI_Together.Colonies.ColonyActingPacket)
+					SendToAllClients(new ONI_Together.Colonies.ColonyActingPacket(packet, ONI_Together.Colonies.ColonyContext.Current));
+				else
+					SendToAllClients(packet);
+			}
 			else if (packet is IBulkablePacket && packet is not IClientRelayable)
 				SendToHost(packet);
 			else

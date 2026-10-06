@@ -18,6 +18,8 @@ namespace ONI_Together.Colonies
         public static bool SharedDupeManagement => Data.SharedDupeManagement;
         public static bool SeparatePrintingPod => Data.SeparatePrintingPod;
         public static bool SeparateSchedules => Data.SeparateSchedules;
+        public static bool HelpOtherColonies => Data.HelpOtherColonies;
+        public static bool CancelOnlyOwnOrders => Data.CancelOnlyOwnOrders;
 
         /// <summary>Host: read the rules from the mod options.</summary>
         public static ColonyRulesData FromConfig()
@@ -33,6 +35,8 @@ namespace ONI_Together.Colonies
                 SharedDupeManagement = c.SharedDupeManagement,
                 SeparatePrintingPod = c.SeparatePrintingPod,
                 SeparateSchedules = c.SeparateSchedules,
+                HelpOtherColonies = c.HelpOtherColonies,
+                CancelOnlyOwnOrders = c.CancelOnlyOwnOrders,
             };
         }
 
@@ -50,6 +54,8 @@ namespace ONI_Together.Colonies
                 c.SharedDupeManagement = Data.SharedDupeManagement;
                 c.SeparatePrintingPod = Data.SeparatePrintingPod;
                 c.SeparateSchedules = Data.SeparateSchedules;
+                c.HelpOtherColonies = Data.HelpOtherColonies;
+                c.CancelOnlyOwnOrders = Data.CancelOnlyOwnOrders;
                 Configuration.Instance.Save();
             }
             catch (Exception ex) { Debug.LogWarning($"[ONIT-Colonies] Saving rules to config failed: {ex.Message}"); }
@@ -76,6 +82,6 @@ namespace ONI_Together.Colonies
             $"territory={(TerritoryProtection ? "on" : "off")} buildings={(BuildingProtection ? "protected" : "open")} " +
             $"errands={(SeparateErrands ? "separate" : "shared")} research={(SeparateResearch ? "separate" : "shared")} " +
             $"dupeManagement={(SharedDupeManagement ? "shared" : "separate")} pod={(SeparatePrintingPod ? "separate" : "shared")} " +
-            $"schedules={(SeparateSchedules ? "separate" : "shared")}";
+            $"schedules={(SeparateSchedules ? "separate" : "shared")} help={(HelpOtherColonies ? "when idle" : "never")} cancel={(CancelOnlyOwnOrders ? "own" : "any")}";
     }
 }

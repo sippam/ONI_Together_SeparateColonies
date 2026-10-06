@@ -26,10 +26,20 @@ your buildings/dupes.
 | Separate research | on | one research tree per colony (host-authoritative, client trees sent by `ColonyResearchPacket`) |
 | Shared dupe priorities | off | Priorities/Consumables/Vitals/Skills screens show & edit every colony's dupes |
 | Separate Printing Pod | on | own printing timer per colony (host ticks foreign timers, `ColonyImmigrationPacket` to the owner), own printable choices, printing/rejecting only affects that colony |
+| Help other colonies when idle | on | with separate errands: own colony's errands first (`ChoreConsumer.ChooseChore` reorder: idle < other colonies < own), help others only when nothing of their own is left |
+| Cancel only your own orders | on | cancel tool skips other colonies' markers/blueprints even when building protection is off |
+| Extra water geysers (new games) | 2 | water geysers / cool steam vents added once to a freshly generated world |
+| Water geyser near each new colony | on | one water geyser 20–40 cells from a newly founded colony |
 | Separate schedules | on | schedule owner per index (`ColonySchedules`, host re-broadcasts owners in the registry); each player sees only their schedules; dupes are kept on their colony's schedules; a new colony gets "&lt;name&gt; schedule" |
 
 The host's rules are used for the session (sent to clients, stored in the save). Switching research back to
 shared hard-syncs everyone to the host's tree.
+
+## v0.6.0 notes
+- New colonies get the host asteroid's start-base template stamped at the chosen spot (area cleared, Printing Pod + starting room), then the chosen dupes + rations. Needs the game unpaused for a moment (the stamp runs over sim ticks).
+- Relayed tool packets are wrapped in `ColonyActingPacket` (acting colony), so clients tag new markers with the same owner as the host and apply the same guards.
+- Background structural sweep (100k cells per sync tick): dug/built/collapsed cells and liquid changes outside every viewport reach clients within ~15 s even on a 300% asteroid (the old 32x32 rotating scan needed ~20 min).
+- Priority / consumable packets fall back to the dupe's name when the NetId differs between machines (fixes priorities snapping back to 5).
 
 ## Performance (v0.3.0)
 - ConduitFlowSyncer walks only cells with a pipe (was: every grid cell every 1.5 s — ~800k dictionary lookups on a 300% asteroid)
