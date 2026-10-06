@@ -6,7 +6,8 @@
 		<ItemGroup>
 			<ModLines Include="title: '$(ModName)'"/>
 			<ModLines Include="description: &quot;$([System.String]::Copy('$(ModDescription)').Replace('&quot;', '\&quot;'))&quot;"/>
-			<ModLines Include="staticID: $(AssemblyName)"/>
+			<ModLines Include="staticID: $(ModStaticID)" Condition="'$(ModStaticID)' != ''"/>
+			<ModLines Include="staticID: $(AssemblyName)" Condition="'$(ModStaticID)' == ''"/>
 		</ItemGroup>
 		<WriteLinesToFile File="$(TargetDir)/mod.yaml" Overwrite="true" Lines="@(ModLines)"/>
     <ItemGroup>
@@ -31,7 +32,7 @@
 	</Target>	
 
 	<!--Merges all dlls in the output folder into a single dll-->
-	<Target Name="ILRepack" AfterTargets="Build" Condition="'$(IsPacked)' == 'true'">
+	<Target Name="ILRepack" AfterTargets="Build" Condition="'$(IsPacked)' == 'true' And '$(OfflineBuild)' != 'true'">
 		<ItemGroup>
 			<InputAssemblies Include="$(TargetPath)" />
 			<InputAssemblies
@@ -97,7 +98,7 @@
 	</ItemGroup>
 	<Target Name="Publicise"
 		BeforeTargets="BeforeResolveReferences"
-		Condition="'$(DoNotBuildAsMod)' != 'true'"
+		Condition="'$(DoNotBuildAsMod)' != 'true' And '$(OfflineBuild)' != 'true'"
 		Inputs="@(PubliciseAssembliesInputs)"
 		Outputs="@(PubliciseAssembliesInputs->'$(SolutionDir)PublicisedAssembly\%(Filename)_public%(Extension)')"
 		>

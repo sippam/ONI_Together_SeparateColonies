@@ -422,3 +422,5 @@ build_install.sh
 CLAUDE.md
 .claude/
 /ClassLibrary1/Networking/Packets/Tools/Build/BuildCompletePacket.cs
+Directory.Build.props.user
+PublicisedAssembly/

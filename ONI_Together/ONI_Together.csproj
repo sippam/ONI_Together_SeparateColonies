@@ -10,8 +10,9 @@
 
 	<!-- Mod Info, used to generate yaml files on the fly -->
 	<PropertyGroup>
-		<ModName>Oxygen Not Included Together</ModName>
-		<ModDescription>Adds multiplayer to Oxygen Not Included! By Lyraedan</ModDescription>
+		<ModName>ONI Together (Separate Colonies)</ModName>
+		<ModStaticID>ONI_Together_SeparateColonies</ModStaticID>
+		<ModDescription>Fork of ONI Together (by Lyraedan) with separate colonies on the same asteroid. Disable the original ONI Together while using this.</ModDescription>
 		<MinimumSupportedBuild>$(TargetGameVersion)</MinimumSupportedBuild>
 		<APIVersion>2</APIVersion>
 	</PropertyGroup>
@@ -62,12 +63,13 @@
 	  <Folder Include="Networking\Packets\BulkDataPackets\" />
 	</ItemGroup>
 
-	<ItemGroup>
+	<ItemGroup Condition="'$(OfflineBuild)' != 'true'">
 	  <PackageReference Include="RiptideNetworking.Riptide" Version="2.2.1" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="PLib" Version="4.22.0" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(OfflineBuild)' == 'true'">
+		<Reference Include="RiptideNetworking"><HintPath>$(SolutionDir)lib/RiptideNetworking.dll</HintPath><Private>True</Private></Reference>
+		<Reference Include="PLib"><HintPath>$(SolutionDir)lib/PLib.dll</HintPath><Private>True</Private></Reference>
 	</ItemGroup>
 
 </Project>
