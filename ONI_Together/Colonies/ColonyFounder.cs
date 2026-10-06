@@ -57,6 +57,7 @@ namespace ONI_Together.Colonies
             }
             var info = NewInfo(ColonyRegistry.NextColonyId(), "Host colony", me, LocalPlayerName(), home);
             ColonyRegistry.AddColony(info);
+            ColonySchedules.ClaimAllUnowned(info.Id);
             using (ColonyContext.Enter(info.Id))
                 ClaimExistingBase(info);
         }
@@ -134,6 +135,7 @@ namespace ONI_Together.Colonies
 
             var info = NewInfo(ColonyRegistry.NextColonyId(), colonyName, requester, ownerName, homeCell);
             ColonyResearch.InitNewColony(info);
+            ColonyImmigration.InitFresh(info.Immigration);
             ColonyRegistry.AddColony(info);
             using (ColonyContext.Enter(info.Id))
                 SpawnBase(info);
@@ -190,6 +192,7 @@ namespace ONI_Together.Colonies
             GameObject hq = def.Build(info.HomeCell, Orientation.Neutral, null, def.DefaultElements(), 293.15f, playsound: false, GameClock.Instance.GetTime());
             if (hq != null) ColonyRegistry.SetOwner(hq, info.Id);
             var telepad = hq != null ? hq.GetComponent<Telepad>() : null;
+            if (ColonySchedules.SeparateActive) ColonySchedules.EnsureColonySchedule(info.Id);
 
             Grid.CellToXY(info.HomeCell, out int x, out int y);
             int spawned = 0, bionics = 0;

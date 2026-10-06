@@ -16,6 +16,8 @@ namespace ONI_Together.Colonies
         public static bool SeparateErrands => Data.SeparateErrands;
         public static bool SeparateResearch => Data.SeparateResearch;
         public static bool SharedDupeManagement => Data.SharedDupeManagement;
+        public static bool SeparatePrintingPod => Data.SeparatePrintingPod;
+        public static bool SeparateSchedules => Data.SeparateSchedules;
 
         /// <summary>Host: read the rules from the mod options.</summary>
         public static ColonyRulesData FromConfig()
@@ -29,6 +31,8 @@ namespace ONI_Together.Colonies
                 SeparateErrands = c.SeparateErrands,
                 SeparateResearch = c.SeparateResearch,
                 SharedDupeManagement = c.SharedDupeManagement,
+                SeparatePrintingPod = c.SeparatePrintingPod,
+                SeparateSchedules = c.SeparateSchedules,
             };
         }
 
@@ -44,6 +48,8 @@ namespace ONI_Together.Colonies
                 c.SeparateErrands = Data.SeparateErrands;
                 c.SeparateResearch = Data.SeparateResearch;
                 c.SharedDupeManagement = Data.SharedDupeManagement;
+                c.SeparatePrintingPod = Data.SeparatePrintingPod;
+                c.SeparateSchedules = Data.SeparateSchedules;
                 Configuration.Instance.Save();
             }
             catch (Exception ex) { Debug.LogWarning($"[ONIT-Colonies] Saving rules to config failed: {ex.Message}"); }
@@ -54,15 +60,22 @@ namespace ONI_Together.Colonies
         {
             if (data == null) return;
             bool researchWas = Data.SeparateResearch;
+            bool podWas = Data.SeparatePrintingPod;
+            bool schedWas = Data.SeparateSchedules;
             Data = data;
             if (researchWas != data.SeparateResearch)
                 ColonyResearch.OnModeChanged(data.SeparateResearch);
+            if (podWas != data.SeparatePrintingPod)
+                ColonyImmigration.OnModeChanged(data.SeparatePrintingPod);
+            if (schedWas != data.SeparateSchedules)
+                ColonySchedules.OnModeChanged(data.SeparateSchedules);
             ColonyRegistry.RaiseChanged();
         }
 
         public static string Describe() =>
             $"territory={(TerritoryProtection ? "on" : "off")} buildings={(BuildingProtection ? "protected" : "open")} " +
             $"errands={(SeparateErrands ? "separate" : "shared")} research={(SeparateResearch ? "separate" : "shared")} " +
-            $"dupeManagement={(SharedDupeManagement ? "shared" : "separate")}";
+            $"dupeManagement={(SharedDupeManagement ? "shared" : "separate")} pod={(SeparatePrintingPod ? "separate" : "shared")} " +
+            $"schedules={(SeparateSchedules ? "separate" : "shared")}";
     }
 }

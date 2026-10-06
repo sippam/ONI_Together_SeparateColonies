@@ -64,6 +64,7 @@ namespace ONI_Together.Colonies
             {
                 ColonyNet.Tick();
                 ColonyResearch.Tick();
+                ColonyImmigration.Tick();
 
                 // client: keep asking until the host answered (registry may arrive before/after the world)
                 if (MultiplayerSession.IsClient && ColonyRegistry.Enabled == false)

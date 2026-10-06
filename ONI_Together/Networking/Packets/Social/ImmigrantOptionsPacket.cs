@@ -40,6 +40,7 @@ namespace ONI_Together.Networking.Packets.Social
 		{
 			using var _ = Profiler.Scope();
 
+			if (ONI_Together.Colonies.ColonyImmigration.SeparateActive) return; // each colony rolls its own printables
 			DebugConsole.Log($"[ImmigrantOptionsPacket] Received {Options.Count} options");
 
 			// Log each option for debugging

@@ -150,6 +150,8 @@ namespace ONI_Together.Patches.GamePatches
 			using var _ = Profiler.Scope();
 
 			if (!MultiplayerSession.InSession) return;
+			// separate colonies: every colony rolls its own printables
+			if (ONI_Together.Colonies.ColonyImmigration.SeparateActive) return;
 
 			DebugConsole.Log("[ImmigrantScreen] Initialize postfix triggered");
 
@@ -285,7 +287,11 @@ namespace ONI_Together.Patches.GamePatches
 			using var _ = Profiler.Scope();
 
 			// Host: Clear the lock after printing and notify clients
-			if (MultiplayerSession.IsHost)
+			if (MultiplayerSession.IsHost && ONI_Together.Colonies.ColonyImmigration.SeparateActive)
+			{
+				ImmigrantScreenPatch.ClearOptionsLock(); // separate pods: the clients' timers are untouched
+			}
+			else if (MultiplayerSession.IsHost)
 			{
 				DebugConsole.Log("[ImmigrantScreen] Host: Selection made via screen, notifying clients to close");
 
@@ -341,7 +347,11 @@ namespace ONI_Together.Patches.GamePatches
 
 			if (!MultiplayerSession.InSession) return;
 
-			if (MultiplayerSession.IsHost)
+			if (MultiplayerSession.IsHost && ONI_Together.Colonies.ColonyImmigration.SeparateActive)
+			{
+				ImmigrantScreenPatch.ClearOptionsLock();
+			}
+			else if (MultiplayerSession.IsHost)
 			{
 				DebugConsole.Log("[ImmigrantScreen] Host: Reject All, notifying clients");
 

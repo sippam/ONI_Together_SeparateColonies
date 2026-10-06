@@ -30,7 +30,7 @@ namespace ONI_Together.Colonies
         /// <summary>True while a profile is written into Research.Instance (suppresses ONI Together's research packets).</summary>
         public static bool IsApplyingProfile { get; private set; }
 
-        public static bool SeparateActive => ColonyRegistry.Active && ColonyRules.SeparateResearch;
+        public static bool SeparateActive => ColonyRegistry.Active && ColonyRules.SeparateResearch && MultiplayerSession.InSession && HolderColony > 0;
 
         /// <summary>Colony whose tree is Research.Instance on this machine.</summary>
         public static int HolderColony => ColonyRegistry.LocalColonyId;

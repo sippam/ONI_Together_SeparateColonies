@@ -82,6 +82,19 @@ namespace ONI_Together.Networking.Packets.Social
 				// Screen is closed - spawn directly using cached options
 				DebugConsole.Log("[ImmigrantSelectionPacket] Host: Screen is closed, spawning using cached options");
 
+				// Separate colonies: reject-all ends only the sender's colony timer, and only the sender is told
+				if (PrintingPodWorldIndex == -1 && ONI_Together.Colonies.ColonyImmigration.SeparateActive)
+				{
+					int acting = ONI_Together.Colonies.ColonyContext.Current;
+					if (acting > 0 && acting != ONI_Together.Colonies.ColonyImmigration.HolderColony)
+						ONI_Together.Colonies.ColonyImmigration.EndForeign(acting);
+					else if (acting == ONI_Together.Colonies.ColonyImmigration.HolderColony)
+						Immigration.Instance?.EndImmigration();
+					var sender = ONI_Together.Colonies.ColonyNet.CurrentSender;
+					if (sender != 0) PacketSender.SendToPlayer(sender, new ImmigrantSelectionPacket { PrintingPodWorldIndex = -1 });
+					return;
+				}
+
 				// Handle Reject All from client
 				if (PrintingPodWorldIndex == -1)
 				{
@@ -151,9 +164,15 @@ namespace ONI_Together.Networking.Packets.Social
 					// Clear options and notify clients (with -2 to just close screens, EntitySpawnPacket handles spawning)
 					ONI_Together.Patches.GamePatches.ImmigrantScreenPatch.ClearOptionsLock();
 
-					// Send close screen notification
+					// Send close screen notification (separate colonies: only to the player who printed)
 					var notifyPacket = new ImmigrantSelectionPacket { PrintingPodWorldIndex = -2 };
-					PacketSender.SendToAllClients(notifyPacket);
+					if (ONI_Together.Colonies.ColonyImmigration.SeparateActive)
+					{
+						var sender = ONI_Together.Colonies.ColonyNet.CurrentSender;
+						if (sender != 0) PacketSender.SendToPlayer(sender, notifyPacket);
+					}
+					else
+						PacketSender.SendToAllClients(notifyPacket);
 				}
 				catch (System.Exception ex)
 				{

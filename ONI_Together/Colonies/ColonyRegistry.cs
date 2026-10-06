@@ -142,6 +142,8 @@ namespace ONI_Together.Colonies
             _ownerByGo[go.GetInstanceID()] = colonyId;
 
             ColonyNet.NotifyOwnerChanged(go, colonyId);
+            if (colonyId != NoColony && go.GetComponent<MinionIdentity>() != null)
+                ColonySchedules.EnsureDupeOnOwnSchedule(go, colonyId);
             RegisterStorages(go, colonyId);
         }
 

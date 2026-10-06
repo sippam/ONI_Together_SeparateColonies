@@ -21,7 +21,7 @@ namespace ONI_Together.Colonies
         private bool _autoOpened;
         private bool _showTerritory = true;
         private bool _showHoverOwner = true;
-        private Rect _window = new Rect(20, 120, 400, 560);
+        private Rect _window = new Rect(20, 120, 420, 600);
         private Vector2 _scroll;
 
         // placement mode
@@ -158,10 +158,13 @@ namespace ONI_Together.Colonies
                 SeparateErrands = RuleToggle(cur.SeparateErrands, "Separate errands (dupes only work for their own colony)"),
                 SeparateResearch = RuleToggle(cur.SeparateResearch, "Separate research trees"),
                 SharedDupeManagement = RuleToggle(cur.SharedDupeManagement, "Shared dupe priorities / management screens"),
+                SeparatePrintingPod = RuleToggle(cur.SeparatePrintingPod, "Separate Printing Pod timers & choices"),
+                SeparateSchedules = RuleToggle(cur.SeparateSchedules, "Separate schedules"),
             };
             bool changed = next.TerritoryProtection != cur.TerritoryProtection || next.BuildingProtection != cur.BuildingProtection
                            || next.SeparateErrands != cur.SeparateErrands || next.SeparateResearch != cur.SeparateResearch
-                           || next.SharedDupeManagement != cur.SharedDupeManagement;
+                           || next.SharedDupeManagement != cur.SharedDupeManagement
+                           || next.SeparatePrintingPod != cur.SeparatePrintingPod || next.SeparateSchedules != cur.SeparateSchedules;
             if (changed && MultiplayerSession.IsHost)
             {
                 ColonyRules.Apply(next);
@@ -179,7 +182,8 @@ namespace ONI_Together.Colonies
                 string hex = ColorUtility.ToHtmlStringRGB(col);
                 GUILayout.Label($"<color=#{hex}>■</color> #{c.Id} <b>{c.Name}</b>{(c.Id == local ? " (you)" : "")}\n" +
                                 $"    {c.OwnerName} · {CountDupes(c.Id)} dupes" +
-                                (ColonyRules.SeparateResearch && (c.Id == local || MultiplayerSession.IsHost) ? $" · researching: {ColonyResearch.ActiveName(c.Id)}" : ""), Rich());
+                                (ColonyRules.SeparateResearch && (c.Id == local || MultiplayerSession.IsHost) ? $" · researching: {ColonyResearch.ActiveName(c.Id)}" : "") +
+                                ((c.Id == local || MultiplayerSession.IsHost) && ColonyImmigration.SeparateActive ? $" · {ColonyImmigration.Describe(c.Id)}" : ""), Rich());
             }
 
             if (local == ColonyRegistry.NoColony)
@@ -197,8 +201,9 @@ namespace ONI_Together.Colonies
             else
             {
                 GUILayout.Space(4);
-                GUILayout.Label((ColonyRules.SeparateResearch ? "Research: your own tree." : "Research: shared tree.") +
-                                " The Printing Pod timer is shared; prints arrive at the pod you accept them on.");
+                GUILayout.Label((ColonyRules.SeparateResearch ? "Research: your own tree. " : "Research: shared tree. ") +
+                                (ColonyRules.SeparatePrintingPod ? "Printing Pod: your own timer and choices. " : "Printing Pod: shared timer (first to accept gets it). ") +
+                                (ColonyRules.SeparateSchedules ? "Schedules: your own." : "Schedules: shared."));
             }
             Footer();
         }

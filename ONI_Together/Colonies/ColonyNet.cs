@@ -34,6 +34,16 @@ namespace ONI_Together.Colonies
 
         #region Registry
 
+        private static bool _registryDirty;
+        private static float _registryDirtyTimer;
+
+        /// <summary>Host: re-broadcast the registry soon (coalesced) — e.g. schedule owners changed.</summary>
+        public static void MarkRegistryDirty()
+        {
+            if (!IsHost || !InSession) return;
+            _registryDirty = true;
+        }
+
         public static void BroadcastRegistry()
         {
             if (!IsHost || !InSession) return;
@@ -50,6 +60,8 @@ namespace ONI_Together.Colonies
                 PacketSender.SendToPlayer(player, ColonyOwnersPacket.FullSnapshot());
                 if (ColonyResearch.SeparateActive)
                     ColonyResearch.SendProfileNow(ColonyRegistry.GetColonyOfPlayer(player));
+                if (ColonyImmigration.SeparateActive)
+                    ColonyImmigration.SendStateNow(ColonyRegistry.GetColonyOfPlayer(player));
             }
             catch (Exception ex) { Debug.LogWarning($"[ONIT-Colonies] SendRegistryTo failed: {ex.Message}"); }
         }
@@ -82,7 +94,12 @@ namespace ONI_Together.Colonies
         /// <summary>Host, main thread, every frame.</summary>
         public static void Tick()
         {
-            if (!IsHost || !InSession) { _pendingOwners.Clear(); return; }
+            if (!IsHost || !InSession) { _pendingOwners.Clear(); _registryDirty = false; return; }
+            if (_registryDirty)
+            {
+                _registryDirtyTimer += Time.unscaledDeltaTime;
+                if (_registryDirtyTimer > 1f) { _registryDirty = false; _registryDirtyTimer = 0f; BroadcastRegistry(); }
+            }
             // safety net: objects whose NetId didn't exist yet when they were tagged (spawn order) get fixed here
             _snapshotTimer += Time.unscaledDeltaTime;
             if (_snapshotTimer > 30f && ColonyRegistry.Active)
@@ -130,17 +147,19 @@ namespace ONI_Together.Colonies
         public int TerritoryRadius;
         public string ColoniesJson = "[]";
         public string RulesJson = "";
+        public string ScheduleOwnersJson = "";
 
         public static ColonyRegistryPacket FromRegistry() => new ColonyRegistryPacket
         {
             Enabled = ColonyRegistry.Enabled,
             TerritoryRadius = ColonyRegistry.TerritoryRadius,
             ColoniesJson = JsonConvert.SerializeObject(ColonyRegistry.Colonies),
-            RulesJson = JsonConvert.SerializeObject(ColonyRules.Data)
+            RulesJson = JsonConvert.SerializeObject(ColonyRules.Data),
+            ScheduleOwnersJson = JsonConvert.SerializeObject(ColonySchedules.Snapshot())
         };
 
-        public void Serialize(BinaryWriter w) { w.Write(Enabled); w.Write(TerritoryRadius); w.Write(ColoniesJson ?? "[]"); w.Write(RulesJson ?? ""); }
-        public void Deserialize(BinaryReader r) { Enabled = r.ReadBoolean(); TerritoryRadius = r.ReadInt32(); ColoniesJson = r.ReadString(); RulesJson = r.ReadString(); }
+        public void Serialize(BinaryWriter w) { w.Write(Enabled); w.Write(TerritoryRadius); w.Write(ColoniesJson ?? "[]"); w.Write(RulesJson ?? ""); w.Write(ScheduleOwnersJson ?? ""); }
+        public void Deserialize(BinaryReader r) { Enabled = r.ReadBoolean(); TerritoryRadius = r.ReadInt32(); ColoniesJson = r.ReadString(); RulesJson = r.ReadString(); ScheduleOwnersJson = r.ReadString(); }
 
         public void OnDispatched()
         {
@@ -154,6 +173,8 @@ namespace ONI_Together.Colonies
                     if (rules != null) ColonyRules.Data = rules; // client: research is driven by ColonyResearchPacket
                 }
                 ColonyRegistry.ApplyRemote(Enabled, TerritoryRadius, list);
+                if (!string.IsNullOrEmpty(ScheduleOwnersJson))
+                    ColonySchedules.ApplyRemote(JsonConvert.DeserializeObject<List<int>>(ScheduleOwnersJson));
                 Debug.Log($"[ONIT-Colonies] Registry from host: enabled={Enabled} colonies={list.Count} local=#{ColonyRegistry.LocalColonyId} rules: {ColonyRules.Describe()}");
             }
             catch (Exception ex) { Debug.LogWarning($"[ONIT-Colonies] Bad registry packet: {ex.Message}"); }

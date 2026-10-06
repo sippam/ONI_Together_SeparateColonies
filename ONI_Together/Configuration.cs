@@ -73,6 +73,22 @@ namespace ONI_Together
             set => Colonies.SharedDupeManagement = value;
         }
 
+        [Option("Separate Printing Pod", "On: every colony has its own printing timer and its own choices. Off: one shared timer, first player to accept gets the print.", "0) Separate colonies")]
+        [JsonIgnore]
+        public bool ColonySeparatePrintingPod
+        {
+            get => Colonies.SeparatePrintingPod;
+            set => Colonies.SeparatePrintingPod = value;
+        }
+
+        [Option("Separate schedules", "On: every colony has its own schedules and only sees/edits those. Off: all schedules are shared.", "0) Separate colonies")]
+        [JsonIgnore]
+        public bool ColonySeparateSchedules
+        {
+            get => Colonies.SeparateSchedules;
+            set => Colonies.SeparateSchedules = value;
+        }
+
         [Option("Verbose multiplayer log (slower)", "Write every ONI Together info line to Player.log. Off = only warnings (max 10/s). Turn on only when reporting a bug.", "0) Separate colonies")]
         [JsonIgnore]
         public bool ColonyVerboseLogging
@@ -287,6 +303,8 @@ namespace ONI_Together
         [JsonProperty] public bool SeparateResearch { get; set; } = true;
         [JsonProperty] public bool SharedDupeManagement { get; set; } = false;
         [JsonProperty] public bool VerboseLogging { get; set; } = false;
+        [JsonProperty] public bool SeparatePrintingPod { get; set; } = true;
+        [JsonProperty] public bool SeparateSchedules { get; set; } = true;
     }
 
     public class HostSettings

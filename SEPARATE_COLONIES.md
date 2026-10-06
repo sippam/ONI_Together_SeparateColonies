@@ -23,6 +23,8 @@ your buildings/dupes.
 | Separate errands | on | dupes only take their own colony's errands, no fetching from other colonies' storage |
 | Separate research | on | one research tree per colony (host-authoritative, client trees sent by `ColonyResearchPacket`) |
 | Shared dupe priorities | off | Priorities/Consumables/Vitals/Skills screens show & edit every colony's dupes |
+| Separate Printing Pod | on | own printing timer per colony (host ticks foreign timers, `ColonyImmigrationPacket` to the owner), own printable choices, printing/rejecting only affects that colony |
+| Separate schedules | on | schedule owner per index (`ColonySchedules`, host re-broadcasts owners in the registry); each player sees only their schedules; dupes are kept on their colony's schedules; a new colony gets "&lt;name&gt; schedule" |
 
 The host's rules are used for the session (sent to clients, stored in the save). Switching research back to
 shared hard-syncs everyone to the host's tree.
@@ -42,9 +44,9 @@ The game's own simulation still scales with the number of cells (300% = 9x cells
 - UI: other colonies' side screens & action buttons hidden; Jobs/Consumables/Vitals/Skills list only your dupes
 - Printing Pod: a client's print is delivered at the client's own pod
 
-## Shared for now (planned)
-- The Printing Pod timer (one timer, whoever accepts first)
-- Schedules, trading between colonies
+## Not yet
+- Trading between colonies, colony takeover requests
+- Research / Printing Pod separation only applies while hosting (offline play of the save uses the host's tree/timer)
 
 ## Implementation notes
 - `ONI_Together/Colonies/*` — registry, context/guards, save data, founding, patches, panel, packets

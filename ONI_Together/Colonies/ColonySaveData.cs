@@ -30,6 +30,7 @@ namespace ONI_Together.Colonies
             public List<int> OwnedIds = new List<int>();
             public List<int> OwnedColonies = new List<int>();
             public ColonyRulesData Rules;
+            public List<int> ScheduleOwners;
         }
 
         public override void OnPrefabInit()
@@ -39,6 +40,7 @@ namespace ONI_Together.Colonies
             // A new SaveGame object = a new game/load. Forget the previous game's colonies;
             // OnDeserialized (if this is a loaded save) fills them back in.
             ColonyRegistry.Reset();
+            ColonySchedules.Reset();
         }
 
         public override void OnCleanUp()
@@ -58,6 +60,7 @@ namespace ONI_Together.Colonies
                     TerritoryRadius = ColonyRegistry.TerritoryRadius,
                     Colonies = new List<ColonyInfo>(ColonyRegistry.Colonies),
                     Rules = ColonyRules.Data,
+                    ScheduleOwners = ColonySchedules.Snapshot(),
                 };
                 foreach (var kv in ColonyRegistry.SnapshotOwnership(pruneDead: true))
                 {
@@ -85,6 +88,7 @@ namespace ONI_Together.Colonies
                     owned[p.OwnedIds[i]] = p.OwnedColonies[i];
                 ColonyRegistry.LoadFromSave(p.Enabled, p.Colonies, owned, p.TerritoryRadius);
                 if (p.Rules != null) ColonyRules.Data = p.Rules;
+                ColonySchedules.LoadFromSave(p.ScheduleOwners);
                 Debug.Log($"[ONIT-Colonies] Loaded {p.Colonies.Count} colonies, {owned.Count} owned objects (enabled={p.Enabled})");
             }
             catch (Exception ex)

@@ -22,6 +22,19 @@ namespace ONI_Together.Colonies
 
         /// <summary>Per-colony research tree (only used when ColonyRules.SeparateResearch). Host-authoritative.</summary>
         public ResearchProfile Research = new ResearchProfile();
+
+        /// <summary>Per-colony Printing Pod timer (only used when ColonyRules.SeparatePrintingPod). Host-authoritative.</summary>
+        public ImmigrationProfile Immigration = new ImmigrationProfile();
+    }
+
+    /// <summary>Copy of Immigration's timer fields.</summary>
+    [Serializable]
+    public class ImmigrationProfile
+    {
+        public float TimeBeforeSpawn = float.PositiveInfinity;
+        public bool ImmigrantAvailable;
+        public int SpawnIdx;
+        public bool Initialized;
     }
 
     /// <summary>Copy of a research tree state (mirrors Research / TechInstance save data).</summary>
@@ -52,5 +65,9 @@ namespace ONI_Together.Colonies
         public bool SeparateResearch = true;
         /// <summary>Jobs/priorities, consumables, vitals and skills screens show and edit every colony's dupes.</summary>
         public bool SharedDupeManagement = false;
+        /// <summary>Each colony has its own Printing Pod timer and its own printable choices.</summary>
+        public bool SeparatePrintingPod = true;
+        /// <summary>Each colony has its own schedules; dupes can only be put on their colony's schedules.</summary>
+        public bool SeparateSchedules = true;
     }
 }

@@ -88,6 +88,67 @@ namespace ONI_Together.Colonies
         }
 
         // =====================================================================
+        // Schedules (ColonyRules.SeparateSchedules)
+        // =====================================================================
+
+        /// <summary>Schedule screen only shows your own (and unowned) schedules.</summary>
+        [HarmonyPatch(typeof(ScheduleScreen), "AddScheduleEntry")]
+        public static class ScheduleScreen_AddScheduleEntry
+        {
+            public static bool Prefix(Schedule schedule) => ColonySchedules.LocalCanEdit(schedule);
+        }
+
+        /// <summary>A dupe can't be put on another colony's schedule — redirect to its own colony's schedule.</summary>
+        [HarmonyPatch(typeof(Schedule), nameof(Schedule.Assign))]
+        public static class Schedule_Assign
+        {
+            public static bool Prefix(Schedule __instance, Schedulable schedulable)
+            {
+                if (!ColonySchedules.SeparateActive || schedulable == null) return true;
+                int scheduleOwner = ColonySchedules.GetOwner(__instance);
+                if (scheduleOwner == ColonyRegistry.NoColony) return true;
+                int dupeOwner = ColonyRegistry.GetOwner(schedulable.gameObject);
+                if (dupeOwner == ColonyRegistry.NoColony || dupeOwner == scheduleOwner) return true;
+                var target = ColonySchedules.EnsureColonySchedule(dupeOwner);
+                if (target == null || target == __instance) return true;
+                target.Assign(schedulable);
+                return false;
+            }
+        }
+
+        [HarmonyPatch(typeof(ScheduleScreen), "OnAddScheduleClick")]
+        public static class ScheduleScreen_OnAddScheduleClick
+        {
+            public static void Prefix() => ColonySchedules.LocalUiCreating = true;
+            public static Exception Finalizer(Exception __exception) { ColonySchedules.LocalUiCreating = false; return __exception; }
+        }
+
+        [HarmonyPatch(typeof(ScheduleScreenEntry), "DuplicateSchedule")]
+        public static class ScheduleScreenEntry_DuplicateSchedule
+        {
+            public static void Prefix() => ColonySchedules.LocalUiCreating = true;
+            public static Exception Finalizer(Exception __exception) { ColonySchedules.LocalUiCreating = false; return __exception; }
+        }
+
+        [HarmonyPatch(typeof(ScheduleManager), nameof(ScheduleManager.AddSchedule))]
+        public static class ScheduleManager_AddSchedule
+        {
+            public static void Postfix(Schedule __result) => ColonySchedules.OnScheduleAdded(__result);
+        }
+
+        [HarmonyPatch(typeof(ScheduleManager), nameof(ScheduleManager.DuplicateSchedule))]
+        public static class ScheduleManager_DuplicateSchedule
+        {
+            public static void Postfix(Schedule __result) => ColonySchedules.OnScheduleAdded(__result);
+        }
+
+        [HarmonyPatch(typeof(ScheduleManager), nameof(ScheduleManager.DeleteSchedule))]
+        public static class ScheduleManager_DeleteSchedule
+        {
+            public static void Prefix(Schedule schedule) => ColonySchedules.OnScheduleDeleting(schedule);
+        }
+
+        // =====================================================================
         // Remaining tools
         // =====================================================================
 

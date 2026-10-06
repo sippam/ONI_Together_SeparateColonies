@@ -606,6 +606,39 @@ namespace ONI_Together.Colonies
             return null;
         }
 
+        // ---- per-colony Printing Pod timers (ColonyRules.SeparatePrintingPod) ----
+
+        [HarmonyPatch(typeof(Immigration), nameof(Immigration.Sim200ms))]
+        public static class Immigration_Sim200ms
+        {
+            public static void Postfix(float dt) => ColonyImmigration.TickForeign(dt);
+        }
+
+        /// <summary>The local timer only runs while the LOCAL colony's pod is operational (vanilla: any pod).</summary>
+        [HarmonyPatch(typeof(Immigration), "IsHalted")]
+        public static class Immigration_IsHalted
+        {
+            public static bool Prefix(ref bool __result)
+            {
+                if (!ColonyImmigration.SeparateActive || ColonyImmigration.HolderColony <= 0) return true;
+                __result = ColonyImmigration.IsHalted(ColonyImmigration.HolderColony);
+                return false;
+            }
+        }
+
+        /// <summary>Printing/rejecting at another colony's pod ends THAT colony's timer.</summary>
+        [HarmonyPatch(typeof(Immigration), nameof(Immigration.EndImmigration))]
+        public static class Immigration_EndImmigration
+        {
+            public static bool Prefix(ref int __result)
+            {
+                if (!ColonyImmigration.SeparateActive || !ColonyContext.IsSet) return true;
+                if (ColonyContext.Current == ColonyImmigration.HolderColony) return true;
+                __result = ColonyImmigration.EndForeign(ColonyContext.Current);
+                return false;
+            }
+        }
+
         [HarmonyPatch(typeof(Telepad), nameof(Telepad.OnAcceptDelivery))]
         public static class Telepad_OnAcceptDelivery
         {
