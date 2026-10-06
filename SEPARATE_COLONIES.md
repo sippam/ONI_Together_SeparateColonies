@@ -35,6 +35,10 @@ your buildings/dupes.
 The host's rules are used for the session (sent to clients, stored in the save). Switching research back to
 shared hard-syncs everyone to the host's tree.
 
+## v0.8.0 notes
+- Joining players now pick their 3 starting Duplicants with the game's own new-game cards (reroll, interest filter, Standard/Bionic filter, name edit). Press "Found my colony — choose duplicants" in the colony panel, press Embark, then click the map to place the base.
+- Implemented by reusing the Printing Pod screen (ImmigrantScreen) in starter mode; it is restored afterwards. If that screen is unavailable the old IMGUI picker is used.
+
 ## v0.7.0 notes
 - **Background structure sync** (`StructureSync`): host sends a hash per 16x16 block of all buildings, blueprints and plants every 5 s; a client block that still differs after 2.5 s is requested and only that block is fixed (missing/extra/stale buildings and blueprints rebuilt or removed, plants re-sent with ONI Together's PlantLifecyclePacket). Replaces most hard syncs.
 - **Share buildings, machines & food** rule: dupes of any colony may operate/use finished buildings and fetch/eat from any storage; commanding dupes stays separate.

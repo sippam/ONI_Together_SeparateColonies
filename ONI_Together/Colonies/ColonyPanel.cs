@@ -37,6 +37,16 @@ namespace ONI_Together.Colonies
         private readonly MinionStartingStats[] _starters = new MinionStartingStats[ColonyFounder.StartingDupes];
         private readonly int[] _starterModel = new int[ColonyFounder.StartingDupes]; // 0 any, 1 standard, 2 bionic
         private bool _showStarters = true;
+        private bool _startersChosen;
+
+        private void OnStartersChosen(List<MinionStartingStats> picks)
+        {
+            for (int i = 0; i < _starters.Length; i++) _starters[i] = i < picks.Count ? picks[i] : null;
+            _startersChosen = true;
+            _placing = true;
+            _visible = true;
+            _status = "Now click where your Printing Pod should go (Esc / right-click cancels)";
+        }
 
         private void Awake() => ColonyMessages.OnMessage += OnMessage;
         private void OnDestroy() => ColonyMessages.OnMessage -= OnMessage;
@@ -57,6 +67,7 @@ namespace ONI_Together.Colonies
                 _seenGame = global::Game.Instance;
                 _autoOpened = false;
                 _renameText = null;
+                _startersChosen = false;
                 for (int i = 0; i < _starters.Length; i++) _starters[i] = null; // fresh picks per world
             }
             if (TogglePressed) _visible = !_visible;
@@ -213,9 +224,24 @@ namespace ONI_Together.Colonies
                 GUILayout.Label("Name", GUILayout.Width(45));
                 _colonyName = GUILayout.TextField(_colonyName);
                 GUILayout.EndHorizontal();
-                DrawStarterPicker();
-                if (GUILayout.Button(_placing ? "Placing... (click the map)" : "Found my colony — pick a spot"))
-                    _placing = !_placing;
+                if (StarterPicker.Available)
+                {
+                    // same duplicant cards as the host's new-game screen; Embark -> pick the spot
+                    if (GUILayout.Button(_placing ? "Placing... (click the map)" : "Found my colony — choose duplicants"))
+                    {
+                        if (_placing) _placing = false;
+                        else if (!StarterPicker.Open(OnStartersChosen)) _placing = true;
+                    }
+                    if (_startersChosen)
+                        GUILayout.Label("Duplicants chosen: " + string.Join(", ", _starters.Where(x => x != null).Select(x => x.Name)) + " — click the map to place your base.");
+                    _showStarters = false;
+                }
+                else
+                {
+                    DrawStarterPicker();
+                    if (GUILayout.Button(_placing ? "Placing... (click the map)" : "Found my colony — pick a spot"))
+                        _placing = !_placing;
+                }
                 GUILayout.Label($"Must be at least {(ColonyRules.TerritoryProtection ? System.Math.Max(10, ColonyRegistry.TerritoryRadius * 2 + 4) : 10)} cells from other colonies. " +
                                 (ColonyWorldTools.GetStartTemplate() != null ? "The area is cleared and you get the same starting room as the host." : "Needs a floor with a free 4x4 area."));
             }
