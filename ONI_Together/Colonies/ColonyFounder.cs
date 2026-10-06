@@ -67,7 +67,10 @@ namespace ONI_Together.Colonies
         #region Client: request
 
         /// <summary>Local player asks to found a colony at `cell` (UI entry point).</summary>
-        public static bool RequestFound(int cell, string colonyName, out string reason)
+        public static bool RequestFound(int cell, string colonyName, out string reason) => RequestFound(cell, colonyName, null, out reason);
+
+        /// <summary>Local player asks to found a colony at `cell` with the starting dupes they picked (null = random).</summary>
+        public static bool RequestFound(int cell, string colonyName, List<MinionStartingStats> starters, out string reason)
         {
             reason = null;
             if (!ColonyRegistry.Enabled) { reason = "Separate colonies mode is off"; return false; }
@@ -76,9 +79,17 @@ namespace ONI_Together.Colonies
 
             string name = string.IsNullOrEmpty(colonyName) ? $"{LocalPlayerName()}'s colony" : colonyName;
             if (ColonyNet.IsHost || !ColonyNet.InSession)
-                HostHandleRequest(ColonyRegistry.LocalPlayerId, cell, name, LocalPlayerName());
+            {
+                HostHandleRequest(ColonyRegistry.LocalPlayerId, cell, name, LocalPlayerName(), starters);
+            }
             else
-                PacketSender.SendToHost(new ColonyFoundRequestPacket { HomeCell = cell, ColonyName = name, OwnerName = LocalPlayerName() });
+            {
+                var pkt = new ColonyFoundRequestPacket { HomeCell = cell, ColonyName = name, OwnerName = LocalPlayerName() };
+                if (starters != null)
+                    foreach (var s in starters)
+                        if (s != null) pkt.Starters.Add(ONI_Together.Networking.Packets.Social.ImmigrantOptionEntry.FromGameDeliverable(s));
+                PacketSender.SendToHost(pkt);
+            }
             return true;
         }
 
@@ -117,7 +128,7 @@ namespace ONI_Together.Colonies
 
         #region Host: authoritative handling
 
-        public static void HostHandleRequest(ulong requester, int homeCell, string colonyName, string ownerName)
+        public static void HostHandleRequest(ulong requester, int homeCell, string colonyName, string ownerName, List<MinionStartingStats> starters = null)
         {
             if (ColonyNet.InSession && !ColonyNet.IsHost) return;
             if (requester == 0) { Debug.LogWarning("[ONIT-Colonies] Found request without sender ignored"); return; }
@@ -138,7 +149,7 @@ namespace ONI_Together.Colonies
             ColonyImmigration.InitFresh(info.Immigration);
             ColonyRegistry.AddColony(info);
             using (ColonyContext.Enter(info.Id))
-                SpawnBase(info);
+                SpawnBase(info, starters);
             ColonyNet.BroadcastRegistry();
             ColonyNet.SendMessageTo(requester, $"Colony '{info.Name}' founded — syncing the world...");
             // Clients don't simulate the new pod/dupes on their own; give everyone the host's exact world.
@@ -179,7 +190,7 @@ namespace ONI_Together.Colonies
             return (x - cx) * (x - cx) + (y - cy) * (y - cy) <= radius * radius;
         }
 
-        private static void SpawnBase(ColonyInfo info)
+        private static void SpawnBase(ColonyInfo info, List<MinionStartingStats> starters)
         {
             var def = Assets.GetBuildingDef(HeadquartersId);
             if (def == null)
@@ -200,7 +211,10 @@ namespace ONI_Together.Colonies
             {
                 try
                 {
-                    var stats = new MinionStartingStats(is_starter_minion: true);
+                    // the player's picks first (max StartingDupes), random starters for any missing slot
+                    var stats = (starters != null && i < starters.Count && starters[i] != null)
+                        ? starters[i]
+                        : new MinionStartingStats(is_starter_minion: true);
                     int cell = Grid.XYToCell(x + (i % 4) - 1, y);
                     if (!Grid.IsValidCell(cell)) cell = info.HomeCell;
                     var go = SpawnMinion(stats, cell);

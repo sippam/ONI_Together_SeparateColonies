@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using ONI_Together.Networking;
 using UnityEngine;
@@ -21,7 +22,7 @@ namespace ONI_Together.Colonies
         private bool _autoOpened;
         private bool _showTerritory = true;
         private bool _showHoverOwner = true;
-        private Rect _window = new Rect(20, 120, 420, 600);
+        private Rect _window = new Rect(20, 100, 460, 680);
         private Vector2 _scroll;
 
         // placement mode
@@ -30,6 +31,11 @@ namespace ONI_Together.Colonies
         private int _hoverCell = -1;
         private string _colonyName = "";
         private string _status = "";
+
+        // starting dupe picker (like the new-game "choose your duplicants" screen)
+        private readonly MinionStartingStats[] _starters = new MinionStartingStats[ColonyFounder.StartingDupes];
+        private readonly int[] _starterModel = new int[ColonyFounder.StartingDupes]; // 0 any, 1 standard, 2 bionic
+        private bool _showStarters = true;
 
         private void Awake() => ColonyMessages.OnMessage += OnMessage;
         private void OnDestroy() => ColonyMessages.OnMessage -= OnMessage;
@@ -45,7 +51,12 @@ namespace ONI_Together.Colonies
         private void Update()
         {
             if (!InGame) { _placing = false; _autoOpened = false; return; }
-            if (global::Game.Instance != _seenGame) { _seenGame = global::Game.Instance; _autoOpened = false; }
+            if (global::Game.Instance != _seenGame)
+            {
+                _seenGame = global::Game.Instance;
+                _autoOpened = false;
+                for (int i = 0; i < _starters.Length; i++) _starters[i] = null; // fresh picks per world
+            }
             if (TogglePressed) _visible = !_visible;
 
             // auto-open once per world for a player who still has to found a colony
@@ -75,7 +86,7 @@ namespace ONI_Together.Colonies
             bool overWindow = _visible && _window.Contains(mouse);
             if (Input.GetMouseButtonDown(0) && !overWindow)
             {
-                if (ColonyFounder.RequestFound(_hoverCell, _colonyName, out string reason))
+                if (ColonyFounder.RequestFound(_hoverCell, _colonyName, CurrentStarters(), out string reason))
                 {
                     _status = MultiplayerSession.IsHost ? "Founding..." : "Request sent — waiting for host...";
                     _placing = false;
@@ -194,6 +205,7 @@ namespace ONI_Together.Colonies
                 GUILayout.Label("Name", GUILayout.Width(45));
                 _colonyName = GUILayout.TextField(_colonyName);
                 GUILayout.EndHorizontal();
+                DrawStarterPicker();
                 if (GUILayout.Button(_placing ? "Placing... (click the map)" : "Found my colony — pick a spot"))
                     _placing = !_placing;
                 GUILayout.Label($"Must be at least {(ColonyRules.TerritoryProtection ? System.Math.Max(10, ColonyRegistry.TerritoryRadius * 2 + 4) : 10)} cells from other colonies, on a floor with a free 4x4 area.");
@@ -207,6 +219,98 @@ namespace ONI_Together.Colonies
             }
             Footer();
         }
+
+        #region Starting dupe picker
+
+        private static bool BionicAvailable
+        {
+            get { try { return global::Game.IsDlcActiveForCurrentSave("DLC3_ID"); } catch { return false; } }
+        }
+
+        private static readonly string[] ModelNames = { "Any", "Standard", "Bionic" };
+
+        private MinionStartingStats Roll(int slot)
+        {
+            try
+            {
+                if (BionicAvailable && _starterModel[slot] == 1) return new MinionStartingStats(GameTags.Minions.Models.Standard, is_starter_minion: true);
+                if (BionicAvailable && _starterModel[slot] == 2) return new MinionStartingStats(GameTags.Minions.Models.Bionic, is_starter_minion: true);
+                return new MinionStartingStats(is_starter_minion: true);
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"[ONIT-Colonies] rolling starter failed: {ex.Message}");
+                return null;
+            }
+        }
+
+        private List<MinionStartingStats> CurrentStarters()
+        {
+            for (int i = 0; i < _starters.Length; i++) if (_starters[i] == null) _starters[i] = Roll(i);
+            return _starters.Where(x => x != null).ToList();
+        }
+
+        private void DrawStarterPicker()
+        {
+            GUILayout.Space(4);
+            _showStarters = GUILayout.Toggle(_showStarters, " <b>Choose your 3 starting duplicants</b>", RichToggle());
+            if (!_showStarters) return;
+            for (int i = 0; i < _starters.Length; i++)
+            {
+                if (_starters[i] == null) _starters[i] = Roll(i);
+                var st = _starters[i];
+                GUILayout.BeginVertical(GUI.skin.box);
+                GUILayout.BeginHorizontal();
+                GUILayout.Label($"<b>{i + 1}. {st?.Name ?? "?"}</b>" + (st?.personality != null && st.personality.model == GameTags.Minions.Models.Bionic ? " (Bionic)" : ""), Rich());
+                if (BionicAvailable && GUILayout.Button(ModelNames[_starterModel[i]], GUILayout.Width(70)))
+                {
+                    _starterModel[i] = (_starterModel[i] + 1) % 3;
+                    _starters[i] = Roll(i);
+                }
+                if (GUILayout.Button("Reroll", GUILayout.Width(60))) _starters[i] = Roll(i);
+                GUILayout.EndHorizontal();
+                if (st != null) GUILayout.Label(DescribeStarter(st), Rich());
+                GUILayout.EndVertical();
+            }
+            if (GUILayout.Button("Reroll all"))
+                for (int i = 0; i < _starters.Length; i++) _starters[i] = Roll(i);
+        }
+
+        private static string DescribeStarter(MinionStartingStats st)
+        {
+            var sb = new System.Text.StringBuilder();
+            try
+            {
+                var interests = st.skillAptitudes.Where(kv => kv.Key != null && kv.Value > 0f).Select(kv => kv.Key.Name).ToList();
+                if (interests.Count > 0) sb.Append("Interests: ").Append(string.Join(", ", interests)).Append('\n');
+
+                var traits = st.Traits.Where(t => t != null && t.ValidStarterTrait).ToList();
+                if (traits.Count > 0)
+                    sb.Append("Traits: ").Append(string.Join(", ", traits.Select(t => t.PositiveTrait ? $"<color=#7CFC00>{t.Name}</color>" : $"<color=#FF8C69>{t.Name}</color>"))).Append('\n');
+
+                var attrs = st.StartingLevels.Where(kv => kv.Value != 0).OrderByDescending(kv => kv.Value).Take(6)
+                    .Select(kv => $"{Db.Get().Attributes.TryGet(kv.Key)?.Name ?? kv.Key} {kv.Value:+#;-#;0}").ToList();
+                if (attrs.Count > 0) sb.Append("Attributes: ").Append(string.Join(", ", attrs)).Append('\n');
+
+                if (st.stressTrait != null) sb.Append("Stress: ").Append(st.stressTrait.Name);
+                if (st.joyTrait != null) sb.Append(" · Overjoyed: ").Append(st.joyTrait.Name);
+            }
+            catch (System.Exception ex) { sb.Append($"(details unavailable: {ex.Message})"); }
+            return STRINGS_Strip(sb.ToString());
+        }
+
+        /// <summary>Game strings carry &lt;link&gt; tags IMGUI can't render.</summary>
+        private static string STRINGS_Strip(string s) =>
+            System.Text.RegularExpressions.Regex.Replace(s ?? "", "</?link[^>]*>|</?style[^>]*>", "");
+
+        private static GUIStyle _richToggle;
+        private static GUIStyle RichToggle()
+        {
+            if (_richToggle == null) _richToggle = new GUIStyle(GUI.skin.toggle) { richText = true };
+            return _richToggle;
+        }
+
+        #endregion
 
         /// <summary>Host: clickable toggle. Clients: read-only label.</summary>
         private static bool RuleToggle(bool value, string label)

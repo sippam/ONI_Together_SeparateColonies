@@ -199,14 +199,34 @@ namespace ONI_Together.Colonies
         public int HomeCell;
         public string ColonyName = "";
         public string OwnerName = "";
+        /// <summary>Starting dupes the player picked (same encoding as ONI Together's printing pod options).</summary>
+        public List<ONI_Together.Networking.Packets.Social.ImmigrantOptionEntry> Starters = new List<ONI_Together.Networking.Packets.Social.ImmigrantOptionEntry>();
 
-        public void Serialize(BinaryWriter w) { w.Write(HomeCell); w.Write(ColonyName ?? ""); w.Write(OwnerName ?? ""); }
-        public void Deserialize(BinaryReader r) { HomeCell = r.ReadInt32(); ColonyName = r.ReadString(); OwnerName = r.ReadString(); }
+        public void Serialize(BinaryWriter w)
+        {
+            w.Write(HomeCell); w.Write(ColonyName ?? ""); w.Write(OwnerName ?? "");
+            w.Write(Starters.Count);
+            foreach (var s in Starters) s.Serialize(w);
+        }
+
+        public void Deserialize(BinaryReader r)
+        {
+            HomeCell = r.ReadInt32(); ColonyName = r.ReadString(); OwnerName = r.ReadString();
+            int n = r.ReadInt32();
+            Starters = new List<ONI_Together.Networking.Packets.Social.ImmigrantOptionEntry>(n);
+            for (int i = 0; i < n; i++) Starters.Add(ONI_Together.Networking.Packets.Social.ImmigrantOptionEntry.Deserialize(r));
+        }
 
         public void OnDispatched()
         {
             if (!MultiplayerSession.IsHost) return;
-            ColonyFounder.HostHandleRequest(ColonyNet.CurrentSender, HomeCell, ColonyName, OwnerName);
+            var stats = new List<MinionStartingStats>();
+            foreach (var e in Starters)
+            {
+                try { if (e.IsDuplicant && e.ToGameDeliverable() is MinionStartingStats s) stats.Add(s); }
+                catch (Exception ex) { Debug.LogWarning($"[ONIT-Colonies] bad starter dupe: {ex.Message}"); }
+            }
+            ColonyFounder.HostHandleRequest(ColonyNet.CurrentSender, HomeCell, ColonyName, OwnerName, stats);
         }
     }
 

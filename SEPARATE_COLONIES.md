@@ -13,7 +13,9 @@ your buildings/dupes.
 2. Host starts/loads a game and hosts as usual. The host's existing base becomes colony #1.
 3. A joining player starts as **spectator** (yellow banner). Open the panel (**Ctrl+Shift+C** or the *Colonies*
    button) → *Found my colony — pick a spot* → click a floor spot ≥ 2×radius+4 cells from other colonies.
-4. The host spawns the new base and hard-syncs the world (everyone reloads once).
+   Before placing, pick your 3 starting duplicants in the panel (interests, traits, attributes; *Reroll* per slot,
+   Standard/Bionic filter when Bionic Booster Pack is active). They are sent to the host with the request.
+4. The host spawns the new base with exactly those dupes and hard-syncs the world (everyone reloads once).
 
 ## Rules (v0.2.0) — Mod options "0) Separate colonies" or the in-game panel (host)
 | Rule | Default | Effect |
