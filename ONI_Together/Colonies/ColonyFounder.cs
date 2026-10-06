@@ -275,6 +275,7 @@ namespace ONI_Together.Colonies
                     var stats = (starters != null && i < starters.Count && starters[i] != null)
                         ? starters[i]
                         : new MinionStartingStats(is_starter_minion: true);
+                    stats.Name = ColonyRules.PrefixedName(info.Id, stats.Name);
                     int cell = Grid.XYToCell(x + (i % 4) - 1, y);
                     if (!Grid.IsValidCell(cell)) cell = info.HomeCell;
                     var go = SpawnMinion(stats, cell);
@@ -344,6 +345,28 @@ namespace ONI_Together.Colonies
                 HomeCell = home,
                 ColorR = col.r, ColorG = col.g, ColorB = col.b
             };
+        }
+
+        /// <summary>Owner renames their colony (host-authoritative).</summary>
+        public static void RequestRename(string name)
+        {
+            name = (name ?? "").Trim();
+            if (name.Length == 0) return;
+            if (ColonyNet.IsHost || !ColonyNet.InSession) HostRename(ColonyRegistry.LocalPlayerId, name);
+            else PacketSender.SendToHost(new ColonyRenamePacket { Name = name });
+        }
+
+        public static void HostRename(ulong player, string name)
+        {
+            name = (name ?? "").Trim();
+            if (name.Length > 24) name = name.Substring(0, 24);
+            if (name.Length == 0) return;
+            var c = ColonyRegistry.Get(ColonyRegistry.GetColonyOfPlayer(player));
+            if (c == null) return;
+            c.Name = name;
+            ColonyRegistry.RaiseChanged();
+            ColonyNet.BroadcastRegistry();
+            ColonyNet.SendMessageTo(player, $"Colony renamed to '{name}'");
         }
 
         public static string LocalPlayerName()

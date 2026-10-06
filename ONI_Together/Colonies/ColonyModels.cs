@@ -73,5 +73,9 @@ namespace ONI_Together.Colonies
         public bool HelpOtherColonies = true;
         /// <summary>The cancel tool only removes your own colony's orders (dig/mop/build/deconstruct markers), even when building protection is off.</summary>
         public bool CancelOnlyOwnOrders = true;
+        /// <summary>Buildings, machines, storage and food are shared between colonies; only commanding dupes stays separate.</summary>
+        public bool SharedResources = false;
+        /// <summary>New starting / printed dupes get the colony name as a prefix.</summary>
+        public bool PrefixDupeNames = true;
     }
 }

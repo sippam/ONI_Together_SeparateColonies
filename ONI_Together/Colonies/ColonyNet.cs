@@ -327,6 +327,19 @@ namespace ONI_Together.Colonies
         }
     }
 
+    /// <summary>Client -> host: rename my colony (used as the dupe name prefix).</summary>
+    public class ColonyRenamePacket : IPacket
+    {
+        public string Name = "";
+        public void Serialize(BinaryWriter w) { w.Write(Name ?? ""); }
+        public void Deserialize(BinaryReader r) { Name = r.ReadString(); }
+        public void OnDispatched()
+        {
+            if (!MultiplayerSession.IsHost) return;
+            ColonyFounder.HostRename(ColonyNet.CurrentSender, Name);
+        }
+    }
+
     /// <summary>Host -> one client: short feedback text (e.g. why founding was refused).</summary>
     public class ColonyMessagePacket : IPacket
     {

@@ -31,6 +31,7 @@ namespace ONI_Together.Colonies
         private int _hoverCell = -1;
         private string _colonyName = "";
         private string _status = "";
+        private string _renameText;
 
         // starting dupe picker (like the new-game "choose your duplicants" screen)
         private readonly MinionStartingStats[] _starters = new MinionStartingStats[ColonyFounder.StartingDupes];
@@ -55,6 +56,7 @@ namespace ONI_Together.Colonies
             {
                 _seenGame = global::Game.Instance;
                 _autoOpened = false;
+                _renameText = null;
                 for (int i = 0; i < _starters.Length; i++) _starters[i] = null; // fresh picks per world
             }
             if (TogglePressed) _visible = !_visible;
@@ -173,12 +175,15 @@ namespace ONI_Together.Colonies
                 SeparateSchedules = RuleToggle(cur.SeparateSchedules, "Separate schedules"),
                 HelpOtherColonies = RuleToggle(cur.HelpOtherColonies, "Dupes help other colonies when they have nothing to do"),
                 CancelOnlyOwnOrders = RuleToggle(cur.CancelOnlyOwnOrders, "Cancel tool only removes your own orders"),
+                SharedResources = RuleToggle(cur.SharedResources, "Share buildings, machines & food (only dupe control separate)"),
+                PrefixDupeNames = RuleToggle(cur.PrefixDupeNames, "Colony name as prefix for new dupes"),
             };
             bool changed = next.TerritoryProtection != cur.TerritoryProtection || next.BuildingProtection != cur.BuildingProtection
                            || next.SeparateErrands != cur.SeparateErrands || next.SeparateResearch != cur.SeparateResearch
                            || next.SharedDupeManagement != cur.SharedDupeManagement
                            || next.SeparatePrintingPod != cur.SeparatePrintingPod || next.SeparateSchedules != cur.SeparateSchedules
-                           || next.HelpOtherColonies != cur.HelpOtherColonies || next.CancelOnlyOwnOrders != cur.CancelOnlyOwnOrders;
+                           || next.HelpOtherColonies != cur.HelpOtherColonies || next.CancelOnlyOwnOrders != cur.CancelOnlyOwnOrders
+                           || next.SharedResources != cur.SharedResources || next.PrefixDupeNames != cur.PrefixDupeNames;
             if (changed && MultiplayerSession.IsHost)
             {
                 ColonyRules.Apply(next);
@@ -217,6 +222,13 @@ namespace ONI_Together.Colonies
             else
             {
                 GUILayout.Space(4);
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Rename", GUILayout.Width(55));
+                if (_renameText == null) _renameText = ColonyRegistry.Get(local)?.Name ?? "";
+                _renameText = GUILayout.TextField(_renameText, 24);
+                if (GUILayout.Button("OK", GUILayout.Width(40))) ColonyFounder.RequestRename(_renameText);
+                GUILayout.EndHorizontal();
+                if (ColonyRules.PrefixDupeNames) GUILayout.Label("New dupes get this name as a prefix.");
                 GUILayout.Label((ColonyRules.SeparateResearch ? "Research: your own tree. " : "Research: shared tree. ") +
                                 (ColonyRules.SeparatePrintingPod ? "Printing Pod: your own timer and choices. " : "Printing Pod: shared timer (first to accept gets it). ") +
                                 (ColonyRules.SeparateSchedules ? "Schedules: your own." : "Schedules: shared."));

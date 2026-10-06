@@ -18,7 +18,10 @@ namespace ONI_Together.Colonies
     {
         private static bool On => ColonyRegistry.Active;
         /// <summary>Errand/fetch separation (ColonyRules.SeparateErrands).</summary>
-        private static bool Errands => ColonyRegistry.Active && ColonyRules.SeparateErrands;
+        private static bool Errands => ColonyRegistry.Active && ColonyRules.SeparateErrands && !ColonyRules.SharedResources;
+
+        /// <summary>Shared resources: finished buildings (machines, storage, beds, tables...) belong to everyone's work.</summary>
+        private static bool IsSharedTarget(GameObject go) => ColonyRules.SharedResources && go != null && go.GetComponent<BuildingComplete>() != null;
 
         // =====================================================================
         // Save data
@@ -64,6 +67,7 @@ namespace ONI_Together.Colonies
                 if (chore == null) return true;
                 GameObject target = chore.gameObject;
                 if (target == null) return true;
+                if (IsSharedTarget(target)) return true;
                 return ColonyGuard.CanWork(worker, ColonyRegistry.GetOwner(target));
             }
         };
@@ -112,7 +116,7 @@ namespace ONI_Together.Colonies
                     if (chore != null && chore.choreType == idleType) { _idle.Add(ctx); continue; }
                     var go = chore?.gameObject;
                     int owner = go != null ? ColonyRegistry.GetOwner(go) : ColonyRegistry.NoColony;
-                    if (owner != ColonyRegistry.NoColony && owner != worker) { _foreign.Add(ctx); anyForeign = true; }
+                    if (owner != ColonyRegistry.NoColony && owner != worker && !IsSharedTarget(go)) { _foreign.Add(ctx); anyForeign = true; }
                     else _own.Add(ctx);
                 }
                 if (!anyForeign && _idle.Count == 0) return;
@@ -690,6 +694,8 @@ namespace ONI_Together.Colonies
                 if (!On) return;
                 int owner = ColonyRegistry.GetOwner(__instance.gameObject);
                 if (owner == ColonyRegistry.NoColony) return;
+                if (delivery is MinionStartingStats stats && !ONI_Together.Networking.MultiplayerSession.IsClient)
+                    stats.Name = ColonyRules.PrefixedName(owner, stats.Name);
                 ColonyContext.Push(owner);
                 __state = true;
             }

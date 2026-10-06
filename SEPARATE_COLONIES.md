@@ -35,6 +35,11 @@ your buildings/dupes.
 The host's rules are used for the session (sent to clients, stored in the save). Switching research back to
 shared hard-syncs everyone to the host's tree.
 
+## v0.7.0 notes
+- **Background structure sync** (`StructureSync`): host sends a hash per 16x16 block of all buildings, blueprints and plants every 5 s; a client block that still differs after 2.5 s is requested and only that block is fixed (missing/extra/stale buildings and blueprints rebuilt or removed, plants re-sent with ONI Together's PlantLifecyclePacket). Replaces most hard syncs.
+- **Share buildings, machines & food** rule: dupes of any colony may operate/use finished buildings and fetch/eat from any storage; commanding dupes stays separate.
+- **Colony name as dupe prefix** for new starting and printed dupes; owners can rename their colony in the panel.
+
 ## v0.6.0 notes
 - New colonies get the host asteroid's start-base template stamped at the chosen spot (area cleared, Printing Pod + starting room), then the chosen dupes + rations. Needs the game unpaused for a moment (the stamp runs over sim ticks).
 - Relayed tool packets are wrapped in `ColonyActingPacket` (acting colony), so clients tag new markers with the same owner as the host and apply the same guards.

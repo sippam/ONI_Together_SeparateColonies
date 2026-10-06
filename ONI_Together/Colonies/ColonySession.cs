@@ -40,6 +40,7 @@ namespace ONI_Together.Colonies
                 _gameInitDone = false;
                 _sessionInitDone = false;
                 _gameSeenAt = game != null ? Time.realtimeSinceStartup : -1f;
+                StructureSync.Reset();
             }
             bool inSession = MultiplayerSession.InSession;
             if (inSession != _lastInSession)
@@ -72,6 +73,8 @@ namespace ONI_Together.Colonies
                 ColonyNet.Tick();
                 ColonyResearch.Tick();
                 ColonyImmigration.Tick();
+                StructureSync.HostTick();
+                StructureSync.ClientTick();
 
                 // client: keep asking until the host answered (registry may arrive before/after the world)
                 if (MultiplayerSession.IsClient && ColonyRegistry.Enabled == false)

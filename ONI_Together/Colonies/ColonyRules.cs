@@ -20,6 +20,8 @@ namespace ONI_Together.Colonies
         public static bool SeparateSchedules => Data.SeparateSchedules;
         public static bool HelpOtherColonies => Data.HelpOtherColonies;
         public static bool CancelOnlyOwnOrders => Data.CancelOnlyOwnOrders;
+        public static bool SharedResources => Data.SharedResources;
+        public static bool PrefixDupeNames => Data.PrefixDupeNames;
 
         /// <summary>Host: read the rules from the mod options.</summary>
         public static ColonyRulesData FromConfig()
@@ -37,6 +39,8 @@ namespace ONI_Together.Colonies
                 SeparateSchedules = c.SeparateSchedules,
                 HelpOtherColonies = c.HelpOtherColonies,
                 CancelOnlyOwnOrders = c.CancelOnlyOwnOrders,
+                SharedResources = c.SharedResources,
+                PrefixDupeNames = c.PrefixDupeNames,
             };
         }
 
@@ -56,6 +60,8 @@ namespace ONI_Together.Colonies
                 c.SeparateSchedules = Data.SeparateSchedules;
                 c.HelpOtherColonies = Data.HelpOtherColonies;
                 c.CancelOnlyOwnOrders = Data.CancelOnlyOwnOrders;
+                c.SharedResources = Data.SharedResources;
+                c.PrefixDupeNames = Data.PrefixDupeNames;
                 Configuration.Instance.Save();
             }
             catch (Exception ex) { Debug.LogWarning($"[ONIT-Colonies] Saving rules to config failed: {ex.Message}"); }
@@ -78,10 +84,23 @@ namespace ONI_Together.Colonies
             ColonyRegistry.RaiseChanged();
         }
 
+        /// <summary>"Sawadeeja Meep": colony name as a prefix of a dupe name (idempotent).</summary>
+        public static string PrefixedName(int colonyId, string name)
+        {
+            if (!PrefixDupeNames || string.IsNullOrEmpty(name)) return name;
+            var c = ColonyRegistry.Get(colonyId);
+            if (c == null || string.IsNullOrEmpty(c.Name)) return name;
+            string p = c.Name.Trim();
+            if (p.Length > 12) p = p.Substring(0, 12).TrimEnd();
+            if (name.StartsWith(p + " ")) return name;
+            return p + " " + name;
+        }
+
         public static string Describe() =>
             $"territory={(TerritoryProtection ? "on" : "off")} buildings={(BuildingProtection ? "protected" : "open")} " +
             $"errands={(SeparateErrands ? "separate" : "shared")} research={(SeparateResearch ? "separate" : "shared")} " +
             $"dupeManagement={(SharedDupeManagement ? "shared" : "separate")} pod={(SeparatePrintingPod ? "separate" : "shared")} " +
-            $"schedules={(SeparateSchedules ? "separate" : "shared")} help={(HelpOtherColonies ? "when idle" : "never")} cancel={(CancelOnlyOwnOrders ? "own" : "any")}";
+            $"schedules={(SeparateSchedules ? "separate" : "shared")} help={(HelpOtherColonies ? "when idle" : "never")} cancel={(CancelOnlyOwnOrders ? "own" : "any")} " +
+            $"resources={(SharedResources ? "shared" : "separate")} namePrefix={(PrefixDupeNames ? "on" : "off")}";
     }
 }

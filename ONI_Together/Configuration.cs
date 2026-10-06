@@ -122,6 +122,30 @@ namespace ONI_Together
             set => Colonies.WaterGeyserPerColony = value;
         }
 
+        [Option("Background structure sync", "Host: every few seconds compare buildings, blueprints and plants with every client and fix only the blocks that differ (instead of waiting for a hard sync).", "0) Separate colonies")]
+        [JsonIgnore]
+        public bool ColonyBackgroundStructureSync
+        {
+            get => Colonies.BackgroundStructureSync;
+            set => Colonies.BackgroundStructureSync = value;
+        }
+
+        [Option("Share buildings, machines & food", "On: every colony's dupes may use/operate any building and eat/fetch from any storage; only commanding dupes stays separate. Off: each colony keeps its own.", "0) Separate colonies")]
+        [JsonIgnore]
+        public bool ColonySharedResources
+        {
+            get => Colonies.SharedResources;
+            set => Colonies.SharedResources = value;
+        }
+
+        [Option("Colony name in dupe names", "New starting and printed dupes get the colony's name as a prefix (e.g. 'Sawadeeja Meep').", "0) Separate colonies")]
+        [JsonIgnore]
+        public bool ColonyPrefixDupeNames
+        {
+            get => Colonies.PrefixDupeNames;
+            set => Colonies.PrefixDupeNames = value;
+        }
+
         [Option("Verbose multiplayer log (slower)", "Write every ONI Together info line to Player.log. Off = only warnings (max 10/s). Turn on only when reporting a bug.", "0) Separate colonies")]
         [JsonIgnore]
         public bool ColonyVerboseLogging
@@ -342,6 +366,9 @@ namespace ONI_Together
         [JsonProperty] public bool CancelOnlyOwnOrders { get; set; } = true;
         [JsonProperty] public int ExtraWaterGeysers { get; set; } = 2;
         [JsonProperty] public bool WaterGeyserPerColony { get; set; } = true;
+        [JsonProperty] public bool BackgroundStructureSync { get; set; } = true;
+        [JsonProperty] public bool SharedResources { get; set; } = false;
+        [JsonProperty] public bool PrefixDupeNames { get; set; } = true;
     }
 
     public class HostSettings
