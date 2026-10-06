@@ -705,8 +705,7 @@ namespace ONI_Together.Networking.Components
 				x2 = Mathf.Min(Grid.WidthInCells, x2 + margin);
 				y2 = Mathf.Min(Grid.HeightInCells, y2 + margin);
 
-				cellsScanned += (x2 - x1) * (y2 - y1);
-				ScanArea(x1, y1, x2, y2);
+				cellsScanned += ScanAreaCapped(0UL, x1, y1, x2, y2);
 			}
 
 			// Scan Client Viewports
@@ -718,8 +717,7 @@ namespace ONI_Together.Networking.Components
 				int x2 = Mathf.Min(Grid.WidthInCells, rect.xMax + 2);
 				int y2 = Mathf.Min(Grid.HeightInCells, rect.yMax + 2);
 
-				cellsScanned += (x2 - x1) * (y2 - y1);
-				ScanArea(x1, y1, x2, y2);
+				cellsScanned += ScanAreaCapped(kvp.Key, x1, y1, x2, y2);
 			}
 
 			// Scan pinned areas
@@ -778,6 +776,31 @@ namespace ONI_Together.Networking.Components
 			else if (clients > 2) multiplier *= 1.5f;
 
 			return Mathf.Min(multiplier, 6f);
+		}
+
+		// Perf (big asteroids / zoomed-out cameras): a viewport can cover hundreds of thousands of cells.
+		// Scan at most MAX_VIEWPORT_SCAN_CELLS per viewport per tick, rotating through horizontal bands.
+		private const int MAX_VIEWPORT_SCAN_CELLS = 40000;
+		private readonly Dictionary<ulong, int> _viewportBand = new Dictionary<ulong, int>();
+
+		private int ScanAreaCapped(ulong key, int x1, int y1, int x2, int y2)
+		{
+			int w = x2 - x1, h = y2 - y1;
+			if (w <= 0 || h <= 0) return 0;
+			if (w * h <= MAX_VIEWPORT_SCAN_CELLS)
+			{
+				ScanArea(x1, y1, x2, y2);
+				return w * h;
+			}
+			int rowsPerBand = Mathf.Max(1, MAX_VIEWPORT_SCAN_CELLS / w);
+			int bands = Mathf.CeilToInt(h / (float)rowsPerBand);
+			_viewportBand.TryGetValue(key, out int band);
+			band %= Mathf.Max(1, bands);
+			int by1 = y1 + band * rowsPerBand;
+			int by2 = Mathf.Min(y2, by1 + rowsPerBand);
+			_viewportBand[key] = band + 1;
+			ScanArea(x1, by1, x2, by2);
+			return w * (by2 - by1);
 		}
 
 		private void ScanArea(int x1, int y1, int x2, int y2)

@@ -85,7 +85,7 @@ namespace ONI_Together.Colonies
             if (!IsHost || !InSession) { _pendingOwners.Clear(); return; }
             // safety net: objects whose NetId didn't exist yet when they were tagged (spawn order) get fixed here
             _snapshotTimer += Time.unscaledDeltaTime;
-            if (_snapshotTimer > 15f && ColonyRegistry.Active)
+            if (_snapshotTimer > 30f && ColonyRegistry.Active)
             {
                 _snapshotTimer = 0f;
                 try { PacketSender.SendToAllClients(ColonyOwnersPacket.FullSnapshot()); }

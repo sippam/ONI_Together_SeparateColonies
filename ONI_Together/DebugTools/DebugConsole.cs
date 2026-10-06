@@ -41,6 +41,33 @@ namespace ONI_Together.DebugTools
             NonImportant
         }
 
+        /// <summary>
+        /// Perf: every Unity log line is written to Player.log and goes through the game's log handlers.
+        /// On big asteroids ONI Together logged ~40 lines/s. Info lines only reach Player.log when verbose
+        /// logging is on (mod options); warnings/errors are capped at MaxUnityLinesPerSecond.
+        /// The in-game ImGui console still receives everything.
+        /// </summary>
+        public static bool VerboseUnityLog => Configuration.Instance?.Colonies?.VerboseLogging ?? false;
+        private const int MaxUnityLinesPerSecond = 10;
+        private static int _logWindowStart;
+        private static int _logWindowCount, _logDropped;
+
+        private static bool AllowUnityLine()
+        {
+            if (VerboseUnityLog) return true;
+            int now = Environment.TickCount; // thread-safe (logs also come from worker threads)
+            if (unchecked(now - _logWindowStart) >= 1000)
+            {
+                if (_logDropped > 0) Debug.LogWarning($"[ONI_Together] ({_logDropped} log lines suppressed in the last second; enable verbose logging in mod options to see them)");
+                _logWindowStart = now;
+                _logWindowCount = 0;
+                _logDropped = 0;
+            }
+            if (_logWindowCount++ < MaxUnityLinesPerSecond) return true;
+            _logDropped++;
+            return false;
+        }
+
         public static DebugConsole Init()
         {
             using var _ = Profiler.Scope();
@@ -56,7 +83,7 @@ namespace ONI_Together.DebugTools
         {
             using var _ = Profiler.Scope();
 
-            Debug.Log($"[ONI_Together] {message}");
+            if (VerboseUnityLog) Debug.Log($"[ONI_Together] {message}");
             EnsureInstance();
             _instance.AddLog(message, "", LogType.Log);
         }
@@ -65,7 +92,7 @@ namespace ONI_Together.DebugTools
         {
             using var _ = Profiler.Scope();
 
-            Debug.LogWarning($"[ONI_Together] {message}");
+            if (AllowUnityLine()) Debug.LogWarning($"[ONI_Together] {message}");
             EnsureInstance();
             _instance.AddLog(message, "", LogType.Warning);
         }
@@ -77,7 +104,7 @@ namespace ONI_Together.DebugTools
             if (trigger_error_screen)
                 Debug.LogError($"[ONI_Together] {message}");
 			else //put it in the log file but don't trigger the error screen
-				Debug.LogWarning($"-[ERROR] [ONI_Together] {message}");
+				if (AllowUnityLine()) Debug.LogWarning($"-[ERROR] [ONI_Together] {message}");
 
 			EnsureInstance();
             _instance.AddLog(message, "", LogType.Error);
@@ -101,7 +128,7 @@ namespace ONI_Together.DebugTools
         {
             using var _ = Profiler.Scope();
 
-            Debug.Log($"[ONI_Together/Assert] {message}");
+            if (VerboseUnityLog) Debug.Log($"[ONI_Together/Assert] {message}");
             EnsureInstance();
             _instance.AddLog(message, "", LogType.Assert);
         }
@@ -110,7 +137,7 @@ namespace ONI_Together.DebugTools
         {
             using var _ = Profiler.Scope();
 
-            Debug.Log($"[ONI_Together] {message}");
+            if (VerboseUnityLog) Debug.Log($"[ONI_Together] {message}");
             EnsureInstance();
             _instance.AddLog(message, "", LogType.Success);
         }
@@ -119,7 +146,7 @@ namespace ONI_Together.DebugTools
         {
             using var _ = Profiler.Scope();
 
-            Debug.Log($"[ONI_Together] {message}");
+            if (VerboseUnityLog) Debug.Log($"[ONI_Together] {message}");
             EnsureInstance();
             _instance.AddLog(message, "", LogType.NonImportant);
         }

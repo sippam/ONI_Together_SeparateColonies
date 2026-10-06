@@ -27,6 +27,13 @@ your buildings/dupes.
 The host's rules are used for the session (sent to clients, stored in the save). Switching research back to
 shared hard-syncs everyone to the host's tree.
 
+## Performance (v0.3.0)
+- ConduitFlowSyncer walks only cells with a pipe (was: every grid cell every 1.5 s — ~800k dictionary lookups on a 300% asteroid)
+- WorldStateSyncer scans at most 40k cells per viewport per tick (rotating bands) — zoomed-out cameras on big maps no longer scan the whole world each tick
+- ONI Together info logs no longer go to Player.log unless "Verbose multiplayer log" is on; warnings capped at 10/s
+- Ownership safety snapshot every 30 s (was 15 s)
+The game's own simulation still scales with the number of cells (300% = 9x cells); 150–200% is the sweet spot.
+
 ## What is separated (v0.1.0 MVP)
 - Ownership of dupes, buildings, blueprints, dig/mop markers, printed dupes, fabricator products, robots
 - Chores: dupes only take errands of their own colony (or world-owned objects); no fetching from other colonies' storage

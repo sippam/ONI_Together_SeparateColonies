@@ -73,6 +73,7 @@ namespace ONI_Together.Networking.Components
 		// Reusable scratch HashSet so the per-cell visibility check does not
 		// allocate. GetClientsViewingCell clears it for us.
 		private readonly HashSet<ulong> _recipientScratch = new HashSet<ulong>();
+		private readonly List<int> _pipeCellScratch = new List<int>(1024);
 
 		// Throttled stats — log first N then sample, per coding-guidelines.
 		private int _ticksSinceLog;
@@ -161,18 +162,25 @@ namespace ONI_Together.Networking.Components
 			int gasLayer = (int)ObjectLayer.GasConduit;
 			int liquidLayer = (int)ObjectLayer.LiquidConduit;
 
-			for (int cell = 0; cell < Grid.CellCount; cell++)
+			// Perf (big asteroids): walk only the cells that actually hold a pipe instead of every grid cell.
+			// Grid.ObjectLayers[layer] is the cell -> GameObject map behind Grid.Objects[cell, layer].
+			var gasCells = gasFlow != null ? Grid.ObjectLayers[gasLayer] : null;
+			var liquidCells = liquidFlow != null ? Grid.ObjectLayers[liquidLayer] : null;
+			_pipeCellScratch.Clear();
+			if (gasCells != null) foreach (var kv in gasCells) if (kv.Value != null) _pipeCellScratch.Add(kv.Key);
+			if (liquidCells != null) foreach (var kv in liquidCells) if (kv.Value != null && (gasCells == null || !gasCells.ContainsKey(kv.Key))) _pipeCellScratch.Add(kv.Key);
+
+			for (int i = 0; i < _pipeCellScratch.Count; i++)
 			{
+				int cell = _pipeCellScratch[i];
 				if (!Grid.IsValidCell(cell)) continue;
 
-				// Cheap pipe presence check — most cells have no pipe.
-				bool hasGas = gasFlow != null && Grid.Objects[cell, gasLayer] != null;
-				bool hasLiquid = liquidFlow != null && Grid.Objects[cell, liquidLayer] != null;
+				bool hasGas = gasCells != null && gasCells.TryGetValue(cell, out var g) && g != null;
+				bool hasLiquid = liquidCells != null && liquidCells.TryGetValue(cell, out var l) && l != null;
 				if (!hasGas && !hasLiquid) continue;
 				pipeCellsScanned++;
 
-				// Visibility gate (invariant #1) — only allocate scratch use
-				// once per pipe cell, after the Grid.Objects rejection.
+				// Visibility gate (invariant #1)
 				ws.GetClientsViewingCell(cell, _recipientScratch);
 				if (_recipientScratch.Count == 0) continue;
 				pipeCellsVisible++;
@@ -210,9 +218,10 @@ namespace ONI_Together.Networking.Components
 		private static void PrimeShadow(ConduitFlow flow, int objectLayer, int[] shadowEl, float[] shadowMass, float[] shadowTemp)
 		{
 			if (flow == null) return;
-			for (int cell = 0; cell < Grid.CellCount; cell++)
+			foreach (var kv in Grid.ObjectLayers[objectLayer])
 			{
-				if (Grid.Objects[cell, objectLayer] == null) continue;
+				int cell = kv.Key;
+				if (kv.Value == null || cell < 0 || cell >= shadowEl.Length) continue;
 				var c = flow.GetContents(cell);
 				shadowEl[cell] = (int)c.element;
 				shadowMass[cell] = c.mass;

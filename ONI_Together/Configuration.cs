@@ -73,6 +73,14 @@ namespace ONI_Together
             set => Colonies.SharedDupeManagement = value;
         }
 
+        [Option("Verbose multiplayer log (slower)", "Write every ONI Together info line to Player.log. Off = only warnings (max 10/s). Turn on only when reporting a bug.", "0) Separate colonies")]
+        [JsonIgnore]
+        public bool ColonyVerboseLogging
+        {
+            get => Colonies.VerboseLogging;
+            set => Colonies.VerboseLogging = value;
+        }
+
         [Option("Territory radius (cells)", "Other colonies can't build/dig within this distance of a colony's Printing Pod. 0 = off.", "0) Separate colonies")]
         [Limit(0, 64)]
         [JsonIgnore]
@@ -278,6 +286,7 @@ namespace ONI_Together
         [JsonProperty] public bool SeparateErrands { get; set; } = true;
         [JsonProperty] public bool SeparateResearch { get; set; } = true;
         [JsonProperty] public bool SharedDupeManagement { get; set; } = false;
+        [JsonProperty] public bool VerboseLogging { get; set; } = false;
     }
 
     public class HostSettings
