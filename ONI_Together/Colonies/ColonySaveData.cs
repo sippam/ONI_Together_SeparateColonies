@@ -21,6 +21,9 @@ namespace ONI_Together.Colonies
         /// <summary>Extra water geysers were already handled for this world.</summary>
         public static bool ExtraWaterDone;
 
+        /// <summary>Water geysers already placed near the host's base in this save.</summary>
+        public static int HostWaterPlaced;
+
         [Serialize] private string json = "";
 
         [Serializable]
@@ -35,6 +38,7 @@ namespace ONI_Together.Colonies
             public ColonyRulesData Rules;
             public List<int> ScheduleOwners;
             public bool ExtraWaterDone;
+            public int HostWaterPlaced;
         }
 
         public override void OnPrefabInit()
@@ -46,6 +50,7 @@ namespace ONI_Together.Colonies
             ColonyRegistry.Reset();
             ColonySchedules.Reset();
             ExtraWaterDone = false;
+            HostWaterPlaced = 0;
         }
 
         public override void OnCleanUp()
@@ -67,6 +72,7 @@ namespace ONI_Together.Colonies
                     Rules = ColonyRules.Data,
                     ScheduleOwners = ColonySchedules.Snapshot(),
                     ExtraWaterDone = ExtraWaterDone,
+                    HostWaterPlaced = HostWaterPlaced,
                 };
                 foreach (var kv in ColonyRegistry.SnapshotOwnership(pruneDead: true))
                 {
@@ -96,6 +102,7 @@ namespace ONI_Together.Colonies
                 if (p.Rules != null) ColonyRules.Data = p.Rules;
                 ColonySchedules.LoadFromSave(p.ScheduleOwners);
                 ExtraWaterDone = p.ExtraWaterDone;
+                HostWaterPlaced = p.HostWaterPlaced;
                 Debug.Log($"[ONIT-Colonies] Loaded {p.Colonies.Count} colonies, {owned.Count} owned objects (enabled={p.Enabled})");
             }
             catch (Exception ex)

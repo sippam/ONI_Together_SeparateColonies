@@ -29,11 +29,14 @@ your buildings/dupes.
 | Help other colonies when idle | on | with separate errands: own colony's errands first (`ChoreConsumer.ChooseChore` reorder: idle < other colonies < own), help others only when nothing of their own is left |
 | Cancel only your own orders | on | cancel tool skips other colonies' markers/blueprints even when building protection is off |
 | Extra water geysers (new games) | 2 | water geysers / cool steam vents added once to a freshly generated world |
-| Water geyser near each new colony | on | one water geyser 20–40 cells from a newly founded colony |
+| Water geysers near the host's base | 1 | water geysers 12–30 cells from the host's Printing Pod; added once per save (existing saves too), raising it adds the difference (replaces the old per-new-colony geyser) |
 | Separate schedules | on | schedule owner per index (`ColonySchedules`, host re-broadcasts owners in the registry); each player sees only their schedules; dupes are kept on their colony's schedules; a new colony gets "&lt;name&gt; schedule" |
 
 The host's rules are used for the session (sent to clients, stored in the save). Switching research back to
 shared hard-syncs everyone to the host's tree.
+
+## v0.8.2 notes
+- The water geyser placed next to every newly founded colony is gone. Instead the option "Water geysers near the host's base" (0-4, default 1) places geysers 12-30 cells from the host's Printing Pod, once per save (existing saves too).
 
 ## v0.8.1 notes
 - Placement overlay while founding a colony: every cell of the start base is previewed under the cursor — green free, yellow dug out / plants removed, magenta existing (unowned) building that stays, red blocked — plus outlines of the base's buildings (Printing Pod in cyan), the new colony's territory circle and a red keep-out ring around every existing colony. The tooltip at the top of the screen shows the reason and a cell count summary.

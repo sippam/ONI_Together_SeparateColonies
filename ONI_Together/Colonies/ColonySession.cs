@@ -58,6 +58,8 @@ namespace ONI_Together.Colonies
                 {
                     try { ColonyWorldTools.AddExtraWaterIfNew(); }
                     catch (Exception ex) { Debug.LogWarning($"[ONIT-Colonies] extra water failed: {ex.Message}"); }
+                    try { ColonyWorldTools.AddHostWaterIfNeeded(); }
+                    catch (Exception ex) { Debug.LogWarning($"[ONIT-Colonies] host water failed: {ex.Message}"); }
                 }
             }
             if (!_gameInitDone) return;

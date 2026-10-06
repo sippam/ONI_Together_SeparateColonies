@@ -114,12 +114,13 @@ namespace ONI_Together
             set => Colonies.ExtraWaterGeysers = Mathf.Clamp(value, 0, 12);
         }
 
-        [Option("Water geyser near each new colony", "When a player founds a colony, a water geyser is placed 20-40 cells away from their Printing Pod.", "0) Separate colonies")]
+        [Option("Water geysers near the host's base", "Water geysers placed 12-30 cells from the host's Printing Pod. Added once per save (existing saves too); raising the number later adds the difference. 0 = off.", "0) Separate colonies")]
+        [Limit(0, 4)]
         [JsonIgnore]
-        public bool ColonyWaterGeyserPerColony
+        public int ColonyHostWaterGeysers
         {
-            get => Colonies.WaterGeyserPerColony;
-            set => Colonies.WaterGeyserPerColony = value;
+            get => Colonies.HostWaterGeysers;
+            set => Colonies.HostWaterGeysers = Mathf.Clamp(value, 0, 4);
         }
 
         [Option("Background structure sync", "Host: every few seconds compare buildings, blueprints and plants with every client and fix only the blocks that differ (instead of waiting for a hard sync).", "0) Separate colonies")]
@@ -365,7 +366,7 @@ namespace ONI_Together
         [JsonProperty] public bool HelpOtherColonies { get; set; } = true;
         [JsonProperty] public bool CancelOnlyOwnOrders { get; set; } = true;
         [JsonProperty] public int ExtraWaterGeysers { get; set; } = 2;
-        [JsonProperty] public bool WaterGeyserPerColony { get; set; } = true;
+        [JsonProperty] public int HostWaterGeysers { get; set; } = 1;
         [JsonProperty] public bool BackgroundStructureSync { get; set; } = true;
         [JsonProperty] public bool SharedResources { get; set; } = false;
         [JsonProperty] public bool PrefixDupeNames { get; set; } = true;

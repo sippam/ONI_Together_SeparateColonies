@@ -205,11 +205,6 @@ namespace ONI_Together.Colonies
 
         private static void AfterFounded(ColonyInfo info, ulong requester)
         {
-            if (Configuration.Instance?.Colonies?.WaterGeyserPerColony ?? false)
-            {
-                try { ColonyWorldTools.PlaceWaterGeyser(info.HomeCell, new System.Random(info.HomeCell * 31 + info.Id)); }
-                catch (Exception ex) { Debug.LogWarning($"[ONIT-Colonies] colony water geyser failed: {ex.Message}"); }
-            }
             ColonyNet.BroadcastRegistry();
             ColonyNet.SendMessageTo(requester, $"Colony '{info.Name}' founded — syncing the world...");
             // Clients don't simulate the new pod/dupes on their own; give everyone the host's exact world.

@@ -105,8 +105,8 @@ namespace ONI_Together.Colonies
 
         #region Water geysers
 
-        /// <summary>Place one water geyser. near &gt;= 0: 20-40 cells from that cell, otherwise anywhere away from colonies.</summary>
-        public static bool PlaceWaterGeyser(int near, System.Random rng)
+        /// <summary>Place one water geyser. near &gt;= 0: minDist-maxDist cells from that cell, otherwise anywhere away from colonies.</summary>
+        public static bool PlaceWaterGeyser(int near, System.Random rng, int minDist = 20, int maxDist = 40)
         {
             var world = ClusterManager.Instance?.GetStartWorld();
             if (world == null) return false;
@@ -120,7 +120,7 @@ namespace ONI_Together.Colonies
                 if (near >= 0)
                 {
                     double a = rng.NextDouble() * Math.PI * 2;
-                    double d = 20 + rng.NextDouble() * 20;
+                    double d = minDist + rng.NextDouble() * Math.Max(0, maxDist - minDist);
                     x = nx + (int)Math.Round(Math.Cos(a) * d);
                     y = ny + (int)Math.Round(Math.Sin(a) * d);
                 }
@@ -201,6 +201,50 @@ namespace ONI_Together.Colonies
             int placed = 0;
             for (int i = 0; i < n; i++) if (PlaceWaterGeyser(-1, rng)) placed++;
             Debug.Log($"[ONIT-Colonies] Extra water: placed {placed}/{n} geysers");
+        }
+
+        /// <summary>
+        /// Host / single player: make sure the configured number of water geysers sits near the host's base.
+        /// Works on existing saves too; the count placed is stored in the save so it never stacks up on reload.
+        /// </summary>
+        public static void AddHostWaterIfNeeded()
+        {
+            int want = Mathf.Clamp(Configuration.Instance?.Colonies?.HostWaterGeysers ?? 0, 0, 4);
+            if (ColonySaveData.HostWaterPlaced >= want) return;
+            int home = HostHomeCell();
+            if (!Grid.IsValidCell(home)) { Debug.LogWarning("[ONIT-Colonies] Host water: no host Printing Pod found"); return; }
+            var rng = new System.Random(home * 131 + ColonySaveData.HostWaterPlaced * 17 + Grid.WidthInCells);
+            int placed = 0;
+            while (ColonySaveData.HostWaterPlaced < want)
+            {
+                if (!PlaceWaterGeyser(home, rng, 12, 30)) break;
+                ColonySaveData.HostWaterPlaced++;
+                placed++;
+            }
+            Debug.Log($"[ONIT-Colonies] Host water: placed {placed}, total {ColonySaveData.HostWaterPlaced}/{want}");
+            if (placed > 0 && ColonyNet.InSession) ColonySession.ScheduleHardSync(3f, "water geyser near host base");
+        }
+
+        /// <summary>The host's colony home, else the first colony's, else the start world's Printing Pod.</summary>
+        private static int HostHomeCell()
+        {
+            if (ColonyRegistry.Enabled)
+            {
+                var mine = ColonyRegistry.Get(ColonyRegistry.GetColonyOfPlayer(ColonyRegistry.LocalPlayerId));
+                if (mine != null && Grid.IsValidCell(mine.HomeCell)) return mine.HomeCell;
+                ColonyInfo first = null;
+                foreach (var c in ColonyRegistry.Colonies)
+                    if (Grid.IsValidCell(c.HomeCell) && (first == null || c.Id < first.Id)) first = c;
+                if (first != null) return first.HomeCell;
+            }
+            var start = ClusterManager.Instance?.GetStartWorld();
+            foreach (Telepad pad in global::Components.Telepads.Items)
+            {
+                if (pad == null) continue;
+                if (start != null && pad.GetMyWorldId() != start.id) continue;
+                return Grid.PosToCell(pad);
+            }
+            return -1;
         }
 
         #endregion
