@@ -93,6 +93,7 @@ namespace ONI_Together.Colonies
             Vector3 pos = PlayerController.GetCursorPos(KInputManager.GetMousePos());
             _hoverCell = Grid.PosToCell(pos);
             ColonyFounder.ValidateHomeCell(_hoverCell, out _placeReason);
+            ColonyPlacementOverlay.Update(_hoverCell);
 
             Vector2 mouse = Input.mousePosition;
             mouse.y = Screen.height - mouse.y;
@@ -130,13 +131,18 @@ namespace ONI_Together.Colonies
 
             if (_placing)
             {
-                Vector2 m = Input.mousePosition;
+                if (Event.current.type == EventType.Repaint)
+                    ColonyPlacementOverlay.Draw(_hoverCell, _placeReason == null);
                 string txt = _placeReason == null
                     ? "Click to place your Printing Pod here (Esc/right-click cancels)"
                     : $"Can't place here: {_placeReason}";
-                var style = new GUIStyle(GUI.skin.box) { wordWrap = true };
+                string sum = ColonyPlacementOverlay.Summary;
+                if (sum != null) txt += "\n" + sum + "\n" + ColonyPlacementOverlay.Legend;
+                var style = new GUIStyle(GUI.skin.box) { wordWrap = true, alignment = TextAnchor.UpperLeft };
                 style.normal.textColor = _placeReason == null ? Color.green : new Color(1f, 0.5f, 0.4f);
-                GUI.Box(new Rect(m.x + 18, Screen.height - m.y + 10, 300, 40), txt, style);
+                float w = 520f, h = style.CalcHeight(new GUIContent(txt), w);
+                // pinned at the top so it never hides the base preview under the cursor
+                GUI.Box(new Rect(Screen.width / 2f - w / 2f, 70, w, h), txt, style);
             }
 
             if (!_visible)

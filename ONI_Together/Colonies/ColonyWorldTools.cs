@@ -71,23 +71,28 @@ namespace ONI_Together.Colonies
             foreach (var c in tpl.cells)
             {
                 int tc = Grid.XYToCell(x + c.location_x, y + c.location_y);
-                if (!InStartWorld(tc, 2)) { reason = "Too close to the edge of the asteroid"; return false; }
-                if (Grid.Element[tc].id == SimHashes.Unobtanium) { reason = "Neutronium in the way"; return false; }
-                for (int layer = 0; layer < (int)ObjectLayer.NumLayers; layer++)
-                {
-                    var go = Grid.Objects[tc, layer];
-                    if (go == null) continue;
-                    if (go.GetComponent<Telepad>() != null) { reason = "Another Printing Pod is in the way"; return false; }
-                    if (go.GetComponent<Geyser>() != null) { reason = "A geyser is in the way"; return false; }
-                    int owner = ColonyRegistry.GetOwner(go);
-                    if (owner != ColonyRegistry.NoColony && go.GetComponent<Building>() != null)
-                    {
-                        reason = $"Would overwrite {ColonyRegistry.Get(owner)?.Name ?? "another colony"}'s buildings";
-                        return false;
-                    }
-                }
+                reason = CellBlockReason(tc);
+                if (reason != null) return false;
             }
             return true;
+        }
+
+        /// <summary>Why the start template can't cover this cell (null = fine). Shared by validation and the placement overlay.</summary>
+        public static string CellBlockReason(int tc)
+        {
+            if (!InStartWorld(tc, 2)) return "Too close to the edge of the asteroid";
+            if (Grid.Element[tc].id == SimHashes.Unobtanium) return "Neutronium in the way";
+            for (int layer = 0; layer < (int)ObjectLayer.NumLayers; layer++)
+            {
+                var go = Grid.Objects[tc, layer];
+                if (go == null) continue;
+                if (go.GetComponent<Telepad>() != null) return "Another Printing Pod is in the way";
+                if (go.GetComponent<Geyser>() != null) return "A geyser is in the way";
+                int owner = ColonyRegistry.GetOwner(go);
+                if (owner != ColonyRegistry.NoColony && go.GetComponent<Building>() != null)
+                    return $"Would overwrite {ColonyRegistry.Get(owner)?.Name ?? "another colony"}'s buildings";
+            }
+            return null;
         }
 
         public static HashSet<int> TemplateCells(TemplateContainer tpl, int origin)

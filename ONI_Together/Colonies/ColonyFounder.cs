@@ -93,6 +93,9 @@ namespace ONI_Together.Colonies
             return true;
         }
 
+        /// <summary>Minimum distance (cells) between two colonies' home cells.</summary>
+        public static int MinColonyDistance => ColonyRules.TerritoryProtection ? Math.Max(10, ColonyRegistry.TerritoryRadius * 2 + 4) : 10;
+
         public static bool ValidateHomeCell(int cell, out string reason)
         {
             reason = null;
@@ -117,7 +120,7 @@ namespace ONI_Together.Colonies
                     }
                 }
             }
-            int minDist = ColonyRules.TerritoryProtection ? Math.Max(10, ColonyRegistry.TerritoryRadius * 2 + 4) : 10;
+            int minDist = MinColonyDistance;
             Grid.CellToXY(cell, out int x, out int y);
             foreach (var c in ColonyRegistry.Colonies)
             {

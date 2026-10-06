@@ -35,6 +35,9 @@ your buildings/dupes.
 The host's rules are used for the session (sent to clients, stored in the save). Switching research back to
 shared hard-syncs everyone to the host's tree.
 
+## v0.8.1 notes
+- Placement overlay while founding a colony: every cell of the start base is previewed under the cursor — green free, yellow dug out / plants removed, magenta existing (unowned) building that stays, red blocked — plus outlines of the base's buildings (Printing Pod in cyan), the new colony's territory circle and a red keep-out ring around every existing colony. The tooltip at the top of the screen shows the reason and a cell count summary.
+
 ## v0.8.0 notes
 - Joining players now pick their 3 starting Duplicants with the game's own new-game cards (reroll, interest filter, Standard/Bionic filter, name edit). Press "Found my colony — choose duplicants" in the colony panel, press Embark, then click the map to place the base.
 - Implemented by reusing the Printing Pod screen (ImmigrantScreen) in starter mode; it is restored afterwards. If that screen is unavailable the old IMGUI picker is used.
