@@ -74,7 +74,17 @@ namespace ONI_Together.Networking.Packets.Architecture
 		{
 			using var _ = Profiler.Scope();
 
-			packet.OnDispatched();
+			// Separate colonies: on the host, everything a client's packet does is done "as" that client's colony
+			int colonyCtx = ONI_Together.Colonies.ColonyNet.ContextForSender(ONI_Together.Colonies.ColonyNet.CurrentSender);
+			if (colonyCtx != 0) ONI_Together.Colonies.ColonyContext.Push(colonyCtx);
+			try
+			{
+				packet.OnDispatched();
+			}
+			finally
+			{
+				if (colonyCtx != 0) ONI_Together.Colonies.ColonyContext.Pop();
+			}
 		}
 	}
 

@@ -9,7 +9,7 @@ namespace ONI_Together.Patches.ToolPatches.Dig
     [HarmonyPatch(typeof(DigTool), nameof(DigTool.PlaceDig))]
     public static class DigTool_PlaceDig_Patch
     {
-        public static void Postfix(int cell, int animationDelay)
+        public static void Postfix(int cell, int animationDelay, UnityEngine.GameObject __result)
         {
             using var _ = Profiler.Scope();
 
@@ -20,6 +20,10 @@ namespace ONI_Together.Patches.ToolPatches.Dig
             }
 
             if (DiggablePacket.ProcessingIncoming)
+                return;
+
+            // refused locally (e.g. separate colonies: foreign territory / spectator) -> don't replicate
+            if (__result == null)
                 return;
 
             PacketSender.SendToAllOtherPeers(new DiggablePacket(cell, animationDelay));

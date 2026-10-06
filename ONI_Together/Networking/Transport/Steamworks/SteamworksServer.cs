@@ -137,7 +137,15 @@ namespace ONI_Together.Networking.Transport.Steam
                 byte[] bytes = new byte[msg.m_cbSize];
                 Marshal.Copy(msg.m_pData, bytes, 0, msg.m_cbSize);
 
-                PacketHandler.HandleIncoming(bytes);
+                ONI_Together.Colonies.ColonyNet.CurrentSender = msg.m_identityPeer.GetSteamID64();
+                try
+                {
+                    PacketHandler.HandleIncoming(bytes);
+                }
+                finally
+                {
+                    ONI_Together.Colonies.ColonyNet.CurrentSender = 0;
+                }
 
                 SteamNetworkingMessage_t.Release(messages[i]);
             }

@@ -194,11 +194,16 @@ namespace ONI_Together.Networking.Transport.Lan
 
             try
             {
+                ONI_Together.Colonies.ColonyNet.CurrentSender = clientId;
                 PacketHandler.HandleIncoming(rawData);
             }
             catch (Exception ex)
             {
                 Debug.LogWarning($"[LanServer] Failed to handle packet {packetType}: {ex}");
+            }
+            finally
+            {
+                ONI_Together.Colonies.ColonyNet.CurrentSender = 0;
             }
 
             scope.End(1, size);

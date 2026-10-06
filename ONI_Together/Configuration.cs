@@ -22,6 +22,35 @@ namespace ONI_Together
         [JsonProperty]
         public NetworkSettings Network { get; set; } = new NetworkSettings();
 
+        [JsonProperty]
+        public ColonySettings Colonies { get; set; } = new ColonySettings();
+
+        [Option("Separate colonies", "Host: each player gets their own colony on the same asteroid (own dupes, territory). Applied when you host.", "0) Separate colonies")]
+        [JsonIgnore]
+        public bool SeparateColoniesEnabled
+        {
+            get => Colonies.SeparateColonies;
+            set => Colonies.SeparateColonies = value;
+        }
+
+        [Option("Territory radius (cells)", "Other colonies can't build/dig within this distance of a colony's Printing Pod. 0 = off.", "0) Separate colonies")]
+        [Limit(0, 64)]
+        [JsonIgnore]
+        public int ColonyTerritoryRadius
+        {
+            get => Colonies.TerritoryRadius;
+            set => Colonies.TerritoryRadius = Mathf.Clamp(value, 0, 64);
+        }
+
+        [Option("Asteroid size (%) for NEW games", "Scales the generated asteroid (100 = vanilla, 200 = twice as wide and tall). Only affects worlds generated while this mod is enabled.", "0) Separate colonies")]
+        [Limit(100, 300)]
+        [JsonIgnore]
+        public int WorldScalePercent
+        {
+            get => Colonies.WorldScalePercent;
+            set => Colonies.WorldScalePercent = Mathf.Clamp(value, 100, 300);
+        }
+
         [Option("STRINGS.UI.CONFIGURATION.TITLES.HOST_SETTINGS.MAX_MESSAGES_PER_POLL", "STRINGS.UI.CONFIGURATION.TOOLTIPS.HOST_SETTINGS.MAX_MESSAGES_PER_POLL", "STRINGS.UI.CONFIGURATION.HEADERS.A_HOST_SETTINGS")]
         [JsonIgnore]
         public int HostMaxMessagesPerPoll
@@ -199,6 +228,13 @@ namespace ONI_Together
     }
 
     [Serializable]
+    public class ColonySettings
+    {
+        [JsonProperty] public bool SeparateColonies { get; set; } = true;
+        [JsonProperty] public int TerritoryRadius { get; set; } = 14;
+        [JsonProperty] public int WorldScalePercent { get; set; } = 100;
+    }
+
     public class HostSettings
     {
         [JsonProperty] public int NetworkTransport { get; set; } = 0;

@@ -64,8 +64,20 @@ namespace ONI_Together.Networking.Packets.Core
 			//this packet should only be sent by clients to the host
 			if (MultiplayerSession.IsHost)
 			{
-				//trigger it on the host
-				innerPacket.OnDispatched();
+				//trigger it on the host, acting as the original sender's colony
+				ulong prevSender = ONI_Together.Colonies.ColonyNet.CurrentSender;
+				if (SenderId != 0 && SenderId != ONI_Together.Misc.Utils.NilUlong()) ONI_Together.Colonies.ColonyNet.CurrentSender = SenderId;
+				int colonyCtx = ONI_Together.Colonies.ColonyNet.ContextForSender(ONI_Together.Colonies.ColonyNet.CurrentSender);
+				if (colonyCtx != 0) ONI_Together.Colonies.ColonyContext.Push(colonyCtx);
+				try
+				{
+					innerPacket.OnDispatched();
+				}
+				finally
+				{
+					if (colonyCtx != 0) ONI_Together.Colonies.ColonyContext.Pop();
+					ONI_Together.Colonies.ColonyNet.CurrentSender = prevSender;
+				}
 				//send it to all other clients except the sender
 				PacketSender.SendToAllExcluding(innerPacket, [MultiplayerSession.HostUserID, SenderId]);
 			}

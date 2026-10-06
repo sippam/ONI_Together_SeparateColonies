@@ -114,6 +114,18 @@ namespace ONI_Together.Networking.Packets.Social
 							break;
 						}
 					}
+					// Separate colonies: a client's print goes to that client's own Printing Pod
+					if (ONI_Together.Colonies.ColonyRegistry.Active)
+					{
+						int acting = ONI_Together.Colonies.ColonyContext.Current;
+						if (acting == ONI_Together.Colonies.ColonyContext.Spectator)
+						{
+							DebugConsole.LogWarning("[ImmigrantSelectionPacket] Spectator tried to print — ignored");
+							return;
+						}
+						var own = ONI_Together.Colonies.ColonyPatches.FindTelepad(acting);
+						if (own != null) telepad = own;
+					}
 					if (telepad == null)
 					{
 						DebugConsole.LogWarning("[ImmigrantSelectionPacket] Cannot find Telepad");
