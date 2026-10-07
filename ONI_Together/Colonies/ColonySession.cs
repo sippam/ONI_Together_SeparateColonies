@@ -79,6 +79,7 @@ namespace ONI_Together.Colonies
                 StructureSync.HostTick();
                 StructureSync.ClientTick();
                 FoodSync.HostTick();
+                ColonyPriority.Flush();
 
                 // client: keep asking until the host answered (registry may arrive before/after the world)
                 if (MultiplayerSession.IsClient && ColonyRegistry.Enabled == false)

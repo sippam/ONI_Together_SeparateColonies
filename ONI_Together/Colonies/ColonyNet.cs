@@ -67,6 +67,9 @@ namespace ONI_Together.Colonies
             catch (Exception ex) { Debug.LogWarning($"[ONIT-Colonies] SendRegistryTo failed: {ex.Message}"); }
         }
 
+        /// <summary>&gt; 0 while a received packet is being applied (main thread). Changes made then are not local player actions.</summary>
+        [ThreadStatic] public static int DispatchDepth;
+
         public static void SendMessageTo(ulong player, string text)
         {
             if (string.IsNullOrEmpty(text)) return;

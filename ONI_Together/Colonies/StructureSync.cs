@@ -77,11 +77,21 @@ namespace ONI_Together.Colonies
             return false;
         }
 
-        private static int EntryHash(int cell, int layer, string id, byte state)
+        /// <summary>Errand priority as one int (0 = none), part of the hash so a priority mismatch gets fixed too.</summary>
+        public static int PrioCode(GameObject go)
+        {
+            var p = go != null ? go.GetComponent<Prioritizable>() : null;
+            if (p == null || !p.IsPrioritizable()) return 0;
+            var s = p.GetMasterPriority();
+            return ((int)s.priority_class + 2) * 32 + s.priority_value;
+        }
+
+        private static int EntryHash(int cell, int layer, string id, byte state, int prio)
         {
             unchecked
             {
                 int h = (int)2166136261;
+                h = (h ^ prio) * 16777619;
                 h = (h ^ cell) * 16777619;
                 h = (h ^ layer) * 16777619;
                 h = (h ^ Hash.SDBMLower(id)) * 16777619;
@@ -108,7 +118,7 @@ namespace ONI_Together.Colonies
                     if (!Classify(go, out byte state, out string id)) continue;
                     int b = BlockOf(cell);
                     if (b < 0 || b >= hashes.Length) continue;
-                    unchecked { hashes[b] += EntryHash(cell, layer, id, state); }
+                    unchecked { hashes[b] += EntryHash(cell, layer, id, state, state == StatePlant ? 0 : PrioCode(go)); }
                 }
             }
             return hashes;
@@ -117,7 +127,7 @@ namespace ONI_Together.Colonies
         public static int ComputeBlockHash(int block)
         {
             int h = 0;
-            ForEachInBlock(block, (cell, layer, go, state, id) => { unchecked { h += EntryHash(cell, layer, id, state); } });
+            ForEachInBlock(block, (cell, layer, go, state, id) => { unchecked { h += EntryHash(cell, layer, id, state, state == StatePlant ? 0 : PrioCode(go)); } });
             return h;
         }
 
@@ -180,7 +190,7 @@ namespace ONI_Together.Colonies
                 var plants = new List<Growing>();
                 ForEachInBlock(block, (cell, layer, go, state, id) =>
                 {
-                    var e = new StructureEntry { Cell = cell, Layer = layer, Id = id, State = state };
+                    var e = new StructureEntry { Cell = cell, Layer = layer, Id = id, State = state, Priority = state == StatePlant ? 0 : PrioCode(go) };
                     var rot = go.GetComponent<Rotatable>();
                     e.Orientation = rot != null ? (int)rot.GetOrientation() : 0;
                     var pe = go.GetComponent<PrimaryElement>();
@@ -281,13 +291,21 @@ namespace ONI_Together.Colonies
                     try { kv.Value.go.DeleteObject(); changes++; }
                     catch (Exception ex) { Debug.LogWarning($"[ONIT-Colonies] structure remove failed: {ex.Message}"); }
                 }
-                // 2) add what is missing
+                // 2) add what is missing, 3) fix priorities of what matches
                 foreach (var kv in want)
                 {
                     var e = kv.Value;
-                    if (have.TryGetValue(kv.Key, out var h) && h.id == e.Id && h.state == e.State) continue;
                     if (e.State == StatePlant) continue; // arrives as PlantLifecyclePacket
-                    if (Create(e)) changes++;
+                    if (have.TryGetValue(kv.Key, out var h) && h.id == e.Id && h.state == e.State)
+                    {
+                        if (ApplyPriority(h.go, e.Priority)) changes++;
+                        continue;
+                    }
+                    if (Create(e))
+                    {
+                        changes++;
+                        ApplyPriority(Grid.Objects[e.Cell, e.Layer], e.Priority);
+                    }
                 }
             }
             finally { Applying = false; }
@@ -296,6 +314,17 @@ namespace ONI_Together.Colonies
                 FixedBlocks++;
                 Debug.Log($"[ONIT-Colonies] Structure sync fixed block {p.Block} ({changes} changes)");
             }
+        }
+
+        private static bool ApplyPriority(GameObject go, int code)
+        {
+            if (go == null || code <= 0) return false;
+            var p = go.GetComponent<Prioritizable>();
+            if (p == null) return false;
+            var want = new PrioritySetting((PriorityScreen.PriorityClass)(code / 32 - 2), code % 32);
+            if (p.GetMasterPriority().Equals(want)) return false;
+            try { p.SetMasterPriority(want); return true; }
+            catch { return false; }
         }
 
         private static long Key(int cell, int layer) => ((long)cell << 8) | (uint)layer;
@@ -346,7 +375,7 @@ namespace ONI_Together.Colonies
 
     public class StructureEntry
     {
-        public int Cell, Layer, Orientation, Connections;
+        public int Cell, Layer, Orientation, Connections, Priority;
         public byte State;
         public string Id = "", Element = "", Facade = "DEFAULT_FACADE";
         public float Temperature;
@@ -357,6 +386,7 @@ namespace ONI_Together.Colonies
             w.Write(Cell); w.Write(Layer); w.Write(State); w.Write(Id ?? ""); w.Write(Orientation);
             w.Write(Element ?? ""); w.Write(Temperature); w.Write(Facade ?? "DEFAULT_FACADE"); w.Write(Connections);
             w.Write(Materials.Count); foreach (var m in Materials) w.Write(m ?? "");
+            w.Write(Priority);
         }
 
         public static StructureEntry Read(BinaryReader r)
@@ -367,7 +397,8 @@ namespace ONI_Together.Colonies
                 Element = r.ReadString(), Temperature = r.ReadSingle(), Facade = r.ReadString(), Connections = r.ReadInt32()
             };
             int n = r.ReadInt32();
-            for (int i = 0; i < n && i < 16; i++) e.Materials.Add(r.ReadString());
+            for (int i = 0; i < n; i++) { string m = r.ReadString(); if (i < 16) e.Materials.Add(m); }
+            e.Priority = r.ReadInt32();
             return e;
         }
     }

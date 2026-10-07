@@ -77,12 +77,14 @@ namespace ONI_Together.Networking.Packets.Architecture
 			// Separate colonies: on the host, everything a client's packet does is done "as" that client's colony
 			int colonyCtx = ONI_Together.Colonies.ColonyNet.ContextForSender(ONI_Together.Colonies.ColonyNet.CurrentSender);
 			if (colonyCtx != 0) ONI_Together.Colonies.ColonyContext.Push(colonyCtx);
+			ONI_Together.Colonies.ColonyNet.DispatchDepth++;
 			try
 			{
 				packet.OnDispatched();
 			}
 			finally
 			{
+				ONI_Together.Colonies.ColonyNet.DispatchDepth--;
 				if (colonyCtx != 0) ONI_Together.Colonies.ColonyContext.Pop();
 			}
 		}

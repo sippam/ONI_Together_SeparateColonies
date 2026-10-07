@@ -35,6 +35,10 @@ your buildings/dupes.
 The host's rules are used for the session (sent to clients, stored in the save). Switching research back to
 shared hard-syncs everyone to the host's tree.
 
+## v0.9.5 notes
+- Toilets on clients no longer blink between "needs emptying / unclogging" and ready: every state packet rebuilt the storage, which fired the toilet state machine's storage transitions. Outhouse and lavatory now take their predicates (needs dirt, waste removed, water full, contaminated) and their top-level state from the host.
+- Errand priority (1-9 / !!) set by a client now sticks: ONI Together only synced priorities of objects with a NetId (finished buildings), so dig orders, blueprints, mop/sweep markers etc. went back to 5. New ColonyPriorityPacket syncs by cell + prefab (client -> host under the client's colony -> all clients, batched per frame). Background structure sync now also compares and fixes priorities.
+
 ## v0.9.4 notes
 - Host water is now a Cool Steam Vent built from the game's own worldgen structures: the POI templates poi/jungle/geyser_steam (ToxicJungle) and poi/hotmarsh/geyser_steam (BoggyMarsh) are stamped as-is (rock shell, cave, plants, vent), only in the biome worldgen allows for that POI (worldTemplateRules zoneTypes) with at least 70% of the template inside it. Of the valid spots the one nearest to the host is used, at least 30 cells (or territory + 12) from every colony. No distance option any more: the biome decides, like worldgen.
 - "Extra steam vents (new games)" uses the same POIs at random valid spots.
