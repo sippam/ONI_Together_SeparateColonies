@@ -1535,26 +1535,6 @@ msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_CANCEL_O
 msgid "The cancel tool only removes your colony's dig/mop/build/deconstruct orders, even when building protection is off."
 msgstr "เครื่องมือยกเลิกจะลบแค่คำสั่งขุด/ถู/สร้าง/รื้อของโคโลนีคุณ แม้จะปิดการป้องกันสิ่งก่อสร้างไว้"
 
-#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_EXTRA_WATER_GEYSERS
-msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_EXTRA_WATER_GEYSERS"
-msgid "Extra water geysers (new games)"
-msgstr "น้ำพุร้อนน้ำเพิ่ม (เกมใหม่)"
-
-#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_EXTRA_WATER_GEYSERS
-msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_EXTRA_WATER_GEYSERS"
-msgid "Water geysers / cool steam vents added to a freshly generated world (host). 0 = vanilla."
-msgstr "จำนวนน้ำพุร้อนน้ำ/ช่องไอน้ำเย็นที่เพิ่มลงในโลกที่เพิ่งสร้าง (โฮสต์) 0 = เหมือนเกมปกติ"
-
-#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_HOST_WATER_GEYSERS
-msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_HOST_WATER_GEYSERS"
-msgid "Water geysers near the host's base"
-msgstr "น้ำพุร้อนน้ำใกล้ฐานโฮสต์"
-
-#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_HOST_WATER_GEYSERS
-msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_HOST_WATER_GEYSERS"
-msgid "Water geysers placed 12-30 cells from the host's Printing Pod. Added once per save (existing saves too); raising the number later adds the difference. 0 = off."
-msgstr "น้ำพุร้อนน้ำที่วางห่างจาก Printing Pod ของโฮสต์ 12-30 ช่อง เพิ่มครั้งเดียวต่อเซฟ (เซฟเก่าก็ได้) ถ้าเพิ่มจำนวนทีหลังจะวางเพิ่มเฉพาะส่วนที่ขาด 0 = ปิด"
-
 #. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_BACKGROUND_STRUCTURE_SYNC
 msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_BACKGROUND_STRUCTURE_SYNC"
 msgid "Background structure sync"
@@ -1614,3 +1594,34 @@ msgstr "ขนาดดาวเคราะห์น้อย (%) สำหร�
 msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.WORLD_SCALE_PERCENT"
 msgid "Scales the generated asteroid (100 = vanilla, 200 = twice as wide and tall). Only affects worlds generated while this mod is enabled."
 msgstr "ขยายขนาดดาวเคราะห์น้อยที่สร้าง (100 = ปกติ, 200 = กว้างและสูงเป็นสองเท่า) มีผลเฉพาะโลกที่สร้างตอนเปิดม็อดนี้"
+
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_EXTRA_WATER_GEYSERS
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_EXTRA_WATER_GEYSERS"
+msgid "Extra water vents (new games)"
+msgstr "ปล่องน้ำเพิ่ม (เกมใหม่)"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_EXTRA_WATER_GEYSERS
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_EXTRA_WATER_GEYSERS"
+msgid "Water Geysers (clean water vents) added to a freshly generated world (host), in natural caves in biomes where water vents normally form. 0 = vanilla."
+msgstr "จำนวนปล่องน้ำ (Water Geyser น้ำสะอาด) ที่เพิ่มลงในโลกที่เพิ่งสร้าง (โฮสต์) อยู่ในถ้ำธรรมชาติในไบโอมที่ปกติมีปล่องน้ำ 0 = เหมือนเกมปกติ"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_HOST_WATER_GEYSERS
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_HOST_WATER_GEYSERS"
+msgid "Water vents near the host's base"
+msgstr "ปล่องน้ำใกล้ฐานโฮสต์"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_HOST_WATER_GEYSERS
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_HOST_WATER_GEYSERS"
+msgid "Water Geysers (clean water vents) placed in a natural cave in a biome where water vents normally form, away from the host's Printing Pod. Added once per save (existing saves too); raising the number later adds the difference. 0 = off."
+msgstr "ปล่องน้ำ (Water Geyser น้ำสะอาด) ในถ้ำธรรมชาติ ในไบโอมที่ปกติมีปล่องน้ำ ห่างจาก Printing Pod ของโฮสต์ เพิ่มครั้งเดียวต่อเซฟ (เซฟเก่าก็ได้) ถ้าเพิ่มจำนวนทีหลังจะวางเพิ่มเฉพาะส่วนที่ขาด 0 = ปิด"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_HOST_WATER_DISTANCE
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_HOST_WATER_DISTANCE"
+msgid "Water vent distance from the host (cells)"
+msgstr "ระยะปล่องน้ำจากโฮสต์ (ช่อง)"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_HOST_WATER_DISTANCE
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_HOST_WATER_DISTANCE"
+msgid "How far from the host's Printing Pod new water vents are placed: between this distance and 25 cells further."
+msgstr "ระยะห่างจาก Printing Pod ของโฮสต์ที่จะวางปล่องน้ำใหม่: ระหว่างค่านี้ถึงไกลกว่านี้อีก 25 ช่อง"

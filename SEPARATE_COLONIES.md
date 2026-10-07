@@ -29,11 +29,16 @@ your buildings/dupes.
 | Help other colonies when idle | on | with separate errands: own colony's errands first (`ChoreConsumer.ChooseChore` reorder: idle < other colonies < own), help others only when nothing of their own is left |
 | Cancel only your own orders | on | cancel tool skips other colonies' markers/blueprints even when building protection is off |
 | Extra water geysers (new games) | 2 | water geysers / cool steam vents added once to a freshly generated world |
-| Water geysers near the host's base | 1 | water geysers 12–30 cells from the host's Printing Pod; added once per save (existing saves too), raising it adds the difference (replaces the old per-new-colony geyser) |
+| Water vents near the host's base | 1 | Water Geysers (clean water) in a natural cave, in a biome where water vents normally form; added once per save (existing saves too), raising it adds the difference |
+| Water vent distance from the host | 45 | vents are placed this far to +25 cells from the host's Printing Pod |
 | Separate schedules | on | schedule owner per index (`ColonySchedules`, host re-broadcasts owners in the registry); each player sees only their schedules; dupes are kept on their colony's schedules; a new colony gets "&lt;name&gt; schedule" |
 
 The host's rules are used for the session (sent to clients, stored in the save). Switching research back to
 shared hard-syncs everyone to the host's tree.
+
+## v0.9.3 notes
+- Host water: only Water Geysers (clean water vents), placed 45-70 cells from the host by default (new option "Water vent distance from the host"), only in biomes where water vents form (biomes this world already has water vents in + temperate/wet biomes: Sandstone, Marsh, Ocean, Forest, Swamp...).
+- Natural caves instead of a rectangular pocket: wobbly ellipse with a rough edge, carved only inside rock (not into open areas or buildings), filled with the surrounding gas at the local temperature, floor made of the surrounding rock. The same applies to "Extra water vents (new games)".
 
 ## v0.9.2 notes
 - Thai support (works with any Thai translation mod): the Colonies window, banners, placement messages and host messages are shown in Thai when the game runs in Thai (detected from the language code, or from Thai text in the game's own strings). IMGUI windows use an OS font with Thai glyphs (Leelawadee UI / Tahoma).

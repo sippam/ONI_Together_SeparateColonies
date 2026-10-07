@@ -36,8 +36,9 @@ namespace ONI_Together
                         public static LocString COLONY_SEPARATE_SCHEDULES = "Separate schedules";
                         public static LocString COLONY_HELP_OTHER_COLONIES = "Help other colonies when idle";
                         public static LocString COLONY_CANCEL_ONLY_OWN_ORDERS = "Cancel only your own orders";
-                        public static LocString COLONY_EXTRA_WATER_GEYSERS = "Extra water geysers (new games)";
-                        public static LocString COLONY_HOST_WATER_GEYSERS = "Water geysers near the host's base";
+                        public static LocString COLONY_EXTRA_WATER_GEYSERS = "Extra water vents (new games)";
+                        public static LocString COLONY_HOST_WATER_GEYSERS = "Water vents near the host's base";
+                        public static LocString COLONY_HOST_WATER_DISTANCE = "Water vent distance from the host (cells)";
                         public static LocString COLONY_BACKGROUND_STRUCTURE_SYNC = "Background structure sync";
                         public static LocString COLONY_SHARED_RESOURCES = "Share buildings, machines & food";
                         public static LocString COLONY_PREFIX_DUPE_NAMES = "Colony name in dupe names";
@@ -99,8 +100,9 @@ namespace ONI_Together
                         public static LocString COLONY_SEPARATE_SCHEDULES = "On: every colony has its own schedules and only sees/edits those. Off: all schedules are shared.";
                         public static LocString COLONY_HELP_OTHER_COLONIES = "With separate errands: dupes do their own colony's errands first, and only help other colonies when they have nothing of their own to do. Off: never help.";
                         public static LocString COLONY_CANCEL_ONLY_OWN_ORDERS = "The cancel tool only removes your colony's dig/mop/build/deconstruct orders, even when building protection is off.";
-                        public static LocString COLONY_EXTRA_WATER_GEYSERS = "Water geysers / cool steam vents added to a freshly generated world (host). 0 = vanilla.";
-                        public static LocString COLONY_HOST_WATER_GEYSERS = "Water geysers placed 12-30 cells from the host's Printing Pod. Added once per save (existing saves too); raising the number later adds the difference. 0 = off.";
+                        public static LocString COLONY_EXTRA_WATER_GEYSERS = "Water Geysers (clean water vents) added to a freshly generated world (host), in natural caves in biomes where water vents normally form. 0 = vanilla.";
+                        public static LocString COLONY_HOST_WATER_GEYSERS = "Water Geysers (clean water vents) placed in a natural cave in a biome where water vents normally form, away from the host's Printing Pod. Added once per save (existing saves too); raising the number later adds the difference. 0 = off.";
+                        public static LocString COLONY_HOST_WATER_DISTANCE = "How far from the host's Printing Pod new water vents are placed: between this distance and 25 cells further.";
                         public static LocString COLONY_BACKGROUND_STRUCTURE_SYNC = "Host: every few seconds compare buildings, blueprints and plants with every client and fix only the blocks that differ (instead of waiting for a hard sync).";
                         public static LocString COLONY_SHARED_RESOURCES = "On: every colony's dupes may use/operate any building and eat/fetch from any storage; only commanding dupes stays separate. Off: each colony keeps its own.";
                         public static LocString COLONY_PREFIX_DUPE_NAMES = "New starting and printed dupes get the colony's name as a prefix (e.g. 'Sawadeeja Meep').";

@@ -13,7 +13,7 @@ namespace ONI_Together.Colonies
     /// </summary>
     public static class ColonyWorldTools
     {
-        public static readonly string[] WaterGeysers = { "GeyserGeneric_hot_water", "GeyserGeneric_slush_water", "GeyserGeneric_steam", "GeyserGeneric_salt_water", "GeyserGeneric_filthy_water" };
+        public static readonly string[] WaterGeysers = { "GeyserGeneric_hot_water" }; // Water Geyser (clean water vent)
 
         private static TemplateContainer _cachedTemplate;
         private static string _cachedFor;
@@ -106,7 +106,10 @@ namespace ONI_Together.Colonies
 
         #region Water geysers
 
-        /// <summary>Place one water geyser. near &gt;= 0: minDist-maxDist cells from that cell, otherwise anywhere away from colonies.</summary>
+        /// <summary>
+        /// Place one water geyser in a natural-looking cave. near &gt;= 0: minDist-maxDist cells from that cell,
+        /// otherwise anywhere away from colonies.
+        /// </summary>
         public static bool PlaceWaterGeyser(int near, System.Random rng, int minDist = 20, int maxDist = 40)
         {
             var world = ClusterManager.Instance?.GetStartWorld();
@@ -114,8 +117,9 @@ namespace ONI_Together.Colonies
             var min = world.minimumBounds; var max = world.maximumBounds;
             int nx = 0, ny = 0;
             if (near >= 0) Grid.CellToXY(near, out nx, out ny);
+            var zones = WaterVentZones(world.id);
 
-            for (int attempt = 0; attempt < 400; attempt++)
+            for (int attempt = 0; attempt < 1500; attempt++)
             {
                 int x, y;
                 if (near >= 0)
@@ -123,72 +127,206 @@ namespace ONI_Together.Colonies
                     double a = rng.NextDouble() * Math.PI * 2;
                     double d = minDist + rng.NextDouble() * Math.Max(0, maxDist - minDist);
                     x = nx + (int)Math.Round(Math.Cos(a) * d);
-                    y = ny + (int)Math.Round(Math.Sin(a) * d);
+                    y = ny + (int)Math.Round(Math.Sin(a) * d * 0.8); // asteroids are wider than tall: favour sideways
                 }
                 else
                 {
-                    x = rng.Next((int)min.x + 10, (int)max.x - 10);
-                    y = rng.Next((int)min.y + 10, (int)max.y - 10);
+                    x = rng.Next((int)min.x + 12, (int)max.x - 12);
+                    y = rng.Next((int)min.y + 12, (int)max.y - 12);
                 }
-                int cell = Grid.XYToCell(x, y);
-                if (!AreaOk(x, y, near)) continue;
+                if (!Grid.IsValidCell(Grid.XYToCell(x, y))) continue;
+                // only in biomes where water vents normally form
+                if (zones.Count > 0 && !zones.Contains(ZoneAt(Grid.XYToCell(x, y)))) continue;
+
+                var cave = ShapeCave(x, y, rng, out var floor);
+                if (!CaveOk(x, y, near, cave, floor)) continue;
 
                 string id = WaterGeysers[rng.Next(WaterGeysers.Length)];
                 var prefab = Assets.GetPrefab(new Tag(id));
                 if (prefab == null) continue;
 
-                // pocket of breathable air with a sandstone floor, like a worldgen geyser cave
-                for (int dx = -3; dx <= 4; dx++)
-                {
-                    for (int dy = 0; dy <= 4; dy++)
-                    {
-                        int c = Grid.XYToCell(x + dx, y + dy);
-                        SimMessages.ReplaceElement(c, SimHashes.Oxygen, CellEventLogger.Instance.TemplateLoader, 1f, 300f);
-                    }
-                    int floor = Grid.XYToCell(x + dx, y - 1);
-                    if (!Grid.Solid[floor])
-                        SimMessages.ReplaceElement(floor, SimHashes.SandStone, CellEventLogger.Instance.TemplateLoader, 1000f, 300f);
-                }
+                CarveCave(cave, floor, rng);
+                int cell = Grid.XYToCell(x, y);
                 var go = GameUtil.KInstantiate(prefab, Grid.CellToPosCBC(cell, Grid.SceneLayer.BuildingBack), Grid.SceneLayer.BuildingBack);
                 go.SetActive(true);
-                Debug.Log($"[ONIT-Colonies] Placed {id} at {x},{y}");
+                Debug.Log($"[ONIT-Colonies] Placed {id} at {x},{y} (cave {cave.Count} cells)");
                 return true;
             }
             Debug.LogWarning("[ONIT-Colonies] No spot found for a water geyser");
             return false;
         }
 
-        private static bool AreaOk(int x, int y, int allowNearCell)
+        /// <summary>Temperate / wet biomes where the Water Geyser shows up in worldgen.</summary>
+        private static readonly ProcGen.SubWorld.ZoneType[] DefaultWaterZones =
         {
-            int ownHome = allowNearCell;
-            for (int dx = -4; dx <= 5; dx++)
+            ProcGen.SubWorld.ZoneType.Sandstone, ProcGen.SubWorld.ZoneType.BoggyMarsh, ProcGen.SubWorld.ZoneType.Ocean, ProcGen.SubWorld.ZoneType.Forest,
+            ProcGen.SubWorld.ZoneType.Swamp, ProcGen.SubWorld.ZoneType.KelpForest, ProcGen.SubWorld.ZoneType.Reef, ProcGen.SubWorld.ZoneType.Beach,
+        };
+
+        private static ProcGen.SubWorld.ZoneType ZoneAt(int cell)
+        {
+            try { return global::World.Instance.zoneRenderData.GetSubWorldZoneType(cell); }
+            catch { return ProcGen.SubWorld.ZoneType.Space; }
+        }
+
+        /// <summary>
+        /// Biomes to place water vents in: the biomes this world already has water vents in (that's where its worldgen
+        /// put them), plus the usual temperate/wet biomes. Empty set = no biome data (place anywhere).
+        /// </summary>
+        private static HashSet<ProcGen.SubWorld.ZoneType> WaterVentZones(int worldId)
+        {
+            var set = new HashSet<ProcGen.SubWorld.ZoneType>(DefaultWaterZones);
+            try
             {
-                for (int dy = -1; dy <= 5; dy++)
+                var geysers = global::Components.Geysers.GetItems(worldId);
+                if (geysers != null) foreach (Geyser g in geysers)
                 {
-                    int c = Grid.XYToCell(x + dx, y + dy);
-                    if (!InStartWorld(c, 4)) return false;
-                    if (Grid.Element[c].id == SimHashes.Unobtanium) return false;
-                    if (Grid.Objects[c, (int)ObjectLayer.Building] != null || Grid.Objects[c, (int)ObjectLayer.FoundationTile] != null) return false;
+                    if (g == null || g.configuration == null) continue;
+                    if (g.configuration.GetElement() != SimHashes.Water) continue;
+                    var z = ZoneAt(Grid.PosToCell(g));
+                    if (z != ProcGen.SubWorld.ZoneType.Space) set.Add(z);
+                }
+                if (global::World.Instance?.zoneRenderData == null) set.Clear();
+            }
+            catch { }
+            return set;
+        }
+
+        /// <summary>
+        /// Irregular cave around a geyser whose origin (bottom-centre) is (gx, gy): a wobbly ellipse with a rough edge,
+        /// a level floor under the geyser's 4x2 footprint and room above it. floor = cells that must be solid.
+        /// </summary>
+        private static HashSet<int> ShapeCave(int gx, int gy, System.Random rng, out HashSet<int> floor)
+        {
+            var cave = new HashSet<int>();
+            floor = new HashSet<int>();
+            double rx = 5.5 + rng.NextDouble() * 3.0;   // 5.5..8.5 half-width
+            double ry = 3.2 + rng.NextDouble() * 1.6;   // 3.2..4.8 half-height
+            double cx = gx + 0.5 + (rng.NextDouble() - 0.5) * 2.0;
+            double cy = gy - 0.5 + ry * (0.75 + rng.NextDouble() * 0.2); // bottom of the ellipse sits around the geyser's feet
+            double p1 = rng.NextDouble() * 6.283, p2 = rng.NextDouble() * 6.283, p3 = rng.NextDouble() * 6.283;
+            double a1 = 0.12 + rng.NextDouble() * 0.1, a2 = 0.06 + rng.NextDouble() * 0.08, a3 = 0.04 + rng.NextDouble() * 0.05;
+            int ix0 = (int)Math.Floor(cx - rx * 1.4), ix1 = (int)Math.Ceiling(cx + rx * 1.4);
+            int iy0 = gy - 2, iy1 = (int)Math.Ceiling(cy + ry * 1.4);
+            for (int y = iy0; y <= iy1; y++)
+            {
+                for (int x = ix0; x <= ix1; x++)
+                {
+                    double dx = (x + 0.5 - cx) / rx, dy = (y + 0.5 - cy) / ry;
+                    double th = Math.Atan2(dy, dx);
+                    double r = 1.0 + a1 * Math.Sin(2 * th + p1) + a2 * Math.Sin(3 * th + p2) + a3 * Math.Sin(5 * th + p3);
+                    double dist = Math.Sqrt(dx * dx + dy * dy);
+                    if (dist > r) continue;
+                    if (dist > r * 0.82 && rng.NextDouble() < 0.3) continue; // ragged edge
+                    if (y < gy) continue;                                    // nothing below the geyser's floor line
+                    cave.Add(Grid.XYToCell(x, y));
                 }
             }
-            int here = Grid.XYToCell(x, y);
-            Grid.CellToXY(here, out int hx, out int hy);
+            // geyser footprint (x-1..x+2, 2 tall) + one row of headroom must be open
+            for (int x = gx - 1; x <= gx + 2; x++)
+                for (int y = gy; y <= gy + 2; y++)
+                    cave.Add(Grid.XYToCell(x, y));
+            // level floor under the footprint; elsewhere the cave keeps its natural bowl shape
+            for (int x = gx - 2; x <= gx + 3; x++)
+                floor.Add(Grid.XYToCell(x, gy - 1));
+            // cave cells right above the floor line that aren't over the footprint get a floor too (no hanging pits)
+            foreach (int c in cave)
+            {
+                int below = Grid.CellBelow(c);
+                if (!cave.Contains(below)) floor.Add(below);
+            }
+            floor.ExceptWith(cave);
+            return cave;
+        }
+
+        private static bool CaveOk(int gx, int gy, int allowNearCell, HashSet<int> cave, HashSet<int> floor)
+        {
+            foreach (var set in new[] { cave, floor })
+            {
+                foreach (int c in set)
+                {
+                    if (!InStartWorld(c, 4)) return false;
+                    if (Grid.Element[c].id == SimHashes.Unobtanium) return false;
+                    for (int layer = 0; layer < (int)ObjectLayer.NumLayers; layer++)
+                    {
+                        if (layer == (int)ObjectLayer.Pickupables) continue; // loose debris is fine
+                        if (Grid.Objects[c, layer] != null) return false;   // buildings, plants, pipes, tiles, other geysers
+                    }
+                }
+            }
+            // keep the open cave mostly underground: don't punch into big open areas or space
+            int open = 0;
+            foreach (int c in cave) if (!Grid.Solid[c] && !Grid.IsLiquid(c)) open++;
+            if (open > cave.Count / 2) return false;
+
             foreach (var col in ColonyRegistry.Colonies)
             {
-                if (!Grid.IsValidCell(col.HomeCell) || col.HomeCell == ownHome) continue;
+                if (!Grid.IsValidCell(col.HomeCell) || col.HomeCell == allowNearCell) continue;
                 Grid.CellToXY(col.HomeCell, out int cx, out int cy);
                 int r = Math.Max(16, ColonyRegistry.TerritoryRadius + 6);
-                if ((cx - hx) * (cx - hx) + (cy - hy) * (cy - hy) < r * r) return false;
+                if ((cx - gx) * (cx - gx) + (cy - gy) * (cy - gy) < r * r) return false;
+            }
+            if (Grid.IsValidCell(allowNearCell))
+            {
+                // not inside the host's own base either
+                Grid.CellToXY(allowNearCell, out int hx, out int hy);
+                if ((hx - gx) * (hx - gx) + (hy - gy) * (hy - gy) < 16 * 16) return false;
             }
             var startWorld = ClusterManager.Instance?.GetStartWorld();
             var geysers = startWorld != null ? global::Components.Geysers.GetItems(startWorld.id) : null;
             if (geysers != null) foreach (Geyser g in geysers)
             {
                 if (g == null) continue;
-                Grid.CellToXY(Grid.PosToCell(g), out int gx, out int gy);
-                if (Math.Abs(gx - hx) < 12 && Math.Abs(gy - hy) < 10) return false;
+                Grid.CellToXY(Grid.PosToCell(g), out int ex, out int ey);
+                if (Math.Abs(ex - gx) < 16 && Math.Abs(ey - gy) < 12) return false;
             }
             return true;
+        }
+
+        /// <summary>Replace the cave with the surrounding gas and give it a floor of the surrounding rock, at the local temperature.</summary>
+        private static void CarveCave(HashSet<int> cave, HashSet<int> floor, System.Random rng)
+        {
+            // look at a ring around the cave to copy what nature put there
+            var ring = new HashSet<int>();
+            foreach (int c in cave)
+                foreach (int n in new[] { Grid.CellLeft(c), Grid.CellRight(c), Grid.CellAbove(c), Grid.CellBelow(c),
+                                          Grid.OffsetCell(c, 2, 0), Grid.OffsetCell(c, -2, 0), Grid.OffsetCell(c, 0, 2), Grid.OffsetCell(c, 0, -2) })
+                    if (Grid.IsValidCell(n) && !cave.Contains(n)) ring.Add(n);
+
+            var gasCount = new Dictionary<SimHashes, int>();
+            var solidCount = new Dictionary<SimHashes, int>();
+            var solidMass = new Dictionary<SimHashes, float>();
+            float tSum = 0f; int tN = 0;
+            foreach (int c in ring)
+            {
+                var e = Grid.Element[c];
+                if (e == null) continue;
+                if (Grid.Mass[c] > 0f) { tSum += Grid.Temperature[c]; tN++; }
+                if (e.IsGas && e.id != SimHashes.Vacuum) gasCount[e.id] = (gasCount.TryGetValue(e.id, out int g) ? g : 0) + 1;
+                else if (e.IsSolid && e.id != SimHashes.Unobtanium)
+                {
+                    solidCount[e.id] = (solidCount.TryGetValue(e.id, out int s) ? s : 0) + 1;
+                    solidMass[e.id] = (solidMass.TryGetValue(e.id, out float m) ? m : 0f) + Grid.Mass[c];
+                }
+            }
+            SimHashes gas = SimHashes.Oxygen, rock = SimHashes.SandStone;
+            int best = 0;
+            foreach (var kv in gasCount) if (kv.Value > best) { best = kv.Value; gas = kv.Key; }
+            best = 0;
+            foreach (var kv in solidCount) if (kv.Value > best) { best = kv.Value; rock = kv.Key; }
+            float rockMass = solidCount.TryGetValue(rock, out int rc) && rc > 0 ? Mathf.Clamp(solidMass[rock] / rc, 200f, 2000f) : 1000f;
+            float temp = tN > 0 ? Mathf.Clamp(tSum / tN, 250f, 330f) : 300f;
+
+            foreach (int c in cave)
+            {
+                float mass = 0.8f + (float)rng.NextDouble() * 0.9f;
+                SimMessages.ReplaceElement(c, gas, CellEventLogger.Instance.TemplateLoader, mass, temp);
+            }
+            foreach (int c in floor)
+            {
+                if (Grid.Solid[c]) continue; // keep the natural rock that is already there
+                SimMessages.ReplaceElement(c, rock, CellEventLogger.Instance.TemplateLoader, rockMass * (0.85f + (float)rng.NextDouble() * 0.3f), temp);
+            }
         }
 
         /// <summary>Host / single player, freshly generated world: add the configured number of water geysers once.</summary>
@@ -218,7 +356,8 @@ namespace ONI_Together.Colonies
             int placed = 0;
             while (ColonySaveData.HostWaterPlaced < want)
             {
-                if (!PlaceWaterGeyser(home, rng, 12, 30)) break;
+                int dmin = Mathf.Clamp(Configuration.Instance?.Colonies?.HostWaterDistance ?? 45, 20, 150);
+                if (!PlaceWaterGeyser(home, rng, dmin, dmin + 25)) break;
                 ColonySaveData.HostWaterPlaced++;
                 placed++;
             }
