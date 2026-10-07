@@ -1,4 +1,4 @@
-using ONI_Together.Networking.Components;
+﻿using ONI_Together.Networking.Components;
 using ONI_Together.Networking.Packets.Architecture;
 using ONI_Together.Networking.Packets.World.Handlers;
 using ONI_Together.DebugTools;
@@ -42,7 +42,9 @@ namespace ONI_Together.Networking.Packets.World
 		{
 			using var _ = Profiler.Scope();
 
-			Sender = NetworkConfig.GetLocalID();
+			// keep the ORIGINAL sender when the host relays a client's change, so that client ignores its own
+			// echo (applying stale echoes out of order made filter checkboxes flip back)
+			if (Sender == 0) Sender = NetworkConfig.GetLocalID();
 			writer.Write(Sender);
 			writer.Write(NetId);
 			writer.Write(Cell);

@@ -35,6 +35,9 @@ your buildings/dupes.
 The host's rules are used for the session (sent to clients, stored in the save). Switching research back to
 shared hard-syncs everyone to the host's tree.
 
+## v0.9.7 notes
+- Storage / bottle emptier filter checkboxes no longer flip back: the host relayed every building-config change back to the client that made it (the relay overwrote the sender id), and late echoes of earlier clicks undid newer ones. The original sender is now kept, so a client never re-applies its own change. Storage filters are sent as the full accepted set (idempotent) instead of add/remove steps.
+
 ## v0.9.6 notes
 - Farm tiles / planters on clients no longer say "No seed selected" (with a red seed preview and a seed delivery errand) while a plant grows on them: synced plants were sometimes spawned beside the plot instead of inside it. Clients now link such plants into their plot every 2 s (exact occupant cell, so stacked farm rows don't swap plants), and the plant sync also finds the plot one cell below/above the plant.
 

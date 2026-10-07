@@ -1,7 +1,8 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using ONI_Together.Networking;
 using ONI_Together.Networking.Components;
 using ONI_Together.Networking.Packets.World;
+using ONI_Together.Networking.Packets.World.Handlers;
 using Shared.Profiling;
 using UnityEngine;
 
@@ -67,10 +68,11 @@ namespace ONI_Together.Patches.World.SideScreen
 			{
 				NetId = identity.NetId,
 				Cell = Grid.PosToCell(__instance.gameObject),
-				ConfigHash = "StorageFilterAdd".GetHashCode(),
+				ConfigHash = "StorageFilterSet".GetHashCode(),
 				Value = 0,
 				ConfigType = BuildingConfigType.String,
-				StringValue = t.Name
+				// full accepted set: idempotent, order of arrival no longer matters
+				StringValue = StorageFilterHandler.Encode(__instance.AcceptedTags)
 			};
 
 			if (MultiplayerSession.IsHost) PacketSender.SendToAllClients(packet);
@@ -98,10 +100,11 @@ namespace ONI_Together.Patches.World.SideScreen
 			{
 				NetId = identity.NetId,
 				Cell = Grid.PosToCell(__instance.gameObject),
-				ConfigHash = "StorageFilterRemove".GetHashCode(),
+				ConfigHash = "StorageFilterSet".GetHashCode(),
 				Value = 0,
 				ConfigType = BuildingConfigType.String,
-				StringValue = t.Name
+				// full accepted set: idempotent, order of arrival no longer matters
+				StringValue = StorageFilterHandler.Encode(__instance.AcceptedTags)
 			};
 
 			if (MultiplayerSession.IsHost) PacketSender.SendToAllClients(packet);
