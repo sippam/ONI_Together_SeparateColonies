@@ -158,6 +158,25 @@ namespace ONI_Together.Colonies
                 normal = { background = Solid(Header), textColor = Muted },
                 padding = new RectOffset(12, 12, 5, 5),
             };
+
+            ApplyFont();
+        }
+
+        /// <summary>Thai (or any non-Latin) game language: give every style an OS font that has the glyphs.</summary>
+        private static void ApplyFont()
+        {
+            if (!ColonyLoc.IsThai) return;
+            var font = ColonyLoc.ThaiFont;
+            if (font == null) return;
+            foreach (var f in typeof(ColonyTheme).GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static))
+                if (f.FieldType == typeof(GUIStyle) && f.GetValue(null) is GUIStyle st) st.font = font;
+        }
+
+        /// <summary>Copy of a built-in skin style with the Thai font when needed.</summary>
+        public static GUIStyle WithFont(GUIStyle s)
+        {
+            if (ColonyLoc.IsThai && ColonyLoc.ThaiFont != null) s.font = ColonyLoc.ThaiFont;
+            return s;
         }
 
         // ---- helpers for the panel ----

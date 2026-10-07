@@ -25,7 +25,7 @@ namespace ONI_Together
         [JsonProperty]
         public ColonySettings Colonies { get; set; } = new ColonySettings();
 
-        [Option("Separate colonies", "Host: each player gets their own colony on the same asteroid (own dupes, territory). Applied when you host.", "0) Separate colonies")]
+        [Option("STRINGS.UI.CONFIGURATION.TITLES.COLONIES.SEPARATE_COLONIES_ENABLED", "STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.SEPARATE_COLONIES_ENABLED", "STRINGS.UI.CONFIGURATION.HEADERS.A0_SEPARATE_COLONIES")]
         [JsonIgnore]
         public bool SeparateColoniesEnabled
         {
@@ -33,7 +33,7 @@ namespace ONI_Together
             set => Colonies.SeparateColonies = value;
         }
 
-        [Option("Territory protection", "On: other colonies can't build or dig inside your territory circle. Off: anyone can build/dig anywhere.", "0) Separate colonies")]
+        [Option("STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_TERRITORY_PROTECTION", "STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_TERRITORY_PROTECTION", "STRINGS.UI.CONFIGURATION.HEADERS.A0_SEPARATE_COLONIES")]
         [JsonIgnore]
         public bool ColonyTerritoryProtection
         {
@@ -41,7 +41,7 @@ namespace ONI_Together
             set => Colonies.TerritoryProtection = value;
         }
 
-        [Option("Building protection", "On: other colonies can't deconstruct, prioritize, configure or cancel orders on your buildings and dupes. Off: anyone can.", "0) Separate colonies")]
+        [Option("STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_BUILDING_PROTECTION", "STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_BUILDING_PROTECTION", "STRINGS.UI.CONFIGURATION.HEADERS.A0_SEPARATE_COLONIES")]
         [JsonIgnore]
         public bool ColonyBuildingProtection
         {
@@ -49,7 +49,7 @@ namespace ONI_Together
             set => Colonies.BuildingProtection = value;
         }
 
-        [Option("Separate errands", "On: dupes only do their own colony's errands (a dig order by player 1 is never done by player 2's dupes) and don't take items from other colonies' storage. Off: every dupe can do every errand.", "0) Separate colonies")]
+        [Option("STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_SEPARATE_ERRANDS", "STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_SEPARATE_ERRANDS", "STRINGS.UI.CONFIGURATION.HEADERS.A0_SEPARATE_COLONIES")]
         [JsonIgnore]
         public bool ColonySeparateErrands
         {
@@ -57,7 +57,7 @@ namespace ONI_Together
             set => Colonies.SeparateErrands = value;
         }
 
-        [Option("Separate research", "On: every colony has its own research tree. Off: one shared research tree.", "0) Separate colonies")]
+        [Option("STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_SEPARATE_RESEARCH", "STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_SEPARATE_RESEARCH", "STRINGS.UI.CONFIGURATION.HEADERS.A0_SEPARATE_COLONIES")]
         [JsonIgnore]
         public bool ColonySeparateResearch
         {
@@ -65,7 +65,7 @@ namespace ONI_Together
             set => Colonies.SeparateResearch = value;
         }
 
-        [Option("Shared dupe priorities", "On: Priorities/Consumables/Vitals/Skills screens show and edit every colony's dupes. Off: each player only sees their own dupes.", "0) Separate colonies")]
+        [Option("STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_SHARED_DUPE_MANAGEMENT", "STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_SHARED_DUPE_MANAGEMENT", "STRINGS.UI.CONFIGURATION.HEADERS.A0_SEPARATE_COLONIES")]
         [JsonIgnore]
         public bool ColonySharedDupeManagement
         {
@@ -73,7 +73,7 @@ namespace ONI_Together
             set => Colonies.SharedDupeManagement = value;
         }
 
-        [Option("Separate Printing Pod", "On: every colony has its own printing timer and its own choices. Off: one shared timer, first player to accept gets the print.", "0) Separate colonies")]
+        [Option("STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_SEPARATE_PRINTING_POD", "STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_SEPARATE_PRINTING_POD", "STRINGS.UI.CONFIGURATION.HEADERS.A0_SEPARATE_COLONIES")]
         [JsonIgnore]
         public bool ColonySeparatePrintingPod
         {
@@ -81,7 +81,7 @@ namespace ONI_Together
             set => Colonies.SeparatePrintingPod = value;
         }
 
-        [Option("Separate schedules", "On: every colony has its own schedules and only sees/edits those. Off: all schedules are shared.", "0) Separate colonies")]
+        [Option("STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_SEPARATE_SCHEDULES", "STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_SEPARATE_SCHEDULES", "STRINGS.UI.CONFIGURATION.HEADERS.A0_SEPARATE_COLONIES")]
         [JsonIgnore]
         public bool ColonySeparateSchedules
         {
@@ -89,7 +89,7 @@ namespace ONI_Together
             set => Colonies.SeparateSchedules = value;
         }
 
-        [Option("Help other colonies when idle", "With separate errands: dupes do their own colony's errands first, and only help other colonies when they have nothing of their own to do. Off: never help.", "0) Separate colonies")]
+        [Option("STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_HELP_OTHER_COLONIES", "STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_HELP_OTHER_COLONIES", "STRINGS.UI.CONFIGURATION.HEADERS.A0_SEPARATE_COLONIES")]
         [JsonIgnore]
         public bool ColonyHelpOtherColonies
         {
@@ -97,7 +97,7 @@ namespace ONI_Together
             set => Colonies.HelpOtherColonies = value;
         }
 
-        [Option("Cancel only your own orders", "The cancel tool only removes your colony's dig/mop/build/deconstruct orders, even when building protection is off.", "0) Separate colonies")]
+        [Option("STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_CANCEL_ONLY_OWN_ORDERS", "STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_CANCEL_ONLY_OWN_ORDERS", "STRINGS.UI.CONFIGURATION.HEADERS.A0_SEPARATE_COLONIES")]
         [JsonIgnore]
         public bool ColonyCancelOnlyOwnOrders
         {
@@ -105,7 +105,7 @@ namespace ONI_Together
             set => Colonies.CancelOnlyOwnOrders = value;
         }
 
-        [Option("Extra water geysers (new games)", "Water geysers / cool steam vents added to a freshly generated world (host). 0 = vanilla.", "0) Separate colonies")]
+        [Option("STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_EXTRA_WATER_GEYSERS", "STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_EXTRA_WATER_GEYSERS", "STRINGS.UI.CONFIGURATION.HEADERS.A0_SEPARATE_COLONIES")]
         [Limit(0, 12)]
         [JsonIgnore]
         public int ColonyExtraWaterGeysers
@@ -114,7 +114,7 @@ namespace ONI_Together
             set => Colonies.ExtraWaterGeysers = Mathf.Clamp(value, 0, 12);
         }
 
-        [Option("Water geysers near the host's base", "Water geysers placed 12-30 cells from the host's Printing Pod. Added once per save (existing saves too); raising the number later adds the difference. 0 = off.", "0) Separate colonies")]
+        [Option("STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_HOST_WATER_GEYSERS", "STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_HOST_WATER_GEYSERS", "STRINGS.UI.CONFIGURATION.HEADERS.A0_SEPARATE_COLONIES")]
         [Limit(0, 4)]
         [JsonIgnore]
         public int ColonyHostWaterGeysers
@@ -123,7 +123,7 @@ namespace ONI_Together
             set => Colonies.HostWaterGeysers = Mathf.Clamp(value, 0, 4);
         }
 
-        [Option("Background structure sync", "Host: every few seconds compare buildings, blueprints and plants with every client and fix only the blocks that differ (instead of waiting for a hard sync).", "0) Separate colonies")]
+        [Option("STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_BACKGROUND_STRUCTURE_SYNC", "STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_BACKGROUND_STRUCTURE_SYNC", "STRINGS.UI.CONFIGURATION.HEADERS.A0_SEPARATE_COLONIES")]
         [JsonIgnore]
         public bool ColonyBackgroundStructureSync
         {
@@ -131,7 +131,7 @@ namespace ONI_Together
             set => Colonies.BackgroundStructureSync = value;
         }
 
-        [Option("Share buildings, machines & food", "On: every colony's dupes may use/operate any building and eat/fetch from any storage; only commanding dupes stays separate. Off: each colony keeps its own.", "0) Separate colonies")]
+        [Option("STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_SHARED_RESOURCES", "STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_SHARED_RESOURCES", "STRINGS.UI.CONFIGURATION.HEADERS.A0_SEPARATE_COLONIES")]
         [JsonIgnore]
         public bool ColonySharedResources
         {
@@ -139,7 +139,7 @@ namespace ONI_Together
             set => Colonies.SharedResources = value;
         }
 
-        [Option("Colony name in dupe names", "New starting and printed dupes get the colony's name as a prefix (e.g. 'Sawadeeja Meep').", "0) Separate colonies")]
+        [Option("STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_PREFIX_DUPE_NAMES", "STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_PREFIX_DUPE_NAMES", "STRINGS.UI.CONFIGURATION.HEADERS.A0_SEPARATE_COLONIES")]
         [JsonIgnore]
         public bool ColonyPrefixDupeNames
         {
@@ -147,7 +147,7 @@ namespace ONI_Together
             set => Colonies.PrefixDupeNames = value;
         }
 
-        [Option("Verbose multiplayer log (slower)", "Write every ONI Together info line to Player.log. Off = only warnings (max 10/s). Turn on only when reporting a bug.", "0) Separate colonies")]
+        [Option("STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_VERBOSE_LOGGING", "STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_VERBOSE_LOGGING", "STRINGS.UI.CONFIGURATION.HEADERS.A0_SEPARATE_COLONIES")]
         [JsonIgnore]
         public bool ColonyVerboseLogging
         {
@@ -155,7 +155,7 @@ namespace ONI_Together
             set => Colonies.VerboseLogging = value;
         }
 
-        [Option("Territory radius (cells)", "Other colonies can't build/dig within this distance of a colony's Printing Pod. 0 = off.", "0) Separate colonies")]
+        [Option("STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_TERRITORY_RADIUS", "STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_TERRITORY_RADIUS", "STRINGS.UI.CONFIGURATION.HEADERS.A0_SEPARATE_COLONIES")]
         [Limit(0, 64)]
         [JsonIgnore]
         public int ColonyTerritoryRadius
@@ -164,7 +164,7 @@ namespace ONI_Together
             set => Colonies.TerritoryRadius = Mathf.Clamp(value, 0, 64);
         }
 
-        [Option("Asteroid size (%) for NEW games", "Scales the generated asteroid (100 = vanilla, 200 = twice as wide and tall). Only affects worlds generated while this mod is enabled.", "0) Separate colonies")]
+        [Option("STRINGS.UI.CONFIGURATION.TITLES.COLONIES.WORLD_SCALE_PERCENT", "STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.WORLD_SCALE_PERCENT", "STRINGS.UI.CONFIGURATION.HEADERS.A0_SEPARATE_COLONIES")]
         [Limit(100, 300)]
         [JsonIgnore]
         public int WorldScalePercent

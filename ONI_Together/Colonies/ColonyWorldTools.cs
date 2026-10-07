@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static ONI_Together.Colonies.ColonyLoc;
 
 namespace ONI_Together.Colonies
 {
@@ -66,7 +67,7 @@ namespace ONI_Together.Colonies
             {
                 if (mi == null) continue;
                 int mc = Grid.PosToCell(mi);
-                if (area.Contains(mc) || area.Contains(Grid.CellAbove(mc))) { reason = "A duplicant is standing there"; return false; }
+                if (area.Contains(mc) || area.Contains(Grid.CellAbove(mc))) { reason = T("A duplicant is standing there"); return false; }
             }
             foreach (var c in tpl.cells)
             {
@@ -80,17 +81,17 @@ namespace ONI_Together.Colonies
         /// <summary>Why the start template can't cover this cell (null = fine). Shared by validation and the placement overlay.</summary>
         public static string CellBlockReason(int tc)
         {
-            if (!InStartWorld(tc, 2)) return "Too close to the edge of the asteroid";
-            if (Grid.Element[tc].id == SimHashes.Unobtanium) return "Neutronium in the way";
+            if (!InStartWorld(tc, 2)) return T("Too close to the edge of the asteroid");
+            if (Grid.Element[tc].id == SimHashes.Unobtanium) return T("Neutronium in the way");
             for (int layer = 0; layer < (int)ObjectLayer.NumLayers; layer++)
             {
                 var go = Grid.Objects[tc, layer];
                 if (go == null) continue;
-                if (go.GetComponent<Telepad>() != null) return "Another Printing Pod is in the way";
-                if (go.GetComponent<Geyser>() != null) return "A geyser is in the way";
+                if (go.GetComponent<Telepad>() != null) return T("Another Printing Pod is in the way");
+                if (go.GetComponent<Geyser>() != null) return T("A geyser is in the way");
                 int owner = ColonyRegistry.GetOwner(go);
                 if (owner != ColonyRegistry.NoColony && go.GetComponent<Building>() != null)
-                    return $"Would overwrite {ColonyRegistry.Get(owner)?.Name ?? "another colony"}'s buildings";
+                    return F("Would overwrite {0}'s buildings", ColonyRegistry.Get(owner)?.Name ?? T("another colony"));
             }
             return null;
         }

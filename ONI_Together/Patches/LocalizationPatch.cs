@@ -48,10 +48,13 @@ namespace ONI_Together.Patches
 				using var _ = Profiler.Scope();
 
 				string code = Localization.GetLocale()?.Code;
+				ONI_Together.Colonies.ColonyLoc.Reset();
+				// Thai translation mods don't all use the code "th": fall back to th.po whenever the game runs in Thai
+				if (ONI_Together.Colonies.ColonyLoc.IsThai) code = "th";
 
 				if (code.IsNullOrWhiteSpace()) return;
 
-				string path = Path.Combine(ModPath, "translations", Localization.GetLocale().Code + ".po");
+				string path = Path.Combine(ModPath, "translations", code + ".po");
 
 				if (File.Exists(path))
 				{

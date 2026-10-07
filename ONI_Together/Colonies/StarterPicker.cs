@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using HarmonyLib;
 using UnityEngine;
+using static ONI_Together.Colonies.ColonyLoc;
 
 namespace ONI_Together.Colonies
 {
@@ -34,7 +35,7 @@ namespace ONI_Together.Colonies
                 scr.IsStarterMinion = true;
                 scr.InitializeContainers(); // 3 dupe cards, reroll enabled, generated as starters
                 if (scr.rejectButton != null) scr.rejectButton.gameObject.SetActive(false);
-                if (scr.title != null) scr.title.text = "Choose your starting Duplicants";
+                if (scr.title != null) scr.title.text = T("Choose your starting Duplicants");
                 scr.Show(true);
                 scr.StartCoroutine(AfterSpawn(scr));
                 return true;

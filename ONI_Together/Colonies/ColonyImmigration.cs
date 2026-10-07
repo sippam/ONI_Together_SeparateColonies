@@ -5,6 +5,7 @@ using HarmonyLib;
 using ONI_Together.Networking;
 using ONI_Together.Networking.Packets.Architecture;
 using UnityEngine;
+using static ONI_Together.Colonies.ColonyLoc;
 
 namespace ONI_Together.Colonies
 {
@@ -150,10 +151,10 @@ namespace ONI_Together.Colonies
         {
             if (!SeparateActive) return "";
             if (colonyId == HolderColony && Immigration.Instance != null)
-                return Immigration.Instance.ImmigrantsAvailable ? "printables ready" : $"next print in {Mathf.CeilToInt(Immigration.Instance.timeBeforeSpawn)}s";
+                return Immigration.Instance.ImmigrantsAvailable ? T("printables ready") : F("next print in {0}s", Mathf.CeilToInt(Immigration.Instance.timeBeforeSpawn));
             var c = ColonyRegistry.Get(colonyId);
             if (c == null || !c.Immigration.Initialized) return "";
-            return c.Immigration.ImmigrantAvailable ? "printables ready" : $"next print in {Mathf.CeilToInt(c.Immigration.TimeBeforeSpawn)}s";
+            return c.Immigration.ImmigrantAvailable ? T("printables ready") : F("next print in {0}s", Mathf.CeilToInt(c.Immigration.TimeBeforeSpawn));
         }
     }
 

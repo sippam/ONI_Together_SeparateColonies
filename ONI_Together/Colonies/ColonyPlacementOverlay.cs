@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static ONI_Together.Colonies.ColonyLoc;
 
 namespace ONI_Together.Colonies
 {
@@ -87,13 +88,13 @@ namespace ONI_Together.Colonies
                 if (x < 0 || y < 0 || x >= Grid.WidthInCells || y >= Grid.HeightInCells)
                 {
                     info.State = CellState.Blocked;
-                    _firstBlock = _firstBlock ?? "Too close to the edge of the asteroid";
+                    _firstBlock = _firstBlock ?? T("Too close to the edge of the asteroid");
                 }
                 else
                 {
                     int tc = Grid.XYToCell(x, y);
                     string block = ColonyWorldTools.CellBlockReason(tc);
-                    if (block == null && minionCells.Contains(tc)) block = "A duplicant is standing there";
+                    if (block == null && minionCells.Contains(tc)) block = T("A duplicant is standing there");
                     if (block != null) { info.State = CellState.Blocked; _firstBlock = _firstBlock ?? block; }
                     else info.State = Classify(tc);
                 }
@@ -158,9 +159,9 @@ namespace ONI_Together.Colonies
             get
             {
                 if (!_usingTemplate) return null;
-                string s = $"Base area: {_cells.Count} cells — free {_nFree}, cleared {_nCleared}";
-                if (_nKept > 0) s += $", buildings kept {_nKept}";
-                if (_nBlocked > 0) s += $", BLOCKED {_nBlocked}";
+                string s = F("Base area: {0} cells — free {1}, cleared {2}", _cells.Count, _nFree, _nCleared);
+                if (_nKept > 0) s += F(", buildings kept {0}", _nKept);
+                if (_nBlocked > 0) s += F(", BLOCKED {0}", _nBlocked);
                 return s;
             }
         }
@@ -209,7 +210,7 @@ namespace ONI_Together.Colonies
 
             if (_label == null)
             {
-                _label = new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, fontSize = 11, wordWrap = true };
+                _label = ColonyTheme.WithFont(new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, fontSize = 11, wordWrap = true });
                 _label.normal.textColor = Color.white;
             }
             foreach (var b in _buildings)

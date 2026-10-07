@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ONI_Together.Networking;
 using ONI_Together.Networking.Packets.Architecture;
 using UnityEngine;
+using static ONI_Together.Colonies.ColonyLoc;
 
 namespace ONI_Together.Colonies
 {
@@ -73,8 +74,8 @@ namespace ONI_Together.Colonies
         public static bool RequestFound(int cell, string colonyName, List<MinionStartingStats> starters, out string reason)
         {
             reason = null;
-            if (!ColonyRegistry.Enabled) { reason = "Separate colonies mode is off"; return false; }
-            if (ColonyRegistry.LocalColonyId != ColonyRegistry.NoColony) { reason = "You already have a colony"; return false; }
+            if (!ColonyRegistry.Enabled) { reason = T("Separate colonies mode is off"); return false; }
+            if (ColonyRegistry.LocalColonyId != ColonyRegistry.NoColony) { reason = T("You already have a colony"); return false; }
             if (!ValidateHomeCell(cell, out reason)) return false;
 
             string name = string.IsNullOrEmpty(colonyName) ? $"{LocalPlayerName()}'s colony" : colonyName;
@@ -99,7 +100,7 @@ namespace ONI_Together.Colonies
         public static bool ValidateHomeCell(int cell, out string reason)
         {
             reason = null;
-            if (!Grid.IsValidCell(cell)) { reason = "Invalid cell"; return false; }
+            if (!Grid.IsValidCell(cell)) { reason = T("Invalid cell"); return false; }
             var tpl = ColonyWorldTools.GetStartTemplate();
             if (tpl != null)
             {
@@ -115,7 +116,7 @@ namespace ONI_Together.Colonies
                 {
                     if (!def.IsValidPlaceLocation(null, cell, Orientation.Neutral, out string fail))
                     {
-                        reason = $"Can't place a Printing Pod here: {fail}";
+                        reason = F("Can't place a Printing Pod here: {0}", fail);
                         return false;
                     }
                 }
@@ -129,7 +130,7 @@ namespace ONI_Together.Colonies
                 int dx = x - hx, dy = y - hy;
                 if (dx * dx + dy * dy < minDist * minDist)
                 {
-                    reason = $"Too close to {c.Name} (need {minDist} cells)";
+                    reason = F("Too close to {0} (need {1} cells)", c.Name, minDist);
                     return false;
                 }
             }
@@ -144,15 +145,15 @@ namespace ONI_Together.Colonies
         {
             if (ColonyNet.InSession && !ColonyNet.IsHost) return;
             if (requester == 0) { Debug.LogWarning("[ONIT-Colonies] Found request without sender ignored"); return; }
-            if (!ColonyRegistry.Enabled) { ColonyNet.SendMessageTo(requester, "Host hasn't enabled separate colonies"); return; }
+            if (!ColonyRegistry.Enabled) { ColonyNet.SendMessageTo(requester, T("Host hasn't enabled separate colonies")); return; }
             if (ColonyRegistry.GetColonyOfPlayer(requester) != ColonyRegistry.NoColony)
             {
-                ColonyNet.SendMessageTo(requester, "You already have a colony");
+                ColonyNet.SendMessageTo(requester, T("You already have a colony"));
                 return;
             }
             if (!ValidateHomeCell(homeCell, out string reason))
             {
-                ColonyNet.SendMessageTo(requester, $"Can't found colony: {reason}");
+                ColonyNet.SendMessageTo(requester, F("Can't found colony: {0}", reason));
                 return;
             }
 
@@ -166,7 +167,7 @@ namespace ONI_Together.Colonies
             {
                 // stamp the same starting base the host's asteroid began with (clears the area, places pod + room);
                 // the stamp completes over a few sim ticks, then the dupes arrive
-                ColonyNet.SendMessageTo(requester, $"Building '{info.Name}'... (the game must be unpaused for this)");
+                ColonyNet.SendMessageTo(requester, F("Building '{0}'... (the game must be unpaused for this)", info.Name));
                 Grid.CellToXY(info.HomeCell, out int hx, out int hy);
                 var cells = ColonyWorldTools.TemplateCells(tpl, info.HomeCell);
                 TemplateLoader.Stamp(tpl, new Vector2(hx, hy), () =>
@@ -206,7 +207,7 @@ namespace ONI_Together.Colonies
         private static void AfterFounded(ColonyInfo info, ulong requester)
         {
             ColonyNet.BroadcastRegistry();
-            ColonyNet.SendMessageTo(requester, $"Colony '{info.Name}' founded — syncing the world...");
+            ColonyNet.SendMessageTo(requester, F("Colony '{0}' founded — syncing the world...", info.Name));
             // Clients don't simulate the new pod/dupes on their own; give everyone the host's exact world.
             ColonySession.ScheduleHardSync(3f, $"colony #{info.Id} founded");
         }
@@ -364,7 +365,7 @@ namespace ONI_Together.Colonies
             c.Name = name;
             ColonyRegistry.RaiseChanged();
             ColonyNet.BroadcastRegistry();
-            ColonyNet.SendMessageTo(player, $"Colony renamed to '{name}'");
+            ColonyNet.SendMessageTo(player, F("Colony renamed to '{0}'", name));
         }
 
         public static string LocalPlayerName()

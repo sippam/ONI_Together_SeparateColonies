@@ -1,0 +1,1616 @@
+msgid ""
+msgstr ""
+"Language: th\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.HEADERS.A_HOST_SETTINGS
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.HEADERS.A_HOST_SETTINGS"
+msgid "Host Settings"
+msgstr "ตั้งค่าโฮสต์"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.HEADERS.B_CLIENT_SETTINGS
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.HEADERS.B_CLIENT_SETTINGS"
+msgid "Client Settings"
+msgstr "ตั้งค่าไคลเอนต์"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.HEADERS.C_NETWORK_SETTINGS
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.HEADERS.C_NETWORK_SETTINGS"
+msgid "General Network Settings"
+msgstr "ตั้งค่าเครือข่ายทั่วไป"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.HEADERS.D_CURSOR_SETTINGS
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.HEADERS.D_CURSOR_SETTINGS"
+msgid "Cursor Settings"
+msgstr "ตั้งค่าเคอร์เซอร์"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.HEADERS.E_MISC_SETTINGS
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.HEADERS.E_MISC_SETTINGS"
+msgid "Misc Settings"
+msgstr "ตั้งค่าอื่น ๆ"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.HEADERS.SERVER_SETTINGS
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.HEADERS.SERVER_SETTINGS"
+msgid "Server Settings"
+msgstr "ตั้งค่าเซิร์ฟเวอร์"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.HOST_SETTINGS.MAX_MESSAGES_PER_POLL
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.HOST_SETTINGS.MAX_MESSAGES_PER_POLL"
+msgid "Max Messages Per Poll"
+msgstr "ข้อความสูงสุดต่อรอบ"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.HOST_SETTINGS.SAVE_FILE_TRANSFER_CHUNK
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.HOST_SETTINGS.SAVE_FILE_TRANSFER_CHUNK"
+msgid "Save Chunk Size (KB)"
+msgstr "ขนาดชิ้นส่วนเซฟ (KB)"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.HOST_SETTINGS.SERVER_SETTINGS.HARD_SYNC_AT_CYCLE_START
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.HOST_SETTINGS.SERVER_SETTINGS.HARD_SYNC_AT_CYCLE_START"
+msgid "Hard Sync On Cycle Start"
+msgstr "Hard Sync ตอนเริ่มรอบวัน"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.HOST_SETTINGS.SERVER_SETTINGS.TIMEOUT_SECONDS
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.HOST_SETTINGS.SERVER_SETTINGS.TIMEOUT_SECONDS"
+msgid "Connection Timeout (seconds)"
+msgstr "เวลาหมดการเชื่อมต่อ (วินาที)"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.HOST_SETTINGS.SERVER_SETTINGS.PAUSE_SIM_ON_PLAYER_DISCONNECT
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.HOST_SETTINGS.SERVER_SETTINGS.PAUSE_SIM_ON_PLAYER_DISCONNECT"
+msgid "Pause Simulation On Player Disconnect"
+msgstr "หยุดเกมเมื่อมีผู้เล่นหลุด"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.CLIENT_SETTINGS.MAX_MESSAGES_PER_POLL
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.CLIENT_SETTINGS.MAX_MESSAGES_PER_POLL"
+msgid "Max Messages Per Poll"
+msgstr "ข้อความสูงสุดต่อรอบ"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.CLIENT_SETTINGS.TIMEOUT_SECONDS
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.CLIENT_SETTINGS.TIMEOUT_SECONDS"
+msgid "Connection Timeout (seconds)"
+msgstr "เวลาหมดการเชื่อมต่อ (วินาที)"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.NETWORK_SETTINGS.ENABLE_PACKET_QUEUE
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.NETWORK_SETTINGS.ENABLE_PACKET_QUEUE"
+msgid "Enable Packet Queue"
+msgstr "เปิดคิวแพ็กเก็ต"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.NETWORK_SETTINGS.MAX_PACKETS_PER_SECOND
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.NETWORK_SETTINGS.MAX_PACKETS_PER_SECOND"
+msgid "Max Packets Per Second"
+msgstr "แพ็กเก็ตสูงสุดต่อวินาที"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.NETWORK_SETTINGS.BYPASS_PROTOCOL_CHECKS
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.NETWORK_SETTINGS.BYPASS_PROTOCOL_CHECKS"
+msgid "Bypass Protocol Checks"
+msgstr "ข้ามการตรวจโปรโตคอล"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.CURSOR_SETTINGS.RANDOM_COLOR
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.CURSOR_SETTINGS.RANDOM_COLOR"
+msgid "Use Random Color"
+msgstr "ใช้สีสุ่ม"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.CURSOR_SETTINGS.CURSOR_COLOR
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.CURSOR_SETTINGS.CURSOR_COLOR"
+msgid "Cursor Color"
+msgstr "สีเคอร์เซอร์"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.MISC_SETTINGS.PUFT_LOADINGSCREEN
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.MISC_SETTINGS.PUFT_LOADINGSCREEN"
+msgid "Use Puft Loading Icon"
+msgstr "ใช้ไอคอนโหลดรูป Puft"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.MISC_SETTINGS.LOADINGSCREEN_COLOR
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.MISC_SETTINGS.LOADINGSCREEN_COLOR"
+msgid "Use Custom Loading Screen Color"
+msgstr "ใช้สีหน้าโหลดแบบกำหนดเอง"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.HOST_SETTINGS.MAX_MESSAGES_PER_POLL
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.HOST_SETTINGS.MAX_MESSAGES_PER_POLL"
+msgid "STEAMWORKS ONLY:\nMaximum number of incoming Steam networking messages processed per poll tick on the server.\nHigher values reduce latency spikes under heavy traffic but may increase CPU usage per frame.\nLower values improve frame stability but can increase message backlog and delay processing during bursts.\n\nRecommended range: 32–128 (default: 128)"
+msgstr "เฉพาะ STEAMWORKS:\nจำนวนข้อความเครือข่าย Steam ที่เซิร์ฟเวอร์ประมวลผลได้สูงสุดต่อหนึ่งรอบ\nค่าสูงช่วยลดอาการกระตุกตอนข้อมูลเยอะ แต่ใช้ CPU ต่อเฟรมมากขึ้น\nค่าต่ำทำให้เฟรมเรตนิ่งกว่า แต่ข้อความอาจค้างและช้าลงตอนข้อมูลพุ่ง\n\nช่วงที่แนะนำ: 32–128 (ค่าเริ่มต้น: 128)"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.HOST_SETTINGS.SAVE_FILE_TRANSFER_CHUNK
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.HOST_SETTINGS.SAVE_FILE_TRANSFER_CHUNK"
+msgid "Size (in kilobytes) of each data chunk used when transferring save files over the network.\nSmaller values reduce bandwidth spikes and improve reliability on unstable connections but increase transfer time due to more packets.\nLarger values speed up transfers but may cause higher bandwidth bursts or fragmentation.\n\nRecommended range: 16–256 KB (default: 256 KB)."
+msgstr "ขนาด (กิโลไบต์) ของแต่ละชิ้นข้อมูลตอนส่งไฟล์เซฟผ่านเครือข่าย\nค่าเล็กลดการใช้แบนด์วิดท์แบบพุ่ง และเสถียรกว่าบนเน็ตที่ไม่นิ่ง แต่ส่งนานขึ้นเพราะแพ็กเก็ตเยอะ\nค่าใหญ่ส่งเร็วขึ้น แต่แบนด์วิดท์อาจพุ่งหรือแตกแพ็กเก็ต\n\nช่วงที่แนะนำ: 16–256 KB (ค่าเริ่มต้น: 256 KB)"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.HOST_SETTINGS.SERVER_SETTINGS.HARD_SYNC_AT_CYCLE_START
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.HOST_SETTINGS.SERVER_SETTINGS.HARD_SYNC_AT_CYCLE_START"
+msgid "Perform a hard sync at the start of every new cycle\n\nDoes not use up your one hard sync per cycle"
+msgstr "ทำ Hard Sync ทุกครั้งที่เริ่มรอบวันใหม่\n\nไม่นับรวมกับสิทธิ์ Hard Sync 1 ครั้งต่อรอบวัน"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.HOST_SETTINGS.SERVER_SETTINGS.TIMEOUT_SECONDS
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.HOST_SETTINGS.SERVER_SETTINGS.TIMEOUT_SECONDS"
+msgid "How long the server waits (in seconds) for a response from a connecting or loading client before timing out.\nIncrease this if your friends take a long time to load into the game.\n\nMinimum: 30. (default: 30)"
+msgstr "ระยะเวลา (วินาที) ที่เซิร์ฟเวอร์รอคำตอบจากไคลเอนต์ที่กำลังเชื่อมต่อหรือโหลดก่อนจะตัด\nเพิ่มค่านี้ถ้าเพื่อนโหลดเข้าเกมนาน\n\nต่ำสุด: 30 (ค่าเริ่มต้น: 30)"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.HOST_SETTINGS.SERVER_SETTINGS.PAUSE_SIM_ON_PLAYER_DISCONNECT
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.HOST_SETTINGS.SERVER_SETTINGS.PAUSE_SIM_ON_PLAYER_DISCONNECT"
+msgid "Automatically pauses the simulation when a player disconnects from the server."
+msgstr "หยุดเกมอัตโนมัติเมื่อมีผู้เล่นหลุดจากเซิร์ฟเวอร์"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.CLIENT_SETTINGS.MAX_MESSAGES_PER_POLL
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.CLIENT_SETTINGS.MAX_MESSAGES_PER_POLL"
+msgid "STEAMWORKS ONLY:\nMaximum number of incoming Steam networking messages processed per poll tick on the client.\nHigher values reduce input and state update latency under heavy network load but may increase per-frame CPU usage.\nLower values improve frame stability but can cause message backlog and delayed processing during traffic spikes.\n\nRecommended range: 8–64 (default: 16)"
+msgstr "เฉพาะ STEAMWORKS:\nจำนวนข้อความเครือข่าย Steam ที่ไคลเอนต์ประมวลผลได้สูงสุดต่อหนึ่งรอบ\nค่าสูงช่วยลดความหน่วงของการสั่งงานและการอัปเดตตอนเน็ตหนัก แต่ใช้ CPU ต่อเฟรมมากขึ้น\nค่าต่ำทำให้เฟรมเรตนิ่งกว่า แต่ข้อความอาจค้างตอนข้อมูลพุ่ง\n\nช่วงที่แนะนำ: 8–64 (ค่าเริ่มต้น: 16)"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.CLIENT_SETTINGS.TIMEOUT_SECONDS
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.CLIENT_SETTINGS.TIMEOUT_SECONDS"
+msgid "How long the client waits (in seconds) for a response from the server before timing out.\nIncrease this if you are timing out while trying to connect.\n\nMinimum: 30. (default: 30)"
+msgstr "ระยะเวลา (วินาที) ที่ไคลเอนต์รอคำตอบจากเซิร์ฟเวอร์ก่อนจะตัด\nเพิ่มค่านี้ถ้าเชื่อมต่อแล้วหลุดเพราะหมดเวลา\n\nต่ำสุด: 30 (ค่าเริ่มต้น: 30)"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.NETWORK_SETTINGS.ENABLE_PACKET_QUEUE
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.NETWORK_SETTINGS.ENABLE_PACKET_QUEUE"
+msgid "When enabled, outgoing packets are queued and sent at a limited rate per frame to prevent network saturation.\nWhen disabled, all packets are sent immediately without throttling."
+msgstr "เมื่อเปิด แพ็กเก็ตขาออกจะเข้าคิวและส่งแบบจำกัดจำนวนต่อเฟรม เพื่อไม่ให้เครือข่ายล้น\nเมื่อปิด จะส่งทุกแพ็กเก็ตทันทีโดยไม่จำกัด"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.NETWORK_SETTINGS.MAX_PACKETS_PER_SECOND
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.NETWORK_SETTINGS.MAX_PACKETS_PER_SECOND"
+msgid "Maximum number of packets to send per second per connection when the packet queue is enabled.\nExcess packets are buffered and sent in subsequent frames.\n\nRanges: (500 - 1000)"
+msgstr "จำนวนแพ็กเก็ตสูงสุดที่ส่งต่อวินาทีต่อการเชื่อมต่อ เมื่อเปิดคิวแพ็กเก็ต\nส่วนที่เกินจะพักไว้แล้วส่งในเฟรมถัดไป\n\nช่วง: (500 - 1000)"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.NETWORK_SETTINGS.BYPASS_PROTOCOL_CHECKS
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.NETWORK_SETTINGS.BYPASS_PROTOCOL_CHECKS"
+msgid "Ignores protocol version, packet registry fingerprint, and mod version mismatches during connection handshake.\n\nUse this only for cross-platform testing between Debug and Release builds."
+msgstr "ไม่สนใจเวอร์ชันโปรโตคอล ลายนิ้วมือรายการแพ็กเก็ต และเวอร์ชันม็อดที่ไม่ตรงกันตอนเชื่อมต่อ\n\nใช้เฉพาะตอนทดสอบระหว่างบิลด์ Debug กับ Release เท่านั้น"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.CURSOR_SETTINGS.RANDOM_COLOR
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.CURSOR_SETTINGS.RANDOM_COLOR"
+msgid "Select a random color for your cursor during online sessions."
+msgstr "สุ่มสีเคอร์เซอร์ของคุณตอนเล่นออนไลน์"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.CURSOR_SETTINGS.CURSOR_COLOR
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.CURSOR_SETTINGS.CURSOR_COLOR"
+msgid "The color of your player cursor for yourself during an online session\n(visible to other players in the session)"
+msgstr "สีเคอร์เซอร์ของคุณตอนเล่นออนไลน์\n(ผู้เล่นคนอื่นในเซสชันจะเห็นด้วย)"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.MISC_SETTINGS.PUFT_LOADINGSCREEN
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.MISC_SETTINGS.PUFT_LOADINGSCREEN"
+msgid "Override the loading icon with a Puft."
+msgstr "เปลี่ยนไอคอนตอนโหลดเป็นรูป Puft"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.MISC_SETTINGS.LOADINGSCREEN_COLOR
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.MISC_SETTINGS.LOADINGSCREEN_COLOR"
+msgid "Override the purple background of the loading screen with turquoise."
+msgstr "เปลี่ยนพื้นหลังสีม่วงของหน้าโหลดเป็นสีฟ้าเขียว"
+
+#. ONI_Together.STRINGS.UI.PROTOCOL.NO_METADATA
+msgctxt "ONI_Together.STRINGS.UI.PROTOCOL.NO_METADATA"
+msgid "Peer is running a build without protocol metadata."
+msgstr "อีกฝั่งใช้บิลด์ที่ไม่มีข้อมูลโปรโตคอล"
+
+#. ONI_Together.STRINGS.UI.PROTOCOL.PROTOCOL_MISMATCH
+msgctxt "ONI_Together.STRINGS.UI.PROTOCOL.PROTOCOL_MISMATCH"
+msgid "Protocol mismatch. Host={0}, Peer={1}."
+msgstr "โปรโตคอลไม่ตรงกัน โฮสต์={0}, อีกฝั่ง={1}"
+
+#. ONI_Together.STRINGS.UI.PROTOCOL.PACKET_REGISTRY_MISMATCH
+msgctxt "ONI_Together.STRINGS.UI.PROTOCOL.PACKET_REGISTRY_MISMATCH"
+msgid "Packet registry mismatch. Host={0}, Peer={1}."
+msgstr "รายการแพ็กเก็ตไม่ตรงกัน โฮสต์={0}, อีกฝั่ง={1}"
+
+#. ONI_Together.STRINGS.UI.PROTOCOL.MOD_VERSION_MISMATCH
+msgctxt "ONI_Together.STRINGS.UI.PROTOCOL.MOD_VERSION_MISMATCH"
+msgid "Mod version mismatch. Host={0}, Peer={1}."
+msgstr "เวอร์ชันม็อดไม่ตรงกัน โฮสต์={0}, อีกฝั่ง={1}"
+
+#. ONI_Together.STRINGS.UI.PROTOCOL.INCOMPATIBLE
+msgctxt "ONI_Together.STRINGS.UI.PROTOCOL.INCOMPATIBLE"
+msgid "Peer is running an incompatible build."
+msgstr "อีกฝั่งใช้บิลด์ที่เข้ากันไม่ได้"
+
+#. ONI_Together.STRINGS.UI.PROTOCOL.VALIDATION.TITLE
+msgctxt "ONI_Together.STRINGS.UI.PROTOCOL.VALIDATION.TITLE"
+msgid "Protocol mismatch"
+msgstr "โปรโตคอลไม่ตรงกัน"
+
+#. ONI_Together.STRINGS.UI.PROTOCOL.VALIDATION.NO_METADATA
+msgctxt "ONI_Together.STRINGS.UI.PROTOCOL.VALIDATION.NO_METADATA"
+msgid "The host is running a build without protocol metadata. Update both peers to the same build."
+msgstr "โฮสต์ใช้บิลด์ที่ไม่มีข้อมูลโปรโตคอล อัปเดตทั้งสองฝั่งให้เป็นบิลด์เดียวกัน"
+
+#. ONI_Together.STRINGS.UI.PROTOCOL.VALIDATION.REJECTED
+msgctxt "ONI_Together.STRINGS.UI.PROTOCOL.VALIDATION.REJECTED"
+msgid "The host rejected this client due to an incompatible network protocol."
+msgstr "โฮสต์ปฏิเสธการเชื่อมต่อเพราะโปรโตคอลเครือข่ายเข้ากันไม่ได้"
+
+#. ONI_Together.STRINGS.UI.PROTOCOL.VALIDATION.PROTOCOL_MISMATCH
+msgctxt "ONI_Together.STRINGS.UI.PROTOCOL.VALIDATION.PROTOCOL_MISMATCH"
+msgid "Host protocol={0}, client protocol={1}."
+msgstr "โปรโตคอลโฮสต์={0}, โปรโตคอลไคลเอนต์={1}"
+
+#. ONI_Together.STRINGS.UI.PROTOCOL.VALIDATION.FINGERPRINT_MISMATCH
+msgctxt "ONI_Together.STRINGS.UI.PROTOCOL.VALIDATION.FINGERPRINT_MISMATCH"
+msgid "Host packet fingerprint={0}, client fingerprint={1}."
+msgstr "ลายนิ้วมือแพ็กเก็ตโฮสต์={0}, ไคลเอนต์={1}"
+
+#. ONI_Together.STRINGS.UI.SERVERBROWSER.MULTIPLAYER_SESSION_TITLE
+msgctxt "ONI_Together.STRINGS.UI.SERVERBROWSER.MULTIPLAYER_SESSION_TITLE"
+msgid "Multiplayer Session"
+msgstr "เซสชันผู้เล่นหลายคน"
+
+#. ONI_Together.STRINGS.UI.SERVERBROWSER.LOBBY_CODE
+msgctxt "ONI_Together.STRINGS.UI.SERVERBROWSER.LOBBY_CODE"
+msgid "Lobby Code:"
+msgstr "รหัสล็อบบี้:"
+
+#. ONI_Together.STRINGS.UI.SERVERBROWSER.COPY
+msgctxt "ONI_Together.STRINGS.UI.SERVERBROWSER.COPY"
+msgid "Copy"
+msgstr "คัดลอก"
+
+#. ONI_Together.STRINGS.UI.SERVERBROWSER.COPIED
+msgctxt "ONI_Together.STRINGS.UI.SERVERBROWSER.COPIED"
+msgid "Copied!"
+msgstr "คัดลอกแล้ว!"
+
+#. ONI_Together.STRINGS.UI.SERVERBROWSER.CONNECTED_PLAYERS
+msgctxt "ONI_Together.STRINGS.UI.SERVERBROWSER.CONNECTED_PLAYERS"
+msgid "Connected Players: {0}"
+msgstr "ผู้เล่นที่เชื่อมต่อ: {0}"
+
+#. ONI_Together.STRINGS.UI.SERVERBROWSER.TITLE
+msgctxt "ONI_Together.STRINGS.UI.SERVERBROWSER.TITLE"
+msgid "Public Lobby Browser"
+msgstr "ค้นหาล็อบบี้สาธารณะ"
+
+#. ONI_Together.STRINGS.UI.SERVERBROWSER.HEADERS.COLONY
+msgctxt "ONI_Together.STRINGS.UI.SERVERBROWSER.HEADERS.COLONY"
+msgid "Colony"
+msgstr "โคโลนี"
+
+#. ONI_Together.STRINGS.UI.SERVERBROWSER.HEADERS.HOST
+msgctxt "ONI_Together.STRINGS.UI.SERVERBROWSER.HEADERS.HOST"
+msgid "Host"
+msgstr "โฮสต์"
+
+#. ONI_Together.STRINGS.UI.SERVERBROWSER.HEADERS.PLAYERS
+msgctxt "ONI_Together.STRINGS.UI.SERVERBROWSER.HEADERS.PLAYERS"
+msgid "Players"
+msgstr "ผู้เล่น"
+
+#. ONI_Together.STRINGS.UI.SERVERBROWSER.HEADERS.CYCLE
+msgctxt "ONI_Together.STRINGS.UI.SERVERBROWSER.HEADERS.CYCLE"
+msgid "Cycle"
+msgstr "รอบวัน"
+
+#. ONI_Together.STRINGS.UI.SERVERBROWSER.HEADERS.DUPES
+msgctxt "ONI_Together.STRINGS.UI.SERVERBROWSER.HEADERS.DUPES"
+msgid "Dupes"
+msgstr "ดูปลิแคนท์"
+
+#. ONI_Together.STRINGS.UI.SERVERBROWSER.HEADERS.PING
+msgctxt "ONI_Together.STRINGS.UI.SERVERBROWSER.HEADERS.PING"
+msgid "Ping"
+msgstr "ปิง"
+
+#. ONI_Together.STRINGS.UI.SERVERBROWSER.JOIN_BY_CODE
+msgctxt "ONI_Together.STRINGS.UI.SERVERBROWSER.JOIN_BY_CODE"
+msgid "Join by Code"
+msgstr "เข้าด้วยรหัส"
+
+#. ONI_Together.STRINGS.UI.SERVERBROWSER.BACK
+msgctxt "ONI_Together.STRINGS.UI.SERVERBROWSER.BACK"
+msgid "Back"
+msgstr "กลับ"
+
+#. ONI_Together.STRINGS.UI.SERVERBROWSER.LOADING_LOBBIES
+msgctxt "ONI_Together.STRINGS.UI.SERVERBROWSER.LOADING_LOBBIES"
+msgid "Loading Lobbies..."
+msgstr "กำลังโหลดล็อบบี้..."
+
+#. ONI_Together.STRINGS.UI.SERVERBROWSER.NO_PUBLIC_LOBBIES_FOUND
+msgctxt "ONI_Together.STRINGS.UI.SERVERBROWSER.NO_PUBLIC_LOBBIES_FOUND"
+msgid "No public lobbies found. Try hosting your own!"
+msgstr "ไม่พบล็อบบี้สาธารณะ ลองเปิดห้องเองดูสิ!"
+
+#. ONI_Together.STRINGS.UI.SERVERBROWSER.FOUND_X_LOBBIES
+msgctxt "ONI_Together.STRINGS.UI.SERVERBROWSER.FOUND_X_LOBBIES"
+msgid "Found {0} joinable lobby(s)"
+msgstr "พบ {0} ล็อบบี้ที่เข้าได้"
+
+#. ONI_Together.STRINGS.UI.SERVERBROWSER.JOIN_BUTTON
+msgctxt "ONI_Together.STRINGS.UI.SERVERBROWSER.JOIN_BUTTON"
+msgid "Join"
+msgstr "เข้าร่วม"
+
+#. ONI_Together.STRINGS.UI.SERVERBROWSER.FRIEND_ONLY
+msgctxt "ONI_Together.STRINGS.UI.SERVERBROWSER.FRIEND_ONLY"
+msgid "Friends Only"
+msgstr "เฉพาะเพื่อน"
+
+#. ONI_Together.STRINGS.UI.SERVERBROWSER.PASSWORD_REQUIRED
+msgctxt "ONI_Together.STRINGS.UI.SERVERBROWSER.PASSWORD_REQUIRED"
+msgid "Password Required"
+msgstr "ต้องใช้รหัสผ่าน"
+
+#. ONI_Together.STRINGS.UI.SERVERBROWSER.PASSWORD_INCORRECT
+msgctxt "ONI_Together.STRINGS.UI.SERVERBROWSER.PASSWORD_INCORRECT"
+msgid "Incorrect password"
+msgstr "รหัสผ่านไม่ถูกต้อง"
+
+#. ONI_Together.STRINGS.UI.SERVERBROWSER.CANCEL
+msgctxt "ONI_Together.STRINGS.UI.SERVERBROWSER.CANCEL"
+msgid "Cancel"
+msgstr "ยกเลิก"
+
+#. ONI_Together.STRINGS.UI.SERVERBROWSER.REFRESH
+msgctxt "ONI_Together.STRINGS.UI.SERVERBROWSER.REFRESH"
+msgid "Refresh"
+msgstr "รีเฟรช"
+
+#. ONI_Together.STRINGS.UI.SERVERBROWSER.SEARCH
+msgctxt "ONI_Together.STRINGS.UI.SERVERBROWSER.SEARCH"
+msgid "{0} Search..."
+msgstr "{0} ค้นหา..."
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.MANAGER.WARNING_MOD_HASH_MISMATCH
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.MANAGER.WARNING_MOD_HASH_MISMATCH"
+msgid "Mod hash mismatch - possible mod order difference"
+msgstr "ค่าแฮชม็อดไม่ตรงกัน - ลำดับม็อดอาจต่างกัน"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.MANAGER.MISSING_MODS
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.MANAGER.MISSING_MODS"
+msgid "{0} missing mods"
+msgstr "ขาดม็อด {0} ตัว"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.MANAGER.EXTRA_MODS
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.MANAGER.EXTRA_MODS"
+msgid "{0} extra mods"
+msgstr "มีม็อดเกิน {0} ตัว"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.MANAGER.VERSION_MISMATCHES
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.MANAGER.VERSION_MISMATCHES"
+msgid "{0} version mismatches"
+msgstr "เวอร์ชันไม่ตรงกัน {0} ตัว"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.MANAGER.MOD_INCOMPATIBILITY
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.MANAGER.MOD_INCOMPATIBILITY"
+msgid "Mod incompatibility: {0}"
+msgstr "ม็อดเข้ากันไม่ได้: {0}"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.HEADER_TITLE
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.HEADER_TITLE"
+msgid "Mod Compatibility Error"
+msgstr "ม็อดเข้ากันไม่ได้"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.HEADER_TITLE_ERROR
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.HEADER_TITLE_ERROR"
+msgid "Mod Compatibility Error: {0}"
+msgstr "ม็อดเข้ากันไม่ได้: {0}"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.DISABLE_MODS
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.DISABLE_MODS"
+msgid "DISABLED MODS (enable these):"
+msgstr "ม็อดที่ปิดอยู่ (เปิดตัวเหล่านี้):"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.MISSING_MODS
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.MISSING_MODS"
+msgid "MISSING MODS (install these):"
+msgstr "ม็อดที่ขาด (ติดตั้งตัวเหล่านี้):"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.EXTRA_MODS
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.EXTRA_MODS"
+msgid "EXTRA MODS (disable these):"
+msgstr "ม็อดที่เกิน (ปิดตัวเหล่านี้):"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.VERSION_MISMATCHES
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.VERSION_MISMATCHES"
+msgid "VERSION MISMATCHES (update these):"
+msgstr "เวอร์ชันไม่ตรงกัน (อัปเดตตัวเหล่านี้):"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.YOU_HAVE_EXTRA_MODS_ALLOWED
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.YOU_HAVE_EXTRA_MODS_ALLOWED"
+msgid "You have extra mods (this is allowed):"
+msgstr "คุณมีม็อดเกิน (อนุญาต):"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.EXTRA_MODS_YOU_HAVE
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.EXTRA_MODS_YOU_HAVE"
+msgid "EXTRA MODS (you have these):"
+msgstr "ม็อดที่เกิน (คุณมีตัวเหล่านี้):"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.ENSURE_HOST_CONFIG
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.ENSURE_HOST_CONFIG"
+msgid "Please ensure your mods match the host's configuration."
+msgstr "โปรดตรวจสอบว่าม็อดของคุณตรงกับของโฮสต์"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.BUTTON_INSTALL
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.BUTTON_INSTALL"
+msgid "Install"
+msgstr "ติดตั้ง"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.BUTTON_INSTALL_ALL
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.BUTTON_INSTALL_ALL"
+msgid "Install All"
+msgstr "ติดตั้งทั้งหมด"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.BUTTON_VIEW
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.BUTTON_VIEW"
+msgid "View"
+msgstr "ดู"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.BUTTON_UPDATE
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.BUTTON_UPDATE"
+msgid "Update"
+msgstr "อัปเดต"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.BUTTON_OK
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.BUTTON_OK"
+msgid "Ok"
+msgstr "ตกลง"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.BUTTON_ENABLE
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.BUTTON_ENABLE"
+msgid "Enable"
+msgstr "เปิด"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.BUTTON_ENABLE_ALL
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.BUTTON_ENABLE_ALL"
+msgid "Enable All"
+msgstr "เปิดทั้งหมด"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.BUTTON_CLOSE
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.BUTTON_CLOSE"
+msgid "Close"
+msgstr "ปิด"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.INSTRUCTIONS
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.INSTRUCTIONS"
+msgid "Install/disable the required mods, then try connecting again."
+msgstr "ติดตั้ง/ปิดม็อดที่จำเป็น แล้วลองเชื่อมต่ออีกครั้ง"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.CONNECTION_ALLOWED
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.CONNECTION_ALLOWED"
+msgid "Connection allowed. Your extra mods shouldn't cause issues."
+msgstr "อนุญาตให้เชื่อมต่อ ม็อดที่เกินมาไม่น่าจะมีปัญหา"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.CONNECTION_ALLOWED_HEADER
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.CONNECTION_ALLOWED_HEADER"
+msgid "Connection Allowed"
+msgstr "อนุญาตให้เชื่อมต่อ"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.YOU_HAVE_EXTRA_MODS
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.YOU_HAVE_EXTRA_MODS"
+msgid "You have {0} extra mod(s) that the host doesn't have."
+msgstr "คุณมีม็อดเกิน {0} ตัวที่โฮสต์ไม่มี"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.ALLOWED_SHOULDNT_CAUSE_ISSUES
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.ALLOWED_SHOULDNT_CAUSE_ISSUES"
+msgid "This is allowed and shouldn't cause issues."
+msgstr "อนุญาต และไม่น่าจะมีปัญหา"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.YOUR_EXTRA_MODS
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.YOUR_EXTRA_MODS"
+msgid "Your extra mods:"
+msgstr "ม็อดที่เกินของคุณ:"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.MODS_ENABLED_SUCCESSFULLY
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.MODS_ENABLED_SUCCESSFULLY"
+msgid "Mods enabled successfully!\nPlease restart the game for changes to take effect."
+msgstr "เปิดม็อดเรียบร้อย!\nกรุณารีสตาร์ทเกมเพื่อให้มีผล"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.ALL_MODS_ENABLED
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.ALL_MODS_ENABLED"
+msgid "All mods have been enabled!"
+msgstr "เปิดม็อดทั้งหมดแล้ว!"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.RESTART
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.RESTART"
+msgid "Close this window to restart the game and apply changes."
+msgstr "ปิดหน้าต่างนี้เพื่อรีสตาร์ทเกมและใช้การเปลี่ยนแปลง"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.MODS_CHANGED
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.MODS_CHANGED"
+msgid "Mods have been enabled. Close this window to restart the game."
+msgstr "เปิดม็อดแล้ว ปิดหน้าต่างนี้เพื่อรีสตาร์ทเกม"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.INSTALL_DISABLE_RECONNECT
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYDIALOG.INSTALL_DISABLE_RECONNECT"
+msgid "Install/disable mods, then reconnect.\nPress ESC to close."
+msgstr "ติดตั้ง/ปิดม็อด แล้วเชื่อมต่อใหม่\nกด ESC เพื่อปิด"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYRESULT.APPROVED
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYRESULT.APPROVED"
+msgid "Approved"
+msgstr "ผ่าน"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYRESULT.APPROVED_EXTRA
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYRESULT.APPROVED_EXTRA"
+msgid "Compatible (client has {0} extra mod(s))"
+msgstr "เข้ากันได้ (ไคลเอนต์มีม็อดเกิน {0} ตัว)"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYRESULT.APPROVED_COMPATIBLE
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYRESULT.APPROVED_COMPATIBLE"
+msgid "Compatible"
+msgstr "เข้ากันได้"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYRESULT.REJECT_NOT_A_HOST
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYRESULT.REJECT_NOT_A_HOST"
+msgid "Internal error: not a host"
+msgstr "ข้อผิดพลาดภายใน: ไม่ใช่โฮสต์"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYRESULT.REJECT_GAME_VERSION_MISMATCH
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYRESULT.REJECT_GAME_VERSION_MISMATCH"
+msgid "Game version mismatch: Host={0}, Client={1}"
+msgstr "เวอร์ชันเกมไม่ตรงกัน: โฮสต์={0}, ไคลเอนต์={1}"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYRESULT.COMPATIBILITY_ISCOMPATIBLE
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYRESULT.COMPATIBILITY_ISCOMPATIBLE"
+msgid "Compatible: {0}"
+msgstr "เข้ากันได้: {0}"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYRESULT.COMPATIBILITY_INCOMPATIBLE
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYRESULT.COMPATIBILITY_INCOMPATIBLE"
+msgid "Incompatible: {0} ({1})"
+msgstr "เข้ากันไม่ได้: {0} ({1})"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYRESULT.COMPATIBILITY_MISSING
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYRESULT.COMPATIBILITY_MISSING"
+msgid "{0} missing"
+msgstr "ขาด {0}"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYRESULT.COMPATIBILITY_EXTRA
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYRESULT.COMPATIBILITY_EXTRA"
+msgid "{0} extra"
+msgstr "เกิน {0}"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYRESULT.COMPATIBILITY_MISMATCH
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYRESULT.COMPATIBILITY_MISMATCH"
+msgid "{0} version mismatches"
+msgstr "เวอร์ชันไม่ตรงกัน {0} ตัว"
+
+#. ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYRESULT.REJECT_VERIFICATION_ERROR
+msgctxt "ONI_Together.STRINGS.UI.MODCOMPATIBILITY.COMPATIBILITYRESULT.REJECT_VERIFICATION_ERROR"
+msgid "Verification error: {0}"
+msgstr "ตรวจสอบผิดพลาด: {0}"
+
+#. ONI_Together.STRINGS.UI.HOSTLOBBYCONFIGSCREEN.HOST_LOBBY_SETTINGS
+msgctxt "ONI_Together.STRINGS.UI.HOSTLOBBYCONFIGSCREEN.HOST_LOBBY_SETTINGS"
+msgid "Host Lobby Settings"
+msgstr "ตั้งค่าล็อบบี้ของโฮสต์"
+
+#. ONI_Together.STRINGS.UI.HOSTLOBBYCONFIGSCREEN.LOBBY_VISIBILITY
+msgctxt "ONI_Together.STRINGS.UI.HOSTLOBBYCONFIGSCREEN.LOBBY_VISIBILITY"
+msgid "Lobby Visibility:"
+msgstr "การมองเห็นล็อบบี้:"
+
+#. ONI_Together.STRINGS.UI.HOSTLOBBYCONFIGSCREEN.LOBBY_VISIBILITY_PUBLIC
+msgctxt "ONI_Together.STRINGS.UI.HOSTLOBBYCONFIGSCREEN.LOBBY_VISIBILITY_PUBLIC"
+msgid "Public"
+msgstr "สาธารณะ"
+
+#. ONI_Together.STRINGS.UI.HOSTLOBBYCONFIGSCREEN.LOBBY_VISIBILITY_FRIENDSONLY
+msgctxt "ONI_Together.STRINGS.UI.HOSTLOBBYCONFIGSCREEN.LOBBY_VISIBILITY_FRIENDSONLY"
+msgid "Friends Only"
+msgstr "เฉพาะเพื่อน"
+
+#. ONI_Together.STRINGS.UI.HOSTLOBBYCONFIGSCREEN.PASSWORD_TITLE
+msgctxt "ONI_Together.STRINGS.UI.HOSTLOBBYCONFIGSCREEN.PASSWORD_TITLE"
+msgid "Password (optional):"
+msgstr "รหัสผ่าน (ไม่บังคับ):"
+
+#. ONI_Together.STRINGS.UI.HOSTLOBBYCONFIGSCREEN.PASSWORD_NOTE
+msgctxt "ONI_Together.STRINGS.UI.HOSTLOBBYCONFIGSCREEN.PASSWORD_NOTE"
+msgid "Leave empty for no password"
+msgstr "เว้นว่างถ้าไม่ใช้รหัสผ่าน"
+
+#. ONI_Together.STRINGS.UI.HOSTLOBBYCONFIGSCREEN.CONTINUE
+msgctxt "ONI_Together.STRINGS.UI.HOSTLOBBYCONFIGSCREEN.CONTINUE"
+msgid "Continue"
+msgstr "ดำเนินการต่อ"
+
+#. ONI_Together.STRINGS.UI.HOSTLOBBYCONFIGSCREEN.CANCEL
+msgctxt "ONI_Together.STRINGS.UI.HOSTLOBBYCONFIGSCREEN.CANCEL"
+msgid "Cancel"
+msgstr "ยกเลิก"
+
+#. ONI_Together.STRINGS.UI.HOSTLOBBYCONFIGSCREEN.LOBBY_SIZE
+msgctxt "ONI_Together.STRINGS.UI.HOSTLOBBYCONFIGSCREEN.LOBBY_SIZE"
+msgid "Lobby Size:"
+msgstr "ขนาดล็อบบี้:"
+
+#. ONI_Together.STRINGS.UI.JOINBYDIALOGMENU.JOIN_BY_CODE
+msgctxt "ONI_Together.STRINGS.UI.JOINBYDIALOGMENU.JOIN_BY_CODE"
+msgid "Join By Code"
+msgstr "เข้าด้วยรหัส"
+
+#. ONI_Together.STRINGS.UI.JOINBYDIALOGMENU.ENTER_LOBBY_CODE
+msgctxt "ONI_Together.STRINGS.UI.JOINBYDIALOGMENU.ENTER_LOBBY_CODE"
+msgid "Enter Lobby Code:"
+msgstr "ใส่รหัสล็อบบี้:"
+
+#. ONI_Together.STRINGS.UI.JOINBYDIALOGMENU.PASSWORD_REQUIRED
+msgctxt "ONI_Together.STRINGS.UI.JOINBYDIALOGMENU.PASSWORD_REQUIRED"
+msgid "Password Required:"
+msgstr "ต้องใช้รหัสผ่าน:"
+
+#. ONI_Together.STRINGS.UI.JOINBYDIALOGMENU.ENTER_PASSWORD
+msgctxt "ONI_Together.STRINGS.UI.JOINBYDIALOGMENU.ENTER_PASSWORD"
+msgid "Enter password"
+msgstr "ใส่รหัสผ่าน"
+
+#. ONI_Together.STRINGS.UI.JOINBYDIALOGMENU.JOIN
+msgctxt "ONI_Together.STRINGS.UI.JOINBYDIALOGMENU.JOIN"
+msgid "Join"
+msgstr "เข้าร่วม"
+
+#. ONI_Together.STRINGS.UI.JOINBYDIALOGMENU.CANCEL
+msgctxt "ONI_Together.STRINGS.UI.JOINBYDIALOGMENU.CANCEL"
+msgid "Cancel"
+msgstr "ยกเลิก"
+
+#. ONI_Together.STRINGS.UI.JOINBYDIALOGMENU.ERR_ENTER_CODE
+msgctxt "ONI_Together.STRINGS.UI.JOINBYDIALOGMENU.ERR_ENTER_CODE"
+msgid "Please enter a lobby code"
+msgstr "กรุณาใส่รหัสล็อบบี้"
+
+#. ONI_Together.STRINGS.UI.JOINBYDIALOGMENU.ERR_INVALID_CODE
+msgctxt "ONI_Together.STRINGS.UI.JOINBYDIALOGMENU.ERR_INVALID_CODE"
+msgid "Invalid lobby code format"
+msgstr "รูปแบบรหัสล็อบบี้ไม่ถูกต้อง"
+
+#. ONI_Together.STRINGS.UI.JOINBYDIALOGMENU.ERR_PARSE_CODE_FAILED
+msgctxt "ONI_Together.STRINGS.UI.JOINBYDIALOGMENU.ERR_PARSE_CODE_FAILED"
+msgid "Could not parse lobby code"
+msgstr "อ่านรหัสล็อบบี้ไม่ได้"
+
+#. ONI_Together.STRINGS.UI.JOINBYDIALOGMENU.CHECKING_LOBBY
+msgctxt "ONI_Together.STRINGS.UI.JOINBYDIALOGMENU.CHECKING_LOBBY"
+msgid "Checking lobby..."
+msgstr "กำลังตรวจสอบล็อบบี้..."
+
+#. ONI_Together.STRINGS.UI.JOINBYDIALOGMENU.LOBBY_REQUIRES_PASSWORD
+msgctxt "ONI_Together.STRINGS.UI.JOINBYDIALOGMENU.LOBBY_REQUIRES_PASSWORD"
+msgid "This lobby requires a password"
+msgstr "ล็อบบี้นี้ต้องใช้รหัสผ่าน"
+
+#. ONI_Together.STRINGS.UI.JOINBYDIALOGMENU.VALIDATE_ENTER_PASSWORD
+msgctxt "ONI_Together.STRINGS.UI.JOINBYDIALOGMENU.VALIDATE_ENTER_PASSWORD"
+msgid "Please enter the password"
+msgstr "กรุณาใส่รหัสผ่าน"
+
+#. ONI_Together.STRINGS.UI.JOINBYDIALOGMENU.VALIDATE_ERR_INCORRECT_PASSWORD
+msgctxt "ONI_Together.STRINGS.UI.JOINBYDIALOGMENU.VALIDATE_ERR_INCORRECT_PASSWORD"
+msgid "Incorrect password"
+msgstr "รหัสผ่านไม่ถูกต้อง"
+
+#. ONI_Together.STRINGS.UI.JOINBYDIALOGMENU.JOINING
+msgctxt "ONI_Together.STRINGS.UI.JOINBYDIALOGMENU.JOINING"
+msgid "Joining..."
+msgstr "กำลังเข้าร่วม..."
+
+#. ONI_Together.STRINGS.UI.MULTIPLAYERMENU.TITLE
+msgctxt "ONI_Together.STRINGS.UI.MULTIPLAYERMENU.TITLE"
+msgid "Multiplayer"
+msgstr "ผู้เล่นหลายคน"
+
+#. ONI_Together.STRINGS.UI.MULTIPLAYERMENU.HOST_WORLD
+msgctxt "ONI_Together.STRINGS.UI.MULTIPLAYERMENU.HOST_WORLD"
+msgid "Host World"
+msgstr "โฮสต์โลก"
+
+#. ONI_Together.STRINGS.UI.MULTIPLAYERMENU.HOST_WORLD_FLAVOR
+msgctxt "ONI_Together.STRINGS.UI.MULTIPLAYERMENU.HOST_WORLD_FLAVOR"
+msgid "Select a save to host"
+msgstr "เลือกเซฟที่จะเปิดห้อง"
+
+#. ONI_Together.STRINGS.UI.MULTIPLAYERMENU.BROWSE_LOBBIES
+msgctxt "ONI_Together.STRINGS.UI.MULTIPLAYERMENU.BROWSE_LOBBIES"
+msgid "Browse Lobbies"
+msgstr "ค้นหาล็อบบี้"
+
+#. ONI_Together.STRINGS.UI.MULTIPLAYERMENU.BROWSE_LOBBIES_FLAVOR
+msgctxt "ONI_Together.STRINGS.UI.MULTIPLAYERMENU.BROWSE_LOBBIES_FLAVOR"
+msgid "Find public games to join"
+msgstr "หาห้องสาธารณะเพื่อเข้าร่วม"
+
+#. ONI_Together.STRINGS.UI.MULTIPLAYERMENU.JOIN_BY_CODE
+msgctxt "ONI_Together.STRINGS.UI.MULTIPLAYERMENU.JOIN_BY_CODE"
+msgid "Join by code"
+msgstr "เข้าด้วยรหัส"
+
+#. ONI_Together.STRINGS.UI.MULTIPLAYERMENU.JOIN_BY_CODE_FLAVOR
+msgctxt "ONI_Together.STRINGS.UI.MULTIPLAYERMENU.JOIN_BY_CODE_FLAVOR"
+msgid "Enter a lobby code"
+msgstr "ใส่รหัสล็อบบี้"
+
+#. ONI_Together.STRINGS.UI.MULTIPLAYERMENU.JOIN_BY_STEAM
+msgctxt "ONI_Together.STRINGS.UI.MULTIPLAYERMENU.JOIN_BY_STEAM"
+msgid "Join via Steam"
+msgstr "เข้าผ่าน Steam"
+
+#. ONI_Together.STRINGS.UI.MULTIPLAYERMENU.JOIN_BY_STEAM_FLAVOR
+msgctxt "ONI_Together.STRINGS.UI.MULTIPLAYERMENU.JOIN_BY_STEAM_FLAVOR"
+msgid "Find friends playing"
+msgstr "หาเพื่อนที่กำลังเล่น"
+
+#. ONI_Together.STRINGS.UI.MULTIPLAYERMENU.BACK
+msgctxt "ONI_Together.STRINGS.UI.MULTIPLAYERMENU.BACK"
+msgid "Back"
+msgstr "กลับ"
+
+#. ONI_Together.STRINGS.UI.MAINMENU.JOINGAME
+msgctxt "ONI_Together.STRINGS.UI.MAINMENU.JOINGAME"
+msgid "JOIN GAME"
+msgstr "เข้าร่วมเกม"
+
+#. ONI_Together.STRINGS.UI.MAINMENU.DISCORD_INFO
+msgctxt "ONI_Together.STRINGS.UI.MAINMENU.DISCORD_INFO"
+msgid "Join ONI Together\non Discord"
+msgstr "เข้าร่วม ONI Together\nบน Discord"
+
+#. ONI_Together.STRINGS.UI.MAINMENU.MULTIPLAYER.LABEL
+msgctxt "ONI_Together.STRINGS.UI.MAINMENU.MULTIPLAYER.LABEL"
+msgid "MULTIPLAYER"
+msgstr "ผู้เล่นหลายคน"
+
+#. ONI_Together.STRINGS.UI.PAUSESCREEN.MULTIPLAYER.LABEL
+msgctxt "ONI_Together.STRINGS.UI.PAUSESCREEN.MULTIPLAYER.LABEL"
+msgid "Multiplayer"
+msgstr "ผู้เล่นหลายคน"
+
+#. ONI_Together.STRINGS.UI.PAUSESCREEN.HOSTGAME.LABEL
+msgctxt "ONI_Together.STRINGS.UI.PAUSESCREEN.HOSTGAME.LABEL"
+msgid "Host Game"
+msgstr "เปิดห้อง"
+
+#. ONI_Together.STRINGS.UI.PAUSESCREEN.INVITE.LABEL
+msgctxt "ONI_Together.STRINGS.UI.PAUSESCREEN.INVITE.LABEL"
+msgid "Invite Friends"
+msgstr "ชวนเพื่อน"
+
+#. ONI_Together.STRINGS.UI.PAUSESCREEN.DOHARDSYNC.LABEL
+msgctxt "ONI_Together.STRINGS.UI.PAUSESCREEN.DOHARDSYNC.LABEL"
+msgid "Perform Hard Sync"
+msgstr "ทำ Hard Sync"
+
+#. ONI_Together.STRINGS.UI.PAUSESCREEN.HARDSYNCNOTAVAILABLE.LABEL
+msgctxt "ONI_Together.STRINGS.UI.PAUSESCREEN.HARDSYNCNOTAVAILABLE.LABEL"
+msgid "Already hard synced this cycle!"
+msgstr "ทำ Hard Sync ไปแล้วในรอบวันนี้!"
+
+#. ONI_Together.STRINGS.UI.PAUSESCREEN.ENDSESSION.LABEL
+msgctxt "ONI_Together.STRINGS.UI.PAUSESCREEN.ENDSESSION.LABEL"
+msgid "End Session"
+msgstr "จบเซสชัน"
+
+#. ONI_Together.STRINGS.UI.PAUSESCREEN.LEAVESESSION.LABEL
+msgctxt "ONI_Together.STRINGS.UI.PAUSESCREEN.LEAVESESSION.LABEL"
+msgid "Leave Session"
+msgstr "ออกจากเซสชัน"
+
+#. ONI_Together.STRINGS.UI.MP_CHATWINDOW.CHAT_INITIALIZED
+msgctxt "ONI_Together.STRINGS.UI.MP_CHATWINDOW.CHAT_INITIALIZED"
+msgid "<color=yellow>[System]</color> Chat initialized."
+msgstr "<color=yellow>[ระบบ]</color> เปิดแชทแล้ว"
+
+#. ONI_Together.STRINGS.UI.MP_CHATWINDOW.CHAT_CLIENT_REJECTED
+msgctxt "ONI_Together.STRINGS.UI.MP_CHATWINDOW.CHAT_CLIENT_REJECTED"
+msgid "<color=red>[System]</color> {0} was rejected due to mod incompatibility: {1}"
+msgstr "<color=red>[ระบบ]</color> {0} ถูกปฏิเสธเพราะม็อดเข้ากันไม่ได้: {1}"
+
+#. ONI_Together.STRINGS.UI.MP_CHATWINDOW.CHAT_CLIENT_JOINED
+msgctxt "ONI_Together.STRINGS.UI.MP_CHATWINDOW.CHAT_CLIENT_JOINED"
+msgid "<color=yellow>[System]</color> <b>{0}</b> joined the game."
+msgstr "<color=yellow>[ระบบ]</color> <b>{0}</b> เข้าร่วมเกม"
+
+#. ONI_Together.STRINGS.UI.MP_CHATWINDOW.CHAT_CLIENT_LEFT
+msgctxt "ONI_Together.STRINGS.UI.MP_CHATWINDOW.CHAT_CLIENT_LEFT"
+msgid "<color=yellow>[System]</color> <b>{0}</b> left the game."
+msgstr "<color=yellow>[ระบบ]</color> <b>{0}</b> ออกจากเกม"
+
+#. ONI_Together.STRINGS.UI.MP_CHATWINDOW.CHAT_CLIENT_FAILED
+msgctxt "ONI_Together.STRINGS.UI.MP_CHATWINDOW.CHAT_CLIENT_FAILED"
+msgid "<color=red>[System]</color>{0} failed to connect to the server."
+msgstr "<color=red>[ระบบ]</color>{0} เชื่อมต่อเซิร์ฟเวอร์ไม่สำเร็จ"
+
+#. ONI_Together.STRINGS.UI.MP_CHATWINDOW.CHAT_SERVER_STARTED
+msgctxt "ONI_Together.STRINGS.UI.MP_CHATWINDOW.CHAT_SERVER_STARTED"
+msgid "<color=yellow>[System]</color><color=green> Started server over {0}</color>"
+msgstr "<color=yellow>[ระบบ]</color><color=green> เปิดเซิร์ฟเวอร์ผ่าน {0} แล้ว</color>"
+
+#. ONI_Together.STRINGS.UI.MP_CHATWINDOW.CHAT_SERVER_STOPPED
+msgctxt "ONI_Together.STRINGS.UI.MP_CHATWINDOW.CHAT_SERVER_STOPPED"
+msgid "<color=yellow>[System]</color><color=green> Stopped {0} server</color>"
+msgstr "<color=yellow>[ระบบ]</color><color=green> ปิดเซิร์ฟเวอร์ {0} แล้ว</color>"
+
+#. ONI_Together.STRINGS.UI.MP_CHATWINDOW.RESIZE.EXPAND
+msgctxt "ONI_Together.STRINGS.UI.MP_CHATWINDOW.RESIZE.EXPAND"
+msgid "Chat (+)"
+msgstr "แชท (+)"
+
+#. ONI_Together.STRINGS.UI.MP_CHATWINDOW.RESIZE.RETRACT
+msgctxt "ONI_Together.STRINGS.UI.MP_CHATWINDOW.RESIZE.RETRACT"
+msgid "Chat (-)"
+msgstr "แชท (-)"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.HOST.STARTINGHOSTING
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.HOST.STARTINGHOSTING"
+msgid "Hosting game..."
+msgstr "กำลังเปิดห้อง..."
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.HOST.SEND_SAVE_FILE
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.HOST.SEND_SAVE_FILE"
+msgid "Sending save file to a client!\nPlease wait..."
+msgstr "กำลังส่งไฟล์เซฟให้ไคลเอนต์!\nกรุณารอสักครู่..."
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.DOWNLOADING_GAME
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.DOWNLOADING_GAME"
+msgid "Downloading world: {0}%"
+msgstr "กำลังดาวน์โหลดโลก: {0}%"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.MENU_LOST_CONNECTION
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.MENU_LOST_CONNECTION"
+msgid "Connection to the host was lost!"
+msgstr "การเชื่อมต่อกับโฮสต์ขาดหาย!"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.LOST_CONNECTION
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.LOST_CONNECTION"
+msgid "Connection to the host was lost: {0}\n{1}"
+msgstr "การเชื่อมต่อกับโฮสต์ขาดหาย: {0}\n{1}"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.STEAMWORKS.HOST_DISCONNECTED
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.STEAMWORKS.HOST_DISCONNECTED"
+msgid "Host disconnected"
+msgstr "โฮสต์ตัดการเชื่อมต่อ"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.STEAMWORKS.HOST_DISCONNECTED_DESC
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.STEAMWORKS.HOST_DISCONNECTED_DESC"
+msgid "The host has ended the game or returned to the menu."
+msgstr "โฮสต์จบเกมหรือกลับไปเมนูหลัก"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.STEAMWORKS.LOCAL_PROBLEM
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.STEAMWORKS.LOCAL_PROBLEM"
+msgid "Connection lost"
+msgstr "การเชื่อมต่อขาดหาย"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.STEAMWORKS.LOCAL_PROBLEM_DESC
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.STEAMWORKS.LOCAL_PROBLEM_DESC"
+msgid "A network error occurred or the connection timed out."
+msgstr "เกิดข้อผิดพลาดของเครือข่ายหรือหมดเวลาเชื่อมต่อ"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.STEAMWORKS.KICKED
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.STEAMWORKS.KICKED"
+msgid "Kicked from server"
+msgstr "ถูกเตะออกจากเซิร์ฟเวอร์"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.STEAMWORKS.KICKED_DESC
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.STEAMWORKS.KICKED_DESC"
+msgid "You were removed from the session."
+msgstr "คุณถูกนำออกจากเซสชัน"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.STEAMWORKS.UNKNOWN
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.STEAMWORKS.UNKNOWN"
+msgid "Disconnected"
+msgstr "ตัดการเชื่อมต่อแล้ว"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.STEAMWORKS.UNKNOWN_DESC
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.STEAMWORKS.UNKNOWN_DESC"
+msgid "An unknown network error occurred."
+msgstr "เกิดข้อผิดพลาดของเครือข่ายที่ไม่ทราบสาเหตุ"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.RIPTIDE.CONNECTION_FAILED
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.RIPTIDE.CONNECTION_FAILED"
+msgid "Connection failed"
+msgstr "เชื่อมต่อไม่สำเร็จ"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.RIPTIDE.CONNECTION_FAILED_DESC
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.RIPTIDE.CONNECTION_FAILED_DESC"
+msgid "Could not establish a connection to the server."
+msgstr "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.RIPTIDE.CONNECTION_REJECTED
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.RIPTIDE.CONNECTION_REJECTED"
+msgid "Connection rejected"
+msgstr "การเชื่อมต่อถูกปฏิเสธ"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.RIPTIDE.CONNECTION_REJECTED_DESC
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.RIPTIDE.CONNECTION_REJECTED_DESC"
+msgid "The server refused the connection."
+msgstr "เซิร์ฟเวอร์ปฏิเสธการเชื่อมต่อ"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.RIPTIDE.NETWORK_ERROR
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.RIPTIDE.NETWORK_ERROR"
+msgid "Network error"
+msgstr "ข้อผิดพลาดเครือข่าย"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.RIPTIDE.NETWORK_ERROR_DESC
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.RIPTIDE.NETWORK_ERROR_DESC"
+msgid "A network error occurred."
+msgstr "เกิดข้อผิดพลาดของเครือข่าย"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.RIPTIDE.CONNECTION_TIMED_OUT
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.RIPTIDE.CONNECTION_TIMED_OUT"
+msgid "Connection timed out"
+msgstr "หมดเวลาเชื่อมต่อ"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.RIPTIDE.CONNECTION_TIMED_OUT_DESC
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.RIPTIDE.CONNECTION_TIMED_OUT_DESC"
+msgid "The server did not respond in time."
+msgstr "เซิร์ฟเวอร์ไม่ตอบกลับภายในเวลาที่กำหนด"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.RIPTIDE.KICKED
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.RIPTIDE.KICKED"
+msgid "Kicked from server"
+msgstr "ถูกเตะออกจากเซิร์ฟเวอร์"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.RIPTIDE.KICKED_DESC
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.RIPTIDE.KICKED_DESC"
+msgid "You were removed from the session."
+msgstr "คุณถูกนำออกจากเซสชัน"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.RIPTIDE.SERVER_CLOSED
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.RIPTIDE.SERVER_CLOSED"
+msgid "Server closed"
+msgstr "เซิร์ฟเวอร์ปิดแล้ว"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.RIPTIDE.SERVER_CLOSED_DESC
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.RIPTIDE.SERVER_CLOSED_DESC"
+msgid "The host has stopped the server."
+msgstr "โฮสต์ปิดเซิร์ฟเวอร์แล้ว"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.RIPTIDE.CONNECTION_UNSTABLE
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.RIPTIDE.CONNECTION_UNSTABLE"
+msgid "Connection unstable"
+msgstr "การเชื่อมต่อไม่เสถียร"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.RIPTIDE.CONNECTION_UNSTABLE_DESC
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.RIPTIDE.CONNECTION_UNSTABLE_DESC"
+msgid "The connection quality was too poor to continue."
+msgstr "คุณภาพการเชื่อมต่อแย่เกินกว่าจะเล่นต่อได้"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.RIPTIDE.UNKNOWN
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.RIPTIDE.UNKNOWN"
+msgid "Disconnected"
+msgstr "ตัดการเชื่อมต่อแล้ว"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.RIPTIDE.UNKNOWN_DESC
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.RIPTIDE.UNKNOWN_DESC"
+msgid "An unknown network error occurred."
+msgstr "เกิดข้อผิดพลาดของเครือข่ายที่ไม่ทราบสาเหตุ"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.MISSING_SAVE_FILE
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.MISSING_SAVE_FILE"
+msgid "Downloaded save file not found."
+msgstr "ไม่พบไฟล์เซฟที่ดาวน์โหลด"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.CONNECTING_TO_HOST
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.CONNECTING_TO_HOST"
+msgid "Connecting to {0}!"
+msgstr "กำลังเชื่อมต่อไปที่ {0}!"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.WAITING_FOR_PLAYER
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.WAITING_FOR_PLAYER"
+msgid "Waiting for {0}..."
+msgstr "กำลังรอ {0}..."
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.DOWNLOADING_SAVE_FILE
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.DOWNLOADING_SAVE_FILE"
+msgid "Downloading Save File\n\n{0} {1}%\n({2}/{3} chunks)"
+msgstr "กำลังดาวน์โหลดไฟล์เซฟ\n\n{0} {1}%\n({2}/{3} ชิ้น)"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.TCP_DOWNLOADING_SAVE_FILE
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.TCP_DOWNLOADING_SAVE_FILE"
+msgid "Downloading LAN Save File\n\n{0} {1}%\n({2} remaining)"
+msgstr "กำลังดาวน์โหลดไฟล์เซฟ LAN\n\n{0} {1}%\n(เหลือ {2})"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.DOWNLOAD_COMPLETE
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.DOWNLOAD_COMPLETE"
+msgid "Download Complete!\n\n{0} 100%\n({1}/{2} chunks)\n\nLoading world..."
+msgstr "ดาวน์โหลดเสร็จ!\n\n{0} 100%\n({1}/{2} ชิ้น)\n\nกำลังโหลดโลก..."
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.CONNECTION_FAILED
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.CONNECTION_FAILED"
+msgid "Failed to connect to host."
+msgstr "เชื่อมต่อโฮสต์ไม่สำเร็จ"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.NETWORKINDICATORS.DEGRADED_JITTER
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.NETWORKINDICATORS.DEGRADED_JITTER"
+msgid "Network jitter is elevated"
+msgstr "ความแกว่งของเครือข่ายสูง"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.NETWORKINDICATORS.DEGRADED_LATENCY
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.NETWORKINDICATORS.DEGRADED_LATENCY"
+msgid "Latency is elevated"
+msgstr "ความหน่วงสูง"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.NETWORKINDICATORS.DEGRADED_PACKETLOSS
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.NETWORKINDICATORS.DEGRADED_PACKETLOSS"
+msgid "Packet loss detected"
+msgstr "พบแพ็กเก็ตหาย"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.NETWORKINDICATORS.DEGRADED_SERVERPERFORMANCE
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.NETWORKINDICATORS.DEGRADED_SERVERPERFORMANCE"
+msgid "Server performance is reduced"
+msgstr "ประสิทธิภาพเซิร์ฟเวอร์ลดลง"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.NETWORKINDICATORS.BAD_JITTER
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.NETWORKINDICATORS.BAD_JITTER"
+msgid "Network jitter is very high"
+msgstr "ความแกว่งของเครือข่ายสูงมาก"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.NETWORKINDICATORS.BAD_LATENCY
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.NETWORKINDICATORS.BAD_LATENCY"
+msgid "Latency is very high"
+msgstr "ความหน่วงสูงมาก"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.NETWORKINDICATORS.BAD_PACKETLOSS
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.NETWORKINDICATORS.BAD_PACKETLOSS"
+msgid "Severe packet loss detected"
+msgstr "แพ็กเก็ตหายหนัก"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.NETWORKINDICATORS.BAD_SERVERPERFORMANCE
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.CLIENT.NETWORKINDICATORS.BAD_SERVERPERFORMANCE"
+msgid "Server performance is critically low"
+msgstr "ประสิทธิภาพเซิร์ฟเวอร์ต่ำมาก"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.HARDSYNC_INPROGRESS
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.HARDSYNC_INPROGRESS"
+msgid "Hard sync in progress!"
+msgstr "กำลังทำ Hard Sync!"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.FINALIZING_SYNC
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.FINALIZING_SYNC"
+msgid "All players are ready!\nPlease wait..."
+msgstr "ผู้เล่นทุกคนพร้อมแล้ว!\nกรุณารอสักครู่..."
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.WAITING_FOR_PLAYERS_SYNC
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.WAITING_FOR_PLAYERS_SYNC"
+msgid "Waiting for players ({0}/{1} ready)...\n"
+msgstr "กำลังรอผู้เล่น (พร้อม {0}/{1})...\n"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.CLIENT_SYNC_PROGRESS
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.CLIENT_SYNC_PROGRESS"
+msgid "Client Sync Progress"
+msgstr "ความคืบหน้าการซิงก์ของไคลเอนต์"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.CLIENT_PROGRESS
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.CLIENT_PROGRESS"
+msgid "{0}: {1} {2}%"
+msgstr "{0}: {1} {2}%"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.CLIENT_SYNC_COMPLETE
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.CLIENT_SYNC_COMPLETE"
+msgid "[COMPLETE]"
+msgstr "[เสร็จ]"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.ALL_CLIENTS_SYNCED
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.ALL_CLIENTS_SYNCED"
+msgid "ALL CLIENTS SYNCHRONIZED!\nWAITING FOR THEM TO LOAD!"
+msgstr "ไคลเอนต์ทุกคนซิงก์แล้ว!\nกำลังรอให้โหลดเสร็จ!"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.READYSTATE.READY
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.READYSTATE.READY"
+msgid "Ready"
+msgstr "พร้อม"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.READYSTATE.UNREADY
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.READYSTATE.UNREADY"
+msgid "Loading"
+msgstr "กำลังโหลด"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.READYSTATE.UNKNOWN
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.READYSTATE.UNKNOWN"
+msgid "Unknown"
+msgstr "ไม่ทราบ"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.DLCSYNC.WRONGDLC_BASEGAME
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.DLCSYNC.WRONGDLC_BASEGAME"
+msgid "Server requires Spaced Out, cannot join without SpacedOut active!"
+msgstr "เซิร์ฟเวอร์ต้องใช้ Spaced Out เข้าร่วมไม่ได้ถ้าไม่ได้เปิด Spaced Out!"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.DLCSYNC.WRONGDLC_SPACEDOUT
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.DLCSYNC.WRONGDLC_SPACEDOUT"
+msgid "Server requires Base Game, cannot join with Spaced Out active!"
+msgstr "เซิร์ฟเวอร์ใช้เกมหลัก เข้าร่วมไม่ได้ถ้าเปิด Spaced Out อยู่!"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.DLCSYNC.WRONGDLC_LISTHEADER
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.DLCSYNC.WRONGDLC_LISTHEADER"
+msgid "Server requires the following DLCs which are not installed or active:"
+msgstr "เซิร์ฟเวอร์ต้องใช้ DLC ต่อไปนี้ซึ่งยังไม่ได้ติดตั้งหรือเปิด:"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.MODSYNC.TITLE
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.MODSYNC.TITLE"
+msgid "Mod Differences Detected!"
+msgstr "พบม็อดที่ต่างกัน!"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.MODSYNC.TEXT
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.MODSYNC.TEXT"
+msgid "The game you want to join has different mods active than you.\nDo you want to synchronize your mods?"
+msgstr "เกมที่คุณจะเข้าร่วมเปิดม็อดต่างจากของคุณ\nต้องการซิงก์ม็อดหรือไม่?"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.MODSYNC.TODISABLE
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.MODSYNC.TODISABLE"
+msgid "• {0} mods will be disabled"
+msgstr "• จะปิดม็อด {0} ตัว"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.MODSYNC.TOENABLE
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.MODSYNC.TOENABLE"
+msgid "• {0} mods will be enabled"
+msgstr "• จะเปิดม็อด {0} ตัว"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.MODSYNC.MISSING
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.MODSYNC.MISSING"
+msgid "• {0} mods are missing and will be subscribed to."
+msgstr "• ขาดม็อด {0} ตัว จะกดติดตามให้"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.MODSYNC.CONFIRM_SYNC
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.MODSYNC.CONFIRM_SYNC"
+msgid "Yes, synchronize my mods and restart"
+msgstr "ใช่ ซิงก์ม็อดแล้วรีสตาร์ท"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.MODSYNC.DENY_SYNC
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.MODSYNC.DENY_SYNC"
+msgid "No, connect anyway"
+msgstr "ไม่ เชื่อมต่อเลย"
+
+#. ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.MODSYNC.CANCEL
+msgctxt "ONI_Together.STRINGS.UI.MP_OVERLAY.SYNC.MODSYNC.CANCEL"
+msgid "No, go back to the main menu"
+msgstr "ไม่ กลับไปเมนูหลัก"
+
+#. ONI_Together.STRINGS.UI.WORK_IN_PROGRESS
+msgctxt "ONI_Together.STRINGS.UI.WORK_IN_PROGRESS"
+msgid "This feature is currently not finished and will be made usable in a future update."
+msgstr "ฟีเจอร์นี้ยังไม่เสร็จ จะใช้งานได้ในอัปเดตถัดไป"
+
+#. ONI_Together.STRINGS.UI.FRIENDSONLYMODE.LOBBY_VISIBILITY_PUBLIC
+msgctxt "ONI_Together.STRINGS.UI.FRIENDSONLYMODE.LOBBY_VISIBILITY_PUBLIC"
+msgid "Public"
+msgstr "สาธารณะ"
+
+#. ONI_Together.STRINGS.UI.FRIENDSONLYMODE.LOBBY_VISIBILITY_FRIENDSONLY
+msgctxt "ONI_Together.STRINGS.UI.FRIENDSONLYMODE.LOBBY_VISIBILITY_FRIENDSONLY"
+msgid "Friends Only"
+msgstr "เฉพาะเพื่อน"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.MAINMENU.HOSTINGTITLE
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.MAINMENU.HOSTINGTITLE"
+msgid "Hosting"
+msgstr "เปิดห้อง"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.MAINMENU.HOSTGAMEBUTTON.TEXT
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.MAINMENU.HOSTGAMEBUTTON.TEXT"
+msgid "Host Game"
+msgstr "เปิดห้อง"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.MAINMENU.JOININGTITLE
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.MAINMENU.JOININGTITLE"
+msgid "Joining"
+msgstr "เข้าร่วม"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.MAINMENU.JOINVIABUTTONS.STEAM.TEXT
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.MAINMENU.JOINVIABUTTONS.STEAM.TEXT"
+msgid "Steam"
+msgstr "Steam"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.MAINMENU.JOINVIABUTTONS.CODE.TEXT
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.MAINMENU.JOINVIABUTTONS.CODE.TEXT"
+msgid "Code"
+msgstr "รหัส"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.MAINMENU.JOINVIABUTTONS.LAN.TEXT
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.MAINMENU.JOINVIABUTTONS.LAN.TEXT"
+msgid "LAN"
+msgstr "LAN"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.MAINMENU.STEAMJOIN.JOINVIASTEAM.TEXT
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.MAINMENU.STEAMJOIN.JOINVIASTEAM.TEXT"
+msgid "Join via Steam"
+msgstr "เข้าผ่าน Steam"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.MAINMENU.STEAMJOIN.OPENLOBBYLISTBUTTON.TEXT
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.MAINMENU.STEAMJOIN.OPENLOBBYLISTBUTTON.TEXT"
+msgid "Open Lobby Browser"
+msgstr "เปิดหน้าค้นหาล็อบบี้"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.MAINMENU.LOBBYCODEJOIN.INPUT.TEXTAREA.PLACEHOLDER
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.MAINMENU.LOBBYCODEJOIN.INPUT.TEXTAREA.PLACEHOLDER"
+msgid "Enter Lobby Code..."
+msgstr "ใส่รหัสล็อบบี้..."
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.MAINMENU.LOBBYCODEJOIN.JOINWITHCODEBUTTON.TEXT
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.MAINMENU.LOBBYCODEJOIN.JOINWITHCODEBUTTON.TEXT"
+msgid "Join with Code"
+msgstr "เข้าด้วยรหัส"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.MAINMENU.LANJOIN.INPUTS.IPINPUT.TEXTAREA.PLACEHOLDER
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.MAINMENU.LANJOIN.INPUTS.IPINPUT.TEXTAREA.PLACEHOLDER"
+msgid "Enter IP address..."
+msgstr "ใส่ที่อยู่ IP..."
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.MAINMENU.LANJOIN.INPUTS.PORT.TEXTAREA.PLACEHOLDER
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.MAINMENU.LANJOIN.INPUTS.PORT.TEXTAREA.PLACEHOLDER"
+msgid "Enter Port..."
+msgstr "ใส่พอร์ต..."
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.MAINMENU.LANJOIN.JOINLANBUTTON.TEXT
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.MAINMENU.LANJOIN.JOINLANBUTTON.TEXT"
+msgid "Join LAN address"
+msgstr "เข้าผ่านที่อยู่ LAN"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.MAINMENU.CANCEL.TEXT
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.MAINMENU.CANCEL.TEXT"
+msgid "Cancel"
+msgstr "ยกเลิก"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.HOSTMENU.TITLE
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.HOSTMENU.TITLE"
+msgid "Host Lobby Settings"
+msgstr "ตั้งค่าล็อบบี้ของโฮสต์"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.HOSTMENU.HOSTVIABUTTONS.STEAM.TEXT
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.HOSTMENU.HOSTVIABUTTONS.STEAM.TEXT"
+msgid "Steam Session"
+msgstr "เซสชัน Steam"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.HOSTMENU.HOSTVIABUTTONS.LAN.TEXT
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.HOSTMENU.HOSTVIABUTTONS.LAN.TEXT"
+msgid "LAN Session"
+msgstr "เซสชัน LAN"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.HOSTMENU.LOBBYSIZE.LABEL
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.HOSTMENU.LOBBYSIZE.LABEL"
+msgid "Lobby Size:"
+msgstr "ขนาดล็อบบี้:"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.HOSTMENU.LOBBYSIZE.LOBBYSIZEINPUT.TEXTAREA.PLACEHOLDER
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.HOSTMENU.LOBBYSIZE.LOBBYSIZEINPUT.TEXTAREA.PLACEHOLDER"
+msgid "Enter Lobby Size..."
+msgstr "ใส่ขนาดล็อบบี้..."
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.HOSTMENU.STEAMHOSTING.FRIENDSONLY.LABEL
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.HOSTMENU.STEAMHOSTING.FRIENDSONLY.LABEL"
+msgid "Private Lobby:"
+msgstr "ล็อบบี้ส่วนตัว:"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.HOSTMENU.STEAMHOSTING.FRIENDSONLY.STATE
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.HOSTMENU.STEAMHOSTING.FRIENDSONLY.STATE"
+msgid "Friends Only"
+msgstr "เฉพาะเพื่อน"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.HOSTMENU.STEAMHOSTING.PASSWORD.PASSWORDTITLE
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.HOSTMENU.STEAMHOSTING.PASSWORD.PASSWORDTITLE"
+msgid "Password (optional):"
+msgstr "รหัสผ่าน (ไม่บังคับ):"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.HOSTMENU.STEAMHOSTING.PASSWORDINPUT.TEXTAREA.PLACEHOLDER
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.HOSTMENU.STEAMHOSTING.PASSWORDINPUT.TEXTAREA.PLACEHOLDER"
+msgid "Leave empty for no password"
+msgstr "เว้นว่างถ้าไม่ใช้รหัสผ่าน"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.HOSTMENU.LANHOSTING.IPTARGET.LABEL
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.HOSTMENU.LANHOSTING.IPTARGET.LABEL"
+msgid "Host IP:"
+msgstr "IP โฮสต์:"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.HOSTMENU.LANHOSTING.IPTARGET.INPUT.TEXTAREA.PLACEHOLDER
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.HOSTMENU.LANHOSTING.IPTARGET.INPUT.TEXTAREA.PLACEHOLDER"
+msgid "Enter IP address..."
+msgstr "ใส่ที่อยู่ IP..."
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.HOSTMENU.LANHOSTING.PORT.LABEL
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.HOSTMENU.LANHOSTING.PORT.LABEL"
+msgid "Port"
+msgstr "พอร์ต"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.HOSTMENU.LANHOSTING.PORT.INPUT.TEXTAREA.PLACEHOLDER
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.HOSTMENU.LANHOSTING.PORT.INPUT.TEXTAREA.PLACEHOLDER"
+msgid "Enter Port..."
+msgstr "ใส่พอร์ต..."
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.HOSTMENU.ADDITIONALSETTINGS.TEXT
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.HOSTMENU.ADDITIONALSETTINGS.TEXT"
+msgid "Additional Lobby Settings"
+msgstr "ตั้งค่าล็อบบี้เพิ่มเติม"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.HOSTMENU.BUTTONS.CANCEL.TEXT
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.HOSTMENU.BUTTONS.CANCEL.TEXT"
+msgid "Cancel"
+msgstr "ยกเลิก"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.HOSTMENU.BUTTONS.STARTHOSTING.TEXT
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.HOSTMENU.BUTTONS.STARTHOSTING.TEXT"
+msgid "Start Hosting"
+msgstr "เริ่มเปิดห้อง"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.LOBBYLIST.TITLE
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.LOBBYLIST.TITLE"
+msgid "Public Lobby Browser"
+msgstr "ค้นหาล็อบบี้สาธารณะ"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.LOBBYLIST.SEARCHBAR.INPUT.TEXTAREA.PLACEHOLDER
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.LOBBYLIST.SEARCHBAR.INPUT.TEXTAREA.PLACEHOLDER"
+msgid "Search Lobbies..."
+msgstr "ค้นหาล็อบบี้..."
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.LOBBYLIST.INFO.WORLD
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.LOBBYLIST.INFO.WORLD"
+msgid "World Name"
+msgstr "ชื่อโลก"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.LOBBYLIST.INFO.HOST
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.LOBBYLIST.INFO.HOST"
+msgid "Host"
+msgstr "โฮสต์"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.LOBBYLIST.INFO.PLAYERS
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.LOBBYLIST.INFO.PLAYERS"
+msgid "Players"
+msgstr "ผู้เล่น"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.LOBBYLIST.INFO.CYCLE
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.LOBBYLIST.INFO.CYCLE"
+msgid "Cycle"
+msgstr "รอบวัน"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.LOBBYLIST.INFO.DUPES
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.LOBBYLIST.INFO.DUPES"
+msgid "Dupes"
+msgstr "ดูปลิแคนท์"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.LOBBYLIST.INFO.PING
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.LOBBYLIST.INFO.PING"
+msgid "Ping"
+msgstr "ปิง"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.LOBBYLIST.SCROLLAREA.CONTENT.NOLOBBIES.LABEL
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.LOBBYLIST.SCROLLAREA.CONTENT.NOLOBBIES.LABEL"
+msgid "No public lobbies found. Try hosting your own!"
+msgstr "ไม่พบล็อบบี้สาธารณะ ลองเปิดห้องเองดูสิ!"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.LOBBYLIST.SCROLLAREA.CONTENT.ENTRYPREFAB.JOINLOBBYBUTTON.TEXT
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.LOBBYLIST.SCROLLAREA.CONTENT.ENTRYPREFAB.JOINLOBBYBUTTON.TEXT"
+msgid "Join"
+msgstr "เข้าร่วม"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.TOPBAR.LABEL
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.TOPBAR.LABEL"
+msgid "Multiplayer"
+msgstr "ผู้เล่นหลายคน"
+
+#. ONI_Together.STRINGS.UI.MP_SCREEN.ADDITIONALHOSTSETTINGS.TITLE
+msgctxt "ONI_Together.STRINGS.UI.MP_SCREEN.ADDITIONALHOSTSETTINGS.TITLE"
+msgid "Additional Lobby Settings"
+msgstr "ตั้งค่าล็อบบี้เพิ่มเติม"
+
+#. ONI_Together.STRINGS.UI.MP_PASSWORD_DIALOGUE.HOSTMENU.TITLE
+msgctxt "ONI_Together.STRINGS.UI.MP_PASSWORD_DIALOGUE.HOSTMENU.TITLE"
+msgid "Password Required!"
+msgstr "ต้องใช้รหัสผ่าน!"
+
+#. ONI_Together.STRINGS.UI.MP_PASSWORD_DIALOGUE.HOSTMENU.PASSWORDTITLE
+msgctxt "ONI_Together.STRINGS.UI.MP_PASSWORD_DIALOGUE.HOSTMENU.PASSWORDTITLE"
+msgid "Enter password of Lobby:"
+msgstr "ใส่รหัสผ่านของล็อบบี้:"
+
+#. ONI_Together.STRINGS.UI.MP_PASSWORD_DIALOGUE.HOSTMENU.PASSWORD_INCORRECT
+msgctxt "ONI_Together.STRINGS.UI.MP_PASSWORD_DIALOGUE.HOSTMENU.PASSWORD_INCORRECT"
+msgid "Incorrect password!"
+msgstr "รหัสผ่านไม่ถูกต้อง!"
+
+#. ONI_Together.STRINGS.UI.MP_PASSWORD_DIALOGUE.HOSTMENU.PASSWORDINPUT.TEXTAREA.PLACEHOLDER
+msgctxt "ONI_Together.STRINGS.UI.MP_PASSWORD_DIALOGUE.HOSTMENU.PASSWORDINPUT.TEXTAREA.PLACEHOLDER"
+msgid "Enter lobby password..."
+msgstr "ใส่รหัสผ่านล็อบบี้..."
+
+#. ONI_Together.STRINGS.UI.MP_PASSWORD_DIALOGUE.HOSTMENU.BUTTONS.CANCEL.TEXT
+msgctxt "ONI_Together.STRINGS.UI.MP_PASSWORD_DIALOGUE.HOSTMENU.BUTTONS.CANCEL.TEXT"
+msgid "Cancel"
+msgstr "ยกเลิก"
+
+#. ONI_Together.STRINGS.UI.MP_PASSWORD_DIALOGUE.HOSTMENU.BUTTONS.CONFIRM.TEXT
+msgctxt "ONI_Together.STRINGS.UI.MP_PASSWORD_DIALOGUE.HOSTMENU.BUTTONS.CONFIRM.TEXT"
+msgid "Confirm"
+msgstr "ยืนยัน"
+
+#. ONI_Together.STRINGS.UI.MP_PASSWORD_DIALOGUE.TOPBAR.LABEL
+msgctxt "ONI_Together.STRINGS.UI.MP_PASSWORD_DIALOGUE.TOPBAR.LABEL"
+msgid "Joining password protected lobby"
+msgstr "กำลังเข้าล็อบบี้ที่มีรหัสผ่าน"
+
+#. ONI_Together.STRINGS.UI.MP_LOBBY_STATE_DIALOGUE.TOPBAR.LABEL
+msgctxt "ONI_Together.STRINGS.UI.MP_LOBBY_STATE_DIALOGUE.TOPBAR.LABEL"
+msgid "Multiplayer Session"
+msgstr "เซสชันผู้เล่นหลายคน"
+
+#. ONI_Together.STRINGS.UI.MP_LOBBY_STATE_DIALOGUE.LOBBYCODETITLE
+msgctxt "ONI_Together.STRINGS.UI.MP_LOBBY_STATE_DIALOGUE.LOBBYCODETITLE"
+msgid "Lobby Code:"
+msgstr "รหัสล็อบบี้:"
+
+#. ONI_Together.STRINGS.UI.MP_LOBBY_STATE_DIALOGUE.INVITEFRIENDS.TEXT
+msgctxt "ONI_Together.STRINGS.UI.MP_LOBBY_STATE_DIALOGUE.INVITEFRIENDS.TEXT"
+msgid "Invite Friends"
+msgstr "ชวนเพื่อน"
+
+#. ONI_Together.STRINGS.UI.MP_LOBBY_STATE_DIALOGUE.ENDSESSION.TEXT
+msgctxt "ONI_Together.STRINGS.UI.MP_LOBBY_STATE_DIALOGUE.ENDSESSION.TEXT"
+msgid "End Session"
+msgstr "จบเซสชัน"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.HEADERS.A0_SEPARATE_COLONIES
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.HEADERS.A0_SEPARATE_COLONIES"
+msgid "0) Separate colonies"
+msgstr "0) โคโลนีแยก"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.SEPARATE_COLONIES_ENABLED
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.SEPARATE_COLONIES_ENABLED"
+msgid "Separate colonies"
+msgstr "โคโลนีแยก"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.SEPARATE_COLONIES_ENABLED
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.SEPARATE_COLONIES_ENABLED"
+msgid "Host: each player gets their own colony on the same asteroid (own dupes, territory). Applied when you host."
+msgstr "โฮสต์: ผู้เล่นแต่ละคนได้โคโลนีของตัวเองบนดาวเคราะห์น้อยเดียวกัน (ดูปลิแคนท์และอาณาเขตของตัวเอง) มีผลตอนเปิดห้อง"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_TERRITORY_PROTECTION
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_TERRITORY_PROTECTION"
+msgid "Territory protection"
+msgstr "ป้องกันอาณาเขต"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_TERRITORY_PROTECTION
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_TERRITORY_PROTECTION"
+msgid "On: other colonies can't build or dig inside your territory circle. Off: anyone can build/dig anywhere."
+msgstr "เปิด: โคโลนีอื่นสร้างหรือขุดในวงอาณาเขตของคุณไม่ได้ ปิด: ใครก็สร้าง/ขุดได้ทุกที่"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_BUILDING_PROTECTION
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_BUILDING_PROTECTION"
+msgid "Building protection"
+msgstr "ป้องกันสิ่งก่อสร้าง"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_BUILDING_PROTECTION
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_BUILDING_PROTECTION"
+msgid "On: other colonies can't deconstruct, prioritize, configure or cancel orders on your buildings and dupes. Off: anyone can."
+msgstr "เปิด: โคโลนีอื่นรื้อ ตั้ง priority ปรับค่า หรือยกเลิกคำสั่งบนสิ่งก่อสร้างและดูปลิแคนท์ของคุณไม่ได้ ปิด: ใครก็ทำได้"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_SEPARATE_ERRANDS
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_SEPARATE_ERRANDS"
+msgid "Separate errands"
+msgstr "แยกงานดูปลิแคนท์"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_SEPARATE_ERRANDS
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_SEPARATE_ERRANDS"
+msgid "On: dupes only do their own colony's errands (a dig order by player 1 is never done by player 2's dupes) and don't take items from other colonies' storage. Off: every dupe can do every errand."
+msgstr "เปิด: ดูปลิแคนท์ทำแค่งานของโคโลนีตัวเอง (คำสั่งขุดของผู้เล่น 1 ดูปลิแคนท์ของผู้เล่น 2 จะไม่ทำ) และไม่หยิบของจากคลังของโคโลนีอื่น ปิด: ดูปลิแคนท์ทุกตัวทำได้ทุกงาน"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_SEPARATE_RESEARCH
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_SEPARATE_RESEARCH"
+msgid "Separate research"
+msgstr "แยกงานวิจัย"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_SEPARATE_RESEARCH
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_SEPARATE_RESEARCH"
+msgid "On: every colony has its own research tree. Off: one shared research tree."
+msgstr "เปิด: แต่ละโคโลนีมีต้นไม้วิจัยของตัวเอง ปิด: ใช้ต้นไม้วิจัยร่วมกัน"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_SHARED_DUPE_MANAGEMENT
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_SHARED_DUPE_MANAGEMENT"
+msgid "Shared dupe priorities"
+msgstr "แชร์การจัดการดูปลิแคนท์"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_SHARED_DUPE_MANAGEMENT
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_SHARED_DUPE_MANAGEMENT"
+msgid "On: Priorities/Consumables/Vitals/Skills screens show and edit every colony's dupes. Off: each player only sees their own dupes."
+msgstr "เปิด: หน้า Priorities/Consumables/Vitals/Skills แสดงและแก้ไขดูปลิแคนท์ของทุกโคโลนี ปิด: แต่ละคนเห็นแค่ดูปลิแคนท์ของตัวเอง"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_SEPARATE_PRINTING_POD
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_SEPARATE_PRINTING_POD"
+msgid "Separate Printing Pod"
+msgstr "แยก Printing Pod"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_SEPARATE_PRINTING_POD
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_SEPARATE_PRINTING_POD"
+msgid "On: every colony has its own printing timer and its own choices. Off: one shared timer, first player to accept gets the print."
+msgstr "เปิด: แต่ละโคโลนีมีเวลาพิมพ์และตัวเลือกของตัวเอง ปิด: ใช้เวลาร่วมกัน ใครกดรับก่อนได้ก่อน"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_SEPARATE_SCHEDULES
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_SEPARATE_SCHEDULES"
+msgid "Separate schedules"
+msgstr "แยกตารางเวลา"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_SEPARATE_SCHEDULES
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_SEPARATE_SCHEDULES"
+msgid "On: every colony has its own schedules and only sees/edits those. Off: all schedules are shared."
+msgstr "เปิด: แต่ละโคโลนีมีตารางเวลาของตัวเอง และเห็น/แก้ได้แค่ของตัวเอง ปิด: ใช้ตารางเวลาร่วมกันทั้งหมด"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_HELP_OTHER_COLONIES
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_HELP_OTHER_COLONIES"
+msgid "Help other colonies when idle"
+msgstr "ช่วยโคโลนีอื่นเมื่อว่าง"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_HELP_OTHER_COLONIES
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_HELP_OTHER_COLONIES"
+msgid "With separate errands: dupes do their own colony's errands first, and only help other colonies when they have nothing of their own to do. Off: never help."
+msgstr "ใช้คู่กับแยกงาน: ดูปลิแคนท์ทำงานของโคโลนีตัวเองก่อน แล้วค่อยช่วยโคโลนีอื่นตามลำดับ Work priority ของแต่ละคน ปิด: ไม่ช่วยเลย"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_CANCEL_ONLY_OWN_ORDERS
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_CANCEL_ONLY_OWN_ORDERS"
+msgid "Cancel only your own orders"
+msgstr "ยกเลิกได้แค่คำสั่งของตัวเอง"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_CANCEL_ONLY_OWN_ORDERS
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_CANCEL_ONLY_OWN_ORDERS"
+msgid "The cancel tool only removes your colony's dig/mop/build/deconstruct orders, even when building protection is off."
+msgstr "เครื่องมือยกเลิกจะลบแค่คำสั่งขุด/ถู/สร้าง/รื้อของโคโลนีคุณ แม้จะปิดการป้องกันสิ่งก่อสร้างไว้"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_EXTRA_WATER_GEYSERS
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_EXTRA_WATER_GEYSERS"
+msgid "Extra water geysers (new games)"
+msgstr "น้ำพุร้อนน้ำเพิ่ม (เกมใหม่)"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_EXTRA_WATER_GEYSERS
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_EXTRA_WATER_GEYSERS"
+msgid "Water geysers / cool steam vents added to a freshly generated world (host). 0 = vanilla."
+msgstr "จำนวนน้ำพุร้อนน้ำ/ช่องไอน้ำเย็นที่เพิ่มลงในโลกที่เพิ่งสร้าง (โฮสต์) 0 = เหมือนเกมปกติ"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_HOST_WATER_GEYSERS
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_HOST_WATER_GEYSERS"
+msgid "Water geysers near the host's base"
+msgstr "น้ำพุร้อนน้ำใกล้ฐานโฮสต์"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_HOST_WATER_GEYSERS
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_HOST_WATER_GEYSERS"
+msgid "Water geysers placed 12-30 cells from the host's Printing Pod. Added once per save (existing saves too); raising the number later adds the difference. 0 = off."
+msgstr "น้ำพุร้อนน้ำที่วางห่างจาก Printing Pod ของโฮสต์ 12-30 ช่อง เพิ่มครั้งเดียวต่อเซฟ (เซฟเก่าก็ได้) ถ้าเพิ่มจำนวนทีหลังจะวางเพิ่มเฉพาะส่วนที่ขาด 0 = ปิด"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_BACKGROUND_STRUCTURE_SYNC
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_BACKGROUND_STRUCTURE_SYNC"
+msgid "Background structure sync"
+msgstr "ซิงก์สิ่งก่อสร้างเบื้องหลัง"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_BACKGROUND_STRUCTURE_SYNC
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_BACKGROUND_STRUCTURE_SYNC"
+msgid "Host: every few seconds compare buildings, blueprints and plants with every client and fix only the blocks that differ (instead of waiting for a hard sync)."
+msgstr "โฮสต์: ทุกไม่กี่วินาทีจะเทียบสิ่งก่อสร้าง แบบร่าง และพืชกับไคลเอนต์ทุกคน แล้วแก้เฉพาะบล็อกที่ต่างกัน (ไม่ต้องรอ Hard Sync)"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_SHARED_RESOURCES
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_SHARED_RESOURCES"
+msgid "Share buildings, machines & food"
+msgstr "แชร์สิ่งก่อสร้าง เครื่องจักร และอาหาร"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_SHARED_RESOURCES
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_SHARED_RESOURCES"
+msgid "On: every colony's dupes may use/operate any building and eat/fetch from any storage; only commanding dupes stays separate. Off: each colony keeps its own."
+msgstr "เปิด: ดูปลิแคนท์ทุกโคโลนีใช้/ทำงานที่สิ่งก่อสร้างไหนก็ได้ และกิน/หยิบของจากคลังไหนก็ได้ แยกกันแค่การสั่งดูปลิแคนท์ ปิด: แต่ละโคโลนีใช้ของตัวเอง"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_PREFIX_DUPE_NAMES
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_PREFIX_DUPE_NAMES"
+msgid "Colony name in dupe names"
+msgstr "ใส่ชื่อโคโลนีหน้าชื่อดูปลิแคนท์"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_PREFIX_DUPE_NAMES
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_PREFIX_DUPE_NAMES"
+msgid "New starting and printed dupes get the colony's name as a prefix (e.g. 'Sawadeeja Meep')."
+msgstr "ดูปลิแคนท์เริ่มต้นและที่พิมพ์ใหม่จะมีชื่อโคโลนีนำหน้า (เช่น 'Sawadeeja Meep')"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_VERBOSE_LOGGING
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_VERBOSE_LOGGING"
+msgid "Verbose multiplayer log (slower)"
+msgstr "บันทึก log แบบละเอียด (ช้าลง)"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_VERBOSE_LOGGING
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_VERBOSE_LOGGING"
+msgid "Write every ONI Together info line to Player.log. Off = only warnings (max 10/s). Turn on only when reporting a bug."
+msgstr "เขียน log ของ ONI Together ทุกบรรทัดลง Player.log ปิด = เขียนแค่คำเตือน (สูงสุด 10 บรรทัด/วินาที) เปิดเฉพาะตอนจะรายงานบั๊ก"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_TERRITORY_RADIUS
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_TERRITORY_RADIUS"
+msgid "Territory radius (cells)"
+msgstr "รัศมีอาณาเขต (ช่อง)"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_TERRITORY_RADIUS
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_TERRITORY_RADIUS"
+msgid "Other colonies can't build/dig within this distance of a colony's Printing Pod. 0 = off."
+msgstr "โคโลนีอื่นสร้าง/ขุดในระยะนี้จาก Printing Pod ของโคโลนีไม่ได้ 0 = ปิด"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.WORLD_SCALE_PERCENT
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.WORLD_SCALE_PERCENT"
+msgid "Asteroid size (%) for NEW games"
+msgstr "ขนาดดาวเคราะห์น้อย (%) สำหรับเกมใหม่"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.WORLD_SCALE_PERCENT
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.WORLD_SCALE_PERCENT"
+msgid "Scales the generated asteroid (100 = vanilla, 200 = twice as wide and tall). Only affects worlds generated while this mod is enabled."
+msgstr "ขยายขนาดดาวเคราะห์น้อยที่สร้าง (100 = ปกติ, 200 = กว้างและสูงเป็นสองเท่า) มีผลเฉพาะโลกที่สร้างตอนเปิดม็อดนี้"

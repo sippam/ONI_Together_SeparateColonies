@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ONI_Together.Networking;
 using UnityEngine;
+using static ONI_Together.Colonies.ColonyLoc;
 
 namespace ONI_Together.Colonies
 {
@@ -44,7 +45,7 @@ namespace ONI_Together.Colonies
             _startersChosen = true;
             _placing = true;
             _visible = true;
-            _status = "Now click where your Printing Pod should go (Esc / right-click cancels)";
+            _status = T("Now click where your Printing Pod should go (Esc / right-click cancels)");
         }
 
         private void Awake() => ColonyMessages.OnMessage += OnMessage;
@@ -86,7 +87,7 @@ namespace ONI_Together.Colonies
             if (Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(1))
             {
                 _placing = false;
-                _status = "Placement cancelled";
+                _status = T("Placement cancelled");
                 return;
             }
             Vector3 pos = PlayerController.GetCursorPos(KInputManager.GetMousePos());
@@ -98,7 +99,7 @@ namespace ONI_Together.Colonies
             {
                 if (ColonyFounder.RequestFound(_hoverCell, _colonyName, CurrentStarters(), out string reason))
                 {
-                    _status = MultiplayerSession.IsHost ? "Founding..." : "Request sent — waiting for host...";
+                    _status = MultiplayerSession.IsHost ? T("Founding...") : T("Request sent — waiting for host...");
                     _placing = false;
                 }
                 else _status = reason;
@@ -124,9 +125,11 @@ namespace ONI_Together.Colonies
             // spectators can't dig/build: make that impossible to miss
             if (ColonyRegistry.Active && ColonyRegistry.LocalColonyId == ColonyRegistry.NoColony && !_placing)
             {
-                var r = new Rect(Screen.width / 2f - 280, 64, 560, 52);
-                GUI.Box(r, $"{ColonyTheme.Colored("<b>SPECTATING</b>", ColonyTheme.Accent)} — you don't have a colony yet, your orders are ignored.\n" +
-                           $"{ColonyTheme.Colored("Click here", ColonyTheme.Accent)} to start your own base.", ColonyTheme.Banner);
+                string spec = $"{ColonyTheme.Colored("<b>" + T("SPECTATING") + "</b>", ColonyTheme.Accent)}" + T(" — you don't have a colony yet, your orders are ignored.") + "\n" +
+                              $"{ColonyTheme.Colored(T("Click here"), ColonyTheme.Accent)}" + T(" to start your own base.");
+                float sh = ColonyTheme.Banner.CalcHeight(new GUIContent(spec), 560f);
+                var r = new Rect(Screen.width / 2f - 280, 64, 560, sh);
+                GUI.Box(r, spec, ColonyTheme.Banner);
                 if (Event.current.type == EventType.MouseDown && r.Contains(Event.current.mousePosition)) { _visible = true; _tab = PanelTab.Colony; Event.current.Use(); }
             }
 
@@ -136,15 +139,15 @@ namespace ONI_Together.Colonies
                     ColonyPlacementOverlay.Draw(_hoverCell, _placeReason == null);
                 bool ok = _placeReason == null;
                 string txt = ok
-                    ? ColonyTheme.Colored("<b>Click to place your Printing Pod here</b>", ColonyTheme.Good)
-                    : ColonyTheme.Colored($"<b>Can't place here:</b> {_placeReason}", ColonyTheme.Bad);
-                txt += ColonyTheme.Colored("   (Esc / right-click cancels)", ColonyTheme.Muted);
+                    ? ColonyTheme.Colored("<b>" + T("Click to place your Printing Pod here") + "</b>", ColonyTheme.Good)
+                    : ColonyTheme.Colored("<b>" + T("Can't place here:") + "</b> " + _placeReason, ColonyTheme.Bad);
+                txt += ColonyTheme.Colored(T("   (Esc / right-click cancels)"), ColonyTheme.Muted);
                 string sum = ColonyPlacementOverlay.Summary;
                 if (sum != null)
                     txt += "\n" + sum + "\n" +
-                           $"{ColonyTheme.Colored("■", new Color(0.2f, 0.95f, 0.3f))} free   {ColonyTheme.Colored("■", new Color(1f, 0.85f, 0.2f))} cleared   " +
-                           $"{ColonyTheme.Colored("■", new Color(0.95f, 0.3f, 0.95f))} building stays   {ColonyTheme.Colored("■", new Color(1f, 0.25f, 0.2f))} blocked   " +
-                           $"{ColonyTheme.Colored("□", new Color(0.3f, 0.9f, 1f))} Printing Pod   {ColonyTheme.Colored("○", new Color(1f, 0.3f, 0.25f))} keep-out ring";
+                           $"{ColonyTheme.Colored("■", new Color(0.2f, 0.95f, 0.3f))} {T("free")}   {ColonyTheme.Colored("■", new Color(1f, 0.85f, 0.2f))} {T("cleared")}   " +
+                           $"{ColonyTheme.Colored("■", new Color(0.95f, 0.3f, 0.95f))} {T("building stays")}   {ColonyTheme.Colored("■", new Color(1f, 0.25f, 0.2f))} {T("blocked")}   " +
+                           $"{ColonyTheme.Colored("□", new Color(0.3f, 0.9f, 1f))} Printing Pod   {ColonyTheme.Colored("○", new Color(1f, 0.3f, 0.25f))} {T("keep-out ring")}";
                 var style = ColonyTheme.Banner;
                 float w = 600f, h = style.CalcHeight(new GUIContent(txt), w);
                 GUI.Box(new Rect(Screen.width / 2f - w / 2f, 64, w, h), txt, style);
@@ -153,7 +156,7 @@ namespace ONI_Together.Colonies
             if (_placing) return; // window hidden while placing so the whole base preview is visible
             if (!_visible)
             {
-                if (GUI.Button(new Rect(Screen.width - 124, 58, 104, 28), "Colonies", ColonyTheme.ButtonPrimary))
+                if (GUI.Button(new Rect(Screen.width - 124, 58, 104, 28), T("Colonies"), ColonyTheme.ButtonPrimary))
                     _visible = true;
                 return;
             }
@@ -172,15 +175,15 @@ namespace ONI_Together.Colonies
             GUILayout.BeginVertical(ColonyTheme.HeaderBar);
             GUILayout.BeginHorizontal();
             GUILayout.BeginVertical();
-            GUILayout.Label("Separate Colonies", ColonyTheme.Title);
+            GUILayout.Label(T("Separate Colonies"), ColonyTheme.Title);
             string sub;
-            if (!ColonyRegistry.Enabled) sub = "Shared colony mode";
+            if (!ColonyRegistry.Enabled) sub = T("Shared colony mode");
             else
             {
-                sub = $"{ColonyRegistry.Colonies.Count} colonies on this asteroid";
+                sub = F("{0} colonies on this asteroid", ColonyRegistry.Colonies.Count);
                 sub += mine != null
-                    ? $"  ·  you: {ColonyTheme.Colored(mine.Name, new Color(mine.ColorR, mine.ColorG, mine.ColorB))}"
-                    : $"  ·  {ColonyTheme.Colored("you are spectating", ColonyTheme.Accent)}";
+                    ? F("  ·  you: {0}", ColonyTheme.Colored(mine.Name, new Color(mine.ColorR, mine.ColorG, mine.ColorB)))
+                    : $"  ·  {ColonyTheme.Colored(T("you are spectating"), ColonyTheme.Accent)}";
             }
             GUILayout.Label(sub + ColonyTheme.Colored("   ·   Ctrl+Shift+C", ColonyTheme.Muted), ColonyTheme.Subtitle);
             GUILayout.EndVertical();
@@ -191,10 +194,10 @@ namespace ONI_Together.Colonies
 
             // ---- tabs ----
             GUILayout.BeginHorizontal();
-            TabButton(PanelTab.Colony, mine != null ? "My colony" : "Start");
-            TabButton(PanelTab.Colonies, $"Colonies ({ColonyRegistry.Colonies.Count})");
-            TabButton(PanelTab.Rules, "Rules");
-            TabButton(PanelTab.View, "View");
+            TabButton(PanelTab.Colony, mine != null ? T("My colony") : T("Start"));
+            TabButton(PanelTab.Colonies, F("Colonies ({0})", ColonyRegistry.Colonies.Count));
+            TabButton(PanelTab.Rules, T("Rules"));
+            TabButton(PanelTab.View, T("View"));
             GUILayout.EndHorizontal();
             GUILayout.Space(4);
 
@@ -234,11 +237,11 @@ namespace ONI_Together.Colonies
             if (!ColonyRegistry.Enabled)
             {
                 BeginCard();
-                GUILayout.Label("Separate colonies are off", ColonyTheme.SectionTitle);
+                GUILayout.Label(T("Separate colonies are off"), ColonyTheme.SectionTitle);
                 GUILayout.Label(MultiplayerSession.IsHost
-                    ? "Everyone shares one colony (vanilla ONI Together). Turn it on to let every player run their own base on this asteroid."
-                    : "Everyone shares one colony. The host can turn on separate colonies.", ColonyTheme.MutedLabel);
-                if (MultiplayerSession.IsHost && GUILayout.Button("Enable separate colonies for this save", ColonyTheme.ButtonPrimary))
+                    ? T("Everyone shares one colony (vanilla ONI Together). Turn it on to let every player run their own base on this asteroid.")
+                    : T("Everyone shares one colony. The host can turn on separate colonies."), ColonyTheme.MutedLabel);
+                if (MultiplayerSession.IsHost && GUILayout.Button(T("Enable separate colonies for this save"), ColonyTheme.ButtonPrimary))
                     ColonyFounder.HostSetMode(true);
                 EndCard();
                 return;
@@ -255,31 +258,31 @@ namespace ONI_Together.Colonies
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
-            GUILayout.Label($"{CountDupes(local)} duplicants", ColonyTheme.Badge);
-            if (ColonyRules.SeparateResearch) GUILayout.Label($"Research: {ColonyResearch.ActiveName(local)}", ColonyTheme.Badge);
+            GUILayout.Label(F("{0} duplicants", CountDupes(local)), ColonyTheme.Badge);
+            if (ColonyRules.SeparateResearch) GUILayout.Label(F("Research: {0}", ColonyResearch.ActiveName(local)), ColonyTheme.Badge);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
-            if (ColonyImmigration.SeparateActive) GUILayout.Label("Printing Pod: " + ColonyImmigration.Describe(local), ColonyTheme.MutedLabel);
+            if (ColonyImmigration.SeparateActive) GUILayout.Label(F("Printing Pod: {0}", ColonyImmigration.Describe(local)), ColonyTheme.MutedLabel);
             GUILayout.Space(4);
             ColonyTheme.Divider();
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Name", ColonyTheme.MutedLabel, GUILayout.Width(44));
+            GUILayout.Label(T("Name"), ColonyTheme.MutedLabel, GUILayout.Width(44));
             if (_renameText == null) _renameText = mine.Name ?? "";
             _renameText = GUILayout.TextField(_renameText, 24, ColonyTheme.TextField);
             GUI.enabled = !string.IsNullOrEmpty(_renameText) && _renameText.Trim() != mine.Name;
-            if (GUILayout.Button("Rename", ColonyTheme.ButtonSmall, GUILayout.Width(74))) ColonyFounder.RequestRename(_renameText);
+            if (GUILayout.Button(T("Rename"), ColonyTheme.ButtonSmall, GUILayout.Width(74))) ColonyFounder.RequestRename(_renameText);
             GUI.enabled = true;
             GUILayout.EndHorizontal();
-            if (ColonyRules.PrefixDupeNames) GUILayout.Label("New duplicants get the colony name as a prefix.", ColonyTheme.SmallLabel);
+            if (ColonyRules.PrefixDupeNames) GUILayout.Label(T("New duplicants get the colony name as a prefix."), ColonyTheme.SmallLabel);
             EndCard();
 
             BeginCard();
-            GUILayout.Label("What is yours alone", ColonyTheme.SectionTitle);
-            Feature("Research", ColonyRules.SeparateResearch, "your own tech tree", "shared tech tree");
-            Feature("Printing Pod", ColonyRules.SeparatePrintingPod, "your own timer and choices", "shared — first to accept gets it");
-            Feature("Schedules", ColonyRules.SeparateSchedules, "your own", "shared");
-            Feature("Errands", ColonyRules.SeparateErrands, ColonyRules.HelpOtherColonies ? "your dupes, your orders first (see Work priority)" : "your dupes only work for you", "anyone's dupes do anyone's work");
-            Feature("Buildings & food", !ColonyRules.SharedResources, "only your colony uses them", "shared with everyone");
+            GUILayout.Label(T("What is yours alone"), ColonyTheme.SectionTitle);
+            Feature(T("Research"), ColonyRules.SeparateResearch, T("your own tech tree"), T("shared tech tree"));
+            Feature(T("Printing Pod"), ColonyRules.SeparatePrintingPod, T("your own timer and choices"), T("shared — first to accept gets it"));
+            Feature(T("Schedules"), ColonyRules.SeparateSchedules, T("your own"), T("shared"));
+            Feature(T("Errands"), ColonyRules.SeparateErrands, ColonyRules.HelpOtherColonies ? T("your dupes, your orders first (see Work priority)") : T("your dupes only work for you"), T("anyone's dupes do anyone's work"));
+            Feature(T("Buildings & food"), !ColonyRules.SharedResources, T("only your colony uses them"), T("shared with everyone"));
             EndCard();
 
             DrawWorkOrder(local);
@@ -296,11 +299,11 @@ namespace ONI_Together.Colonies
         private void DrawStartCard()
         {
             BeginCard(true);
-            GUILayout.Label("<size=16><b>Start your own colony</b></size>", ColonyTheme.Label);
-            GUILayout.Label("You are spectating. Found a colony to get a Printing Pod, a starting base and 3 duplicants of your own.", ColonyTheme.MutedLabel);
+            GUILayout.Label("<size=16><b>" + T("Start your own colony") + "</b></size>", ColonyTheme.Label);
+            GUILayout.Label(T("You are spectating. Found a colony to get a Printing Pod, a starting base and 3 duplicants of your own."), ColonyTheme.MutedLabel);
             GUILayout.Space(6);
 
-            Step(1, "Name your colony", !string.IsNullOrEmpty(_colonyName?.Trim()));
+            Step(1, T("Name your colony"), !string.IsNullOrEmpty(_colonyName?.Trim()));
             GUILayout.BeginHorizontal();
             GUILayout.Space(34);
             _colonyName = GUILayout.TextField(_colonyName ?? "", 24, ColonyTheme.TextField);
@@ -308,7 +311,7 @@ namespace ONI_Together.Colonies
             GUILayout.Space(4);
 
             bool cards = StarterPicker.Available;
-            Step(2, "Choose 3 starting duplicants", _startersChosen || (!cards && _starters.All(x => x != null)));
+            Step(2, T("Choose 3 starting duplicants"), _startersChosen || (!cards && _starters.All(x => x != null)));
             if (_startersChosen)
             {
                 GUILayout.BeginHorizontal();
@@ -319,25 +322,25 @@ namespace ONI_Together.Colonies
             if (!cards) DrawStarterPicker();
             GUILayout.Space(4);
 
-            Step(3, "Click the map to place your Printing Pod", false);
+            Step(3, T("Click the map to place your Printing Pod"), false);
             GUILayout.BeginHorizontal();
             GUILayout.Space(34);
-            GUILayout.Label($"At least {ColonyFounder.MinColonyDistance} cells from other colonies. " +
-                            (ColonyWorldTools.GetStartTemplate() != null ? "A preview shows the whole base; the area is cleared and you get the same starting room as the host."
-                                                                         : "Needs a floor with a free 4x4 area."), ColonyTheme.SmallLabel);
+            GUILayout.Label(F("At least {0} cells from other colonies. ", ColonyFounder.MinColonyDistance) +
+                            (ColonyWorldTools.GetStartTemplate() != null ? T("A preview shows the whole base; the area is cleared and you get the same starting room as the host.")
+                                                                         : T("Needs a floor with a free 4x4 area.")), ColonyTheme.SmallLabel);
             GUILayout.EndHorizontal();
             GUILayout.Space(8);
 
-            string btn = _placing ? "Placing… click the map (Esc cancels)"
-                       : cards ? (_startersChosen ? "Place my colony" : "Choose duplicants")
-                       : "Place my colony";
+            string btn = _placing ? T("Placing… click the map (Esc cancels)")
+                       : cards ? (_startersChosen ? T("Place my colony") : T("Choose duplicants"))
+                       : T("Place my colony");
             if (GUILayout.Button(btn, ColonyTheme.ButtonPrimary))
             {
                 if (_placing) _placing = false;
                 else if (cards && !_startersChosen) { if (!StarterPicker.Open(OnStartersChosen)) _placing = true; }
                 else _placing = true;
             }
-            if (cards && _startersChosen && !_placing && GUILayout.Button("Choose duplicants again", ColonyTheme.ButtonSmall))
+            if (cards && _startersChosen && !_placing && GUILayout.Button(T("Choose duplicants again"), ColonyTheme.ButtonSmall))
                 StarterPicker.Open(OnStartersChosen);
             EndCard();
         }
@@ -357,7 +360,7 @@ namespace ONI_Together.Colonies
             if (!ColonyRegistry.Enabled || ColonyRegistry.Colonies.Count == 0)
             {
                 BeginCard();
-                GUILayout.Label("No colonies yet.", ColonyTheme.MutedLabel);
+                GUILayout.Label(T("No colonies yet."), ColonyTheme.MutedLabel);
                 EndCard();
                 return;
             }
@@ -369,11 +372,11 @@ namespace ONI_Together.Colonies
                 GUILayout.BeginHorizontal();
                 ColonyTheme.ColorBar(col, 40);
                 GUILayout.BeginVertical();
-                GUILayout.Label($"<b>{c.Name}</b>" + (me ? ColonyTheme.Colored("  (you)", ColonyTheme.Accent) : ""), ColonyTheme.Label);
-                GUILayout.Label($"{c.OwnerName}  ·  {CountDupes(c.Id)} duplicants  ·  colony #{c.Id}", ColonyTheme.MutedLabel);
+                GUILayout.Label($"<b>{c.Name}</b>" + (me ? ColonyTheme.Colored(T("  (you)"), ColonyTheme.Accent) : ""), ColonyTheme.Label);
+                GUILayout.Label(F("{0}  ·  {1} duplicants  ·  colony #{2}", c.OwnerName, CountDupes(c.Id), c.Id), ColonyTheme.MutedLabel);
                 bool details = me || MultiplayerSession.IsHost;
-                if (details && ColonyRules.SeparateResearch) GUILayout.Label("Researching: " + ColonyResearch.ActiveName(c.Id), ColonyTheme.SmallLabel);
-                if (details && ColonyImmigration.SeparateActive) GUILayout.Label("Printing Pod: " + ColonyImmigration.Describe(c.Id), ColonyTheme.SmallLabel);
+                if (details && ColonyRules.SeparateResearch) GUILayout.Label(F("Researching: {0}", ColonyResearch.ActiveName(c.Id)), ColonyTheme.SmallLabel);
+                if (details && ColonyImmigration.SeparateActive) GUILayout.Label(F("Printing Pod: {0}", ColonyImmigration.Describe(c.Id)), ColonyTheme.SmallLabel);
                 GUILayout.EndVertical();
                 GUILayout.EndHorizontal();
                 EndCard();
@@ -386,8 +389,8 @@ namespace ONI_Together.Colonies
         {
             bool host = MultiplayerSession.IsHost;
             BeginCard();
-            GUILayout.Label(host ? "You are the host — changes apply to everyone right away and are saved in your mod options."
-                                 : "Set by the host. Shown here so you know how this save plays.", ColonyTheme.MutedLabel);
+            GUILayout.Label(host ? T("You are the host — changes apply to everyone right away and are saved in your mod options.")
+                                 : T("Set by the host. Shown here so you know how this save plays."), ColonyTheme.MutedLabel);
             EndCard();
             if (!ColonyRegistry.Enabled)
             {
@@ -399,26 +402,26 @@ namespace ONI_Together.Colonies
             var next = new ColonyRulesData();
 
             BeginCard();
-            GUILayout.Label("Protection", ColonyTheme.SectionTitle);
-            next.TerritoryProtection = ColonyTheme.CheckToggle(cur.TerritoryProtection, "Territory protection", "No building or digging inside other colonies' circles.", host);
-            next.BuildingProtection = ColonyTheme.CheckToggle(cur.BuildingProtection, "Building protection", "No orders on other colonies' buildings and duplicants.", host);
-            next.CancelOnlyOwnOrders = ColonyTheme.CheckToggle(cur.CancelOnlyOwnOrders, "Cancel only your own orders", "The cancel tool leaves other colonies' orders alone.", host);
+            GUILayout.Label(T("Protection"), ColonyTheme.SectionTitle);
+            next.TerritoryProtection = ColonyTheme.CheckToggle(cur.TerritoryProtection, T("Territory protection"), T("No building or digging inside other colonies' circles."), host);
+            next.BuildingProtection = ColonyTheme.CheckToggle(cur.BuildingProtection, T("Building protection"), T("No orders on other colonies' buildings and duplicants."), host);
+            next.CancelOnlyOwnOrders = ColonyTheme.CheckToggle(cur.CancelOnlyOwnOrders, T("Cancel only your own orders"), T("The cancel tool leaves other colonies' orders alone."), host);
             EndCard();
 
             BeginCard();
-            GUILayout.Label("Work", ColonyTheme.SectionTitle);
-            next.SeparateErrands = ColonyTheme.CheckToggle(cur.SeparateErrands, "Separate errands", "Duplicants work for their own colony.", host);
-            next.HelpOtherColonies = ColonyTheme.CheckToggle(cur.HelpOtherColonies, "Help other colonies", "Duplicants also do other colonies' errands, in each player's Work priority order.", host);
-            next.SharedResources = ColonyTheme.CheckToggle(cur.SharedResources, "Share buildings, machines & food", "Only duplicant control stays separate.", host);
-            next.SharedDupeManagement = ColonyTheme.CheckToggle(cur.SharedDupeManagement, "Shared duplicant management", "Anyone can change any dupe's priorities, food and skills.", host);
+            GUILayout.Label(T("Work"), ColonyTheme.SectionTitle);
+            next.SeparateErrands = ColonyTheme.CheckToggle(cur.SeparateErrands, T("Separate errands"), T("Duplicants work for their own colony."), host);
+            next.HelpOtherColonies = ColonyTheme.CheckToggle(cur.HelpOtherColonies, T("Help other colonies"), T("Duplicants also do other colonies' errands, in each player's Work priority order."), host);
+            next.SharedResources = ColonyTheme.CheckToggle(cur.SharedResources, T("Share buildings, machines & food"), T("Only duplicant control stays separate."), host);
+            next.SharedDupeManagement = ColonyTheme.CheckToggle(cur.SharedDupeManagement, T("Shared duplicant management"), T("Anyone can change any dupe's priorities, food and skills."), host);
             EndCard();
 
             BeginCard();
-            GUILayout.Label("Colony systems", ColonyTheme.SectionTitle);
-            next.SeparateResearch = ColonyTheme.CheckToggle(cur.SeparateResearch, "Separate research", "Every colony has its own tech tree.", host);
-            next.SeparatePrintingPod = ColonyTheme.CheckToggle(cur.SeparatePrintingPod, "Separate Printing Pods", "Own timer and own choices for every colony.", host);
-            next.SeparateSchedules = ColonyTheme.CheckToggle(cur.SeparateSchedules, "Separate schedules", "Every colony manages its own schedules.", host);
-            next.PrefixDupeNames = ColonyTheme.CheckToggle(cur.PrefixDupeNames, "Colony name as dupe prefix", "New duplicants are named \"Colony Name\".", host);
+            GUILayout.Label(T("Colony systems"), ColonyTheme.SectionTitle);
+            next.SeparateResearch = ColonyTheme.CheckToggle(cur.SeparateResearch, T("Separate research"), T("Every colony has its own tech tree."), host);
+            next.SeparatePrintingPod = ColonyTheme.CheckToggle(cur.SeparatePrintingPod, T("Separate Printing Pods"), T("Own timer and own choices for every colony."), host);
+            next.SeparateSchedules = ColonyTheme.CheckToggle(cur.SeparateSchedules, T("Separate schedules"), T("Every colony manages its own schedules."), host);
+            next.PrefixDupeNames = ColonyTheme.CheckToggle(cur.PrefixDupeNames, T("Colony name as dupe prefix"), T("New duplicants are named \"Colony Name\"."), host);
             EndCard();
 
             bool changed = next.TerritoryProtection != cur.TerritoryProtection || next.BuildingProtection != cur.BuildingProtection
@@ -432,7 +435,7 @@ namespace ONI_Together.Colonies
                 ColonyRules.Apply(next);
                 ColonyRules.SaveToConfig();
                 ColonyNet.BroadcastRegistry();
-                _status = "Rules updated";
+                _status = T("Rules updated");
             }
 
             DrawHostTools();
@@ -442,14 +445,14 @@ namespace ONI_Together.Colonies
         {
             if (!MultiplayerSession.IsHost) return;
             BeginCard();
-            GUILayout.Label("Host tools", ColonyTheme.SectionTitle);
+            GUILayout.Label(T("Host tools"), ColonyTheme.SectionTitle);
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button(ColonyRegistry.Enabled ? "Turn separate colonies off" : "Turn separate colonies on", ColonyTheme.ButtonSecondary))
+            if (GUILayout.Button(ColonyRegistry.Enabled ? T("Turn separate colonies off") : T("Turn separate colonies on"), ColonyTheme.ButtonSecondary))
                 ColonyFounder.HostSetMode(!ColonyRegistry.Enabled);
-            if (GUILayout.Button("Hard sync all clients", ColonyTheme.ButtonSecondary))
+            if (GUILayout.Button(T("Hard sync all clients"), ColonyTheme.ButtonSecondary))
                 GameServerHardSync.PerformHardSync(false);
             GUILayout.EndHorizontal();
-            GUILayout.Label("Hard sync sends your exact world to everyone (short pause). Background sync fixes small differences on its own.", ColonyTheme.SmallLabel);
+            GUILayout.Label(T("Hard sync sends your exact world to everyone (short pause). Background sync fixes small differences on its own."), ColonyTheme.SmallLabel);
             EndCard();
         }
 
@@ -458,14 +461,14 @@ namespace ONI_Together.Colonies
         private void DrawViewTab()
         {
             BeginCard();
-            GUILayout.Label("Overlays", ColonyTheme.SectionTitle);
-            _showTerritory = ColonyTheme.CheckToggle(_showTerritory, "Territory borders", "Dotted circle in each colony's colour (when territory protection is on).");
-            _showHoverOwner = ColonyTheme.CheckToggle(_showHoverOwner, "Owner under the cursor", "Small box at the bottom-left: whose territory and building you are pointing at.");
+            GUILayout.Label(T("Overlays"), ColonyTheme.SectionTitle);
+            _showTerritory = ColonyTheme.CheckToggle(_showTerritory, T("Territory borders"), T("Dotted circle in each colony's colour (when territory protection is on)."));
+            _showHoverOwner = ColonyTheme.CheckToggle(_showHoverOwner, T("Owner under the cursor"), T("Small box at the bottom-left: whose territory and building you are pointing at."));
             EndCard();
             BeginCard();
-            GUILayout.Label("Keys", ColonyTheme.SectionTitle);
-            GUILayout.Label("<b>Ctrl+Shift+C</b>  open / close this window", ColonyTheme.MutedLabel);
-            GUILayout.Label("<b>Esc / right-click</b>  cancel placing a colony", ColonyTheme.MutedLabel);
+            GUILayout.Label(T("Keys"), ColonyTheme.SectionTitle);
+            GUILayout.Label("<b>Ctrl+Shift+C</b>  " + T("open / close this window"), ColonyTheme.MutedLabel);
+            GUILayout.Label("<b>Esc / right-click</b>  " + T("cancel placing a colony"), ColonyTheme.MutedLabel);
             EndCard();
         }
 
@@ -505,13 +508,13 @@ namespace ONI_Together.Colonies
             if (ColonyRegistry.Colonies.Count < 2) return;
             BeginCard();
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Work priority", ColonyTheme.SectionTitle);
+            GUILayout.Label(T("Work priority"), ColonyTheme.SectionTitle);
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Reset", ColonyTheme.ButtonSmall, GUILayout.Width(64))) ColonyWorkOrder.LocalReset();
+            if (GUILayout.Button(T("Reset"), ColonyTheme.ButtonSmall, GUILayout.Width(64))) ColonyWorkOrder.LocalReset();
             GUILayout.EndHorizontal();
-            GUILayout.Label("Your duplicants finish the errands of the colony at the top first, then move down the list.", ColonyTheme.MutedLabel);
+            GUILayout.Label(T("Your duplicants finish the errands of the colony at the top first, then move down the list."), ColonyTheme.MutedLabel);
             if (!ColonyRules.SeparateErrands || !ColonyRules.HelpOtherColonies)
-                GUILayout.Label(ColonyTheme.Colored("Not active: the host has to turn on \"Separate errands\" and \"Help other colonies\".", ColonyTheme.Accent), ColonyTheme.SmallLabel);
+                GUILayout.Label(ColonyTheme.Colored(T("Not active: the host has to turn on \"Separate errands\" and \"Help other colonies\"."), ColonyTheme.Accent), ColonyTheme.SmallLabel);
             GUILayout.Space(4);
             var order = ColonyWorkOrder.Get(local);
             for (int i = 0; i < order.Count; i++)
@@ -523,8 +526,8 @@ namespace ONI_Together.Colonies
                 GUILayout.Label((i + 1).ToString(), ColonyTheme.RankBadge);
                 ColonyTheme.ColorBar(new Color(c.ColorR, c.ColorG, c.ColorB), 24);
                 GUILayout.BeginVertical();
-                GUILayout.Label($"<b>{c.Name}</b>" + (me ? ColonyTheme.Colored("  you", ColonyTheme.Accent) : ""), ColonyTheme.Label);
-                GUILayout.Label(me ? "your orders + unowned work" : c.OwnerName, ColonyTheme.SmallLabel);
+                GUILayout.Label($"<b>{c.Name}</b>" + (me ? ColonyTheme.Colored(T("  you"), ColonyTheme.Accent) : ""), ColonyTheme.Label);
+                GUILayout.Label(me ? T("your orders + unowned work") : c.OwnerName, ColonyTheme.SmallLabel);
                 GUILayout.EndVertical();
                 GUILayout.FlexibleSpace();
                 GUI.enabled = i > 0;
@@ -536,7 +539,7 @@ namespace ONI_Together.Colonies
                 if (i < order.Count - 1) ColonyTheme.Divider();
             }
             GUILayout.Space(2);
-            GUILayout.Label("Eating, sleeping and other personal needs always come first. A duplicant finishes its current errand before switching.", ColonyTheme.SmallLabel);
+            GUILayout.Label(T("Eating, sleeping and other personal needs always come first. A duplicant finishes its current errand before switching."), ColonyTheme.SmallLabel);
             EndCard();
         }
 
@@ -549,19 +552,19 @@ namespace ONI_Together.Colonies
                 var st = _starters[i];
                 GUILayout.BeginVertical(ColonyTheme.CardStyle);
                 GUILayout.BeginHorizontal();
-                GUILayout.Label($"<b>{st?.Name ?? "?"}</b>" + (st?.personality != null && st.personality.model == GameTags.Minions.Models.Bionic ? ColonyTheme.Colored("  Bionic", ColonyTheme.Accent) : ""), ColonyTheme.Label);
+                GUILayout.Label($"<b>{st?.Name ?? "?"}</b>" + (st?.personality != null && st.personality.model == GameTags.Minions.Models.Bionic ? ColonyTheme.Colored(T("  Bionic"), ColonyTheme.Accent) : ""), ColonyTheme.Label);
                 GUILayout.FlexibleSpace();
-                if (BionicAvailable && GUILayout.Button(ModelNames[_starterModel[i]], ColonyTheme.ButtonSmall, GUILayout.Width(80)))
+                if (BionicAvailable && GUILayout.Button(T(ModelNames[_starterModel[i]]), ColonyTheme.ButtonSmall, GUILayout.Width(80)))
                 {
                     _starterModel[i] = (_starterModel[i] + 1) % 3;
                     _starters[i] = Roll(i);
                 }
-                if (GUILayout.Button("Reroll", ColonyTheme.ButtonSmall, GUILayout.Width(64))) _starters[i] = Roll(i);
+                if (GUILayout.Button(T("Reroll"), ColonyTheme.ButtonSmall, GUILayout.Width(64))) _starters[i] = Roll(i);
                 GUILayout.EndHorizontal();
                 if (st != null) GUILayout.Label(DescribeStarter(st), ColonyTheme.SmallLabel);
                 GUILayout.EndVertical();
             }
-            if (GUILayout.Button("Reroll all", ColonyTheme.ButtonSmall))
+            if (GUILayout.Button(T("Reroll all"), ColonyTheme.ButtonSmall))
                 for (int i = 0; i < _starters.Length; i++) _starters[i] = Roll(i);
         }
 
@@ -571,18 +574,18 @@ namespace ONI_Together.Colonies
             try
             {
                 var interests = st.skillAptitudes.Where(kv => kv.Key != null && kv.Value > 0f).Select(kv => kv.Key.Name).ToList();
-                if (interests.Count > 0) sb.Append("Interests: ").Append(string.Join(", ", interests)).Append('\n');
+                if (interests.Count > 0) sb.Append(T("Interests: ")).Append(string.Join(", ", interests)).Append('\n');
 
                 var traits = st.Traits.Where(t => t != null && t.ValidStarterTrait).ToList();
                 if (traits.Count > 0)
-                    sb.Append("Traits: ").Append(string.Join(", ", traits.Select(t => t.PositiveTrait ? $"<color=#7CFC00>{t.Name}</color>" : $"<color=#FF8C69>{t.Name}</color>"))).Append('\n');
+                    sb.Append(T("Traits: ")).Append(string.Join(", ", traits.Select(t => t.PositiveTrait ? $"<color=#7CFC00>{t.Name}</color>" : $"<color=#FF8C69>{t.Name}</color>"))).Append('\n');
 
                 var attrs = st.StartingLevels.Where(kv => kv.Value != 0).OrderByDescending(kv => kv.Value).Take(6)
                     .Select(kv => $"{Db.Get().Attributes.TryGet(kv.Key)?.Name ?? kv.Key} {kv.Value:+#;-#;0}").ToList();
-                if (attrs.Count > 0) sb.Append("Attributes: ").Append(string.Join(", ", attrs)).Append('\n');
+                if (attrs.Count > 0) sb.Append(T("Attributes: ")).Append(string.Join(", ", attrs)).Append('\n');
 
-                if (st.stressTrait != null) sb.Append("Stress: ").Append(st.stressTrait.Name);
-                if (st.joyTrait != null) sb.Append(" · Overjoyed: ").Append(st.joyTrait.Name);
+                if (st.stressTrait != null) sb.Append(T("Stress: ")).Append(st.stressTrait.Name);
+                if (st.joyTrait != null) sb.Append(T(" · Overjoyed: ")).Append(st.joyTrait.Name);
             }
             catch (System.Exception ex) { sb.Append($"(details unavailable: {ex.Message})"); }
             return STRINGS_Strip(sb.ToString());
@@ -634,14 +637,14 @@ namespace ONI_Together.Colonies
 
             string text = null;
             var territory = ColonyRegistry.Get(ColonyRegistry.GetTerritoryOwner(cell));
-            if (territory != null) text = $"Territory: {territory.Name}";
+            if (territory != null) text = F("Territory: {0}", territory.Name);
 
             for (int layer = 0; layer < (int)ObjectLayer.NumLayers; layer++)
             {
                 var go = Grid.Objects[cell, layer];
                 if (go == null || go.GetComponent<Building>() == null) continue;
                 var owner = ColonyRegistry.Get(ColonyRegistry.GetOwner(go));
-                string line = owner != null ? $"{go.GetProperName()}: {owner.Name}" : $"{go.GetProperName()}: unowned";
+                string line = owner != null ? $"{go.GetProperName()}: {owner.Name}" : F("{0}: unowned", go.GetProperName());
                 text = text == null ? line : text + "\n" + line;
                 break;
             }

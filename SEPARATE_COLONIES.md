@@ -35,6 +35,10 @@ your buildings/dupes.
 The host's rules are used for the session (sent to clients, stored in the save). Switching research back to
 shared hard-syncs everyone to the host's tree.
 
+## v0.9.2 notes
+- Thai support (works with any Thai translation mod): the Colonies window, banners, placement messages and host messages are shown in Thai when the game runs in Thai (detected from the language code, or from Thai text in the game's own strings). IMGUI windows use an OS font with Thai glyphs (Leelawadee UI / Tahoma).
+- translations/th.po: Thai for all ONI Together strings (multiplayer menus, lobby, overlays, chat) and the "0) Separate colonies" mod options, which now use STRINGS keys so they can be translated like the rest.
+
 ## v0.9.1 notes
 - New look for the Colonies window (ColonyTheme: ONI-style dark navy panels, plum/slate buttons, custom checkboxes): header with your colony, tabs "My colony / Start", "Colonies", "Rules", "View", cards instead of plain text, step-by-step "Start your own colony", work priority rows with rank badges and colour bars, grouped rules with explanations, status bar at the bottom.
 - Banners (spectating, placement with colour legend) and the owner-under-cursor box use the same style. The window hides while you place a colony and while the game's duplicant cards are open.

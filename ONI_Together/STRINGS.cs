@@ -11,6 +11,7 @@ namespace ONI_Together
 			{
 				public class HEADERS
 				{
+					public static LocString A0_SEPARATE_COLONIES = "0) Separate colonies";
 					public static LocString A_HOST_SETTINGS = "Host Settings";
 					public static LocString B_CLIENT_SETTINGS = "Client Settings";
 					public static LocString C_NETWORK_SETTINGS = "General Network Settings";
@@ -23,6 +24,28 @@ namespace ONI_Together
 
                 public class TITLES
                 {
+                    public class COLONIES
+                    {
+                        public static LocString SEPARATE_COLONIES_ENABLED = "Separate colonies";
+                        public static LocString COLONY_TERRITORY_PROTECTION = "Territory protection";
+                        public static LocString COLONY_BUILDING_PROTECTION = "Building protection";
+                        public static LocString COLONY_SEPARATE_ERRANDS = "Separate errands";
+                        public static LocString COLONY_SEPARATE_RESEARCH = "Separate research";
+                        public static LocString COLONY_SHARED_DUPE_MANAGEMENT = "Shared dupe priorities";
+                        public static LocString COLONY_SEPARATE_PRINTING_POD = "Separate Printing Pod";
+                        public static LocString COLONY_SEPARATE_SCHEDULES = "Separate schedules";
+                        public static LocString COLONY_HELP_OTHER_COLONIES = "Help other colonies when idle";
+                        public static LocString COLONY_CANCEL_ONLY_OWN_ORDERS = "Cancel only your own orders";
+                        public static LocString COLONY_EXTRA_WATER_GEYSERS = "Extra water geysers (new games)";
+                        public static LocString COLONY_HOST_WATER_GEYSERS = "Water geysers near the host's base";
+                        public static LocString COLONY_BACKGROUND_STRUCTURE_SYNC = "Background structure sync";
+                        public static LocString COLONY_SHARED_RESOURCES = "Share buildings, machines & food";
+                        public static LocString COLONY_PREFIX_DUPE_NAMES = "Colony name in dupe names";
+                        public static LocString COLONY_VERBOSE_LOGGING = "Verbose multiplayer log (slower)";
+                        public static LocString COLONY_TERRITORY_RADIUS = "Territory radius (cells)";
+                        public static LocString WORLD_SCALE_PERCENT = "Asteroid size (%) for NEW games";
+                    }
+
                     public class HOST_SETTINGS
                     {
                         public static LocString MAX_MESSAGES_PER_POLL = "Max Messages Per Poll";
@@ -64,6 +87,28 @@ namespace ONI_Together
 
                 public class TOOLTIPS
                 {
+                    public class COLONIES
+                    {
+                        public static LocString SEPARATE_COLONIES_ENABLED = "Host: each player gets their own colony on the same asteroid (own dupes, territory). Applied when you host.";
+                        public static LocString COLONY_TERRITORY_PROTECTION = "On: other colonies can't build or dig inside your territory circle. Off: anyone can build/dig anywhere.";
+                        public static LocString COLONY_BUILDING_PROTECTION = "On: other colonies can't deconstruct, prioritize, configure or cancel orders on your buildings and dupes. Off: anyone can.";
+                        public static LocString COLONY_SEPARATE_ERRANDS = "On: dupes only do their own colony's errands (a dig order by player 1 is never done by player 2's dupes) and don't take items from other colonies' storage. Off: every dupe can do every errand.";
+                        public static LocString COLONY_SEPARATE_RESEARCH = "On: every colony has its own research tree. Off: one shared research tree.";
+                        public static LocString COLONY_SHARED_DUPE_MANAGEMENT = "On: Priorities/Consumables/Vitals/Skills screens show and edit every colony's dupes. Off: each player only sees their own dupes.";
+                        public static LocString COLONY_SEPARATE_PRINTING_POD = "On: every colony has its own printing timer and its own choices. Off: one shared timer, first player to accept gets the print.";
+                        public static LocString COLONY_SEPARATE_SCHEDULES = "On: every colony has its own schedules and only sees/edits those. Off: all schedules are shared.";
+                        public static LocString COLONY_HELP_OTHER_COLONIES = "With separate errands: dupes do their own colony's errands first, and only help other colonies when they have nothing of their own to do. Off: never help.";
+                        public static LocString COLONY_CANCEL_ONLY_OWN_ORDERS = "The cancel tool only removes your colony's dig/mop/build/deconstruct orders, even when building protection is off.";
+                        public static LocString COLONY_EXTRA_WATER_GEYSERS = "Water geysers / cool steam vents added to a freshly generated world (host). 0 = vanilla.";
+                        public static LocString COLONY_HOST_WATER_GEYSERS = "Water geysers placed 12-30 cells from the host's Printing Pod. Added once per save (existing saves too); raising the number later adds the difference. 0 = off.";
+                        public static LocString COLONY_BACKGROUND_STRUCTURE_SYNC = "Host: every few seconds compare buildings, blueprints and plants with every client and fix only the blocks that differ (instead of waiting for a hard sync).";
+                        public static LocString COLONY_SHARED_RESOURCES = "On: every colony's dupes may use/operate any building and eat/fetch from any storage; only commanding dupes stays separate. Off: each colony keeps its own.";
+                        public static LocString COLONY_PREFIX_DUPE_NAMES = "New starting and printed dupes get the colony's name as a prefix (e.g. 'Sawadeeja Meep').";
+                        public static LocString COLONY_VERBOSE_LOGGING = "Write every ONI Together info line to Player.log. Off = only warnings (max 10/s). Turn on only when reporting a bug.";
+                        public static LocString COLONY_TERRITORY_RADIUS = "Other colonies can't build/dig within this distance of a colony's Printing Pod. 0 = off.";
+                        public static LocString WORLD_SCALE_PERCENT = "Scales the generated asteroid (100 = vanilla, 200 = twice as wide and tall). Only affects worlds generated while this mod is enabled.";
+                    }
+
                     public class HOST_SETTINGS
                     {
                         public static LocString MAX_MESSAGES_PER_POLL = "STEAMWORKS ONLY:\nMaximum number of incoming Steam networking messages processed per poll tick on the server.\nHigher values reduce latency spikes under heavy traffic but may increase CPU usage per frame.\nLower values improve frame stability but can increase message backlog and delay processing during bursts.\n\nRecommended range: 32–128 (default: 128)";
