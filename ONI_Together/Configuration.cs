@@ -123,15 +123,6 @@ namespace ONI_Together
             set => Colonies.HostWaterGeysers = Mathf.Clamp(value, 0, 4);
         }
 
-        [Option("STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_HOST_WATER_DISTANCE", "STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_HOST_WATER_DISTANCE", "STRINGS.UI.CONFIGURATION.HEADERS.A0_SEPARATE_COLONIES")]
-        [Limit(20, 150)]
-        [JsonIgnore]
-        public int ColonyHostWaterDistance
-        {
-            get => Colonies.HostWaterDistance;
-            set => Colonies.HostWaterDistance = Mathf.Clamp(value, 20, 150);
-        }
-
         [Option("STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_BACKGROUND_STRUCTURE_SYNC", "STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_BACKGROUND_STRUCTURE_SYNC", "STRINGS.UI.CONFIGURATION.HEADERS.A0_SEPARATE_COLONIES")]
         [JsonIgnore]
         public bool ColonyBackgroundStructureSync
@@ -376,7 +367,6 @@ namespace ONI_Together
         [JsonProperty] public bool CancelOnlyOwnOrders { get; set; } = true;
         [JsonProperty] public int ExtraWaterGeysers { get; set; } = 2;
         [JsonProperty] public int HostWaterGeysers { get; set; } = 1;
-        [JsonProperty] public int HostWaterDistance { get; set; } = 45;
         [JsonProperty] public bool BackgroundStructureSync { get; set; } = true;
         [JsonProperty] public bool SharedResources { get; set; } = false;
         [JsonProperty] public bool PrefixDupeNames { get; set; } = true;

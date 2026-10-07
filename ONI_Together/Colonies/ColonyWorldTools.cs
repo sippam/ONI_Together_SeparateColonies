@@ -13,7 +13,6 @@ namespace ONI_Together.Colonies
     /// </summary>
     public static class ColonyWorldTools
     {
-        public static readonly string[] WaterGeysers = { "GeyserGeneric_hot_water" }; // Water Geyser (clean water vent)
 
         private static TemplateContainer _cachedTemplate;
         private static string _cachedFor;
@@ -104,64 +103,20 @@ namespace ONI_Together.Colonies
             return set;
         }
 
-        #region Water geysers
+        #region Steam vents (worldgen POI templates)
 
         /// <summary>
-        /// Place one water geyser in a natural-looking cave. near &gt;= 0: minDist-maxDist cells from that cell,
-        /// otherwise anywhere away from colonies.
+        /// The game's own worldgen POIs that contain a Cool Steam Vent (GeyserGeneric_steam), with the biome worldgen
+        /// is allowed to put them in (worldTemplateRules in worldgen/worlds/*.yaml: GuaranteeOne, zoneTypes filter).
+        /// Stamping the template copies the whole structure: rock shell, cave, plants and the vent itself.
         /// </summary>
-        public static bool PlaceWaterGeyser(int near, System.Random rng, int minDist = 20, int maxDist = 40)
+        private static readonly (string Template, ProcGen.SubWorld.ZoneType Zone)[] SteamVentPois =
         {
-            var world = ClusterManager.Instance?.GetStartWorld();
-            if (world == null) return false;
-            var min = world.minimumBounds; var max = world.maximumBounds;
-            int nx = 0, ny = 0;
-            if (near >= 0) Grid.CellToXY(near, out nx, out ny);
-            var zones = WaterVentZones(world.id);
-
-            for (int attempt = 0; attempt < 1500; attempt++)
-            {
-                int x, y;
-                if (near >= 0)
-                {
-                    double a = rng.NextDouble() * Math.PI * 2;
-                    double d = minDist + rng.NextDouble() * Math.Max(0, maxDist - minDist);
-                    x = nx + (int)Math.Round(Math.Cos(a) * d);
-                    y = ny + (int)Math.Round(Math.Sin(a) * d * 0.8); // asteroids are wider than tall: favour sideways
-                }
-                else
-                {
-                    x = rng.Next((int)min.x + 12, (int)max.x - 12);
-                    y = rng.Next((int)min.y + 12, (int)max.y - 12);
-                }
-                if (!Grid.IsValidCell(Grid.XYToCell(x, y))) continue;
-                // only in biomes where water vents normally form
-                if (zones.Count > 0 && !zones.Contains(ZoneAt(Grid.XYToCell(x, y)))) continue;
-
-                var cave = ShapeCave(x, y, rng, out var floor);
-                if (!CaveOk(x, y, near, cave, floor)) continue;
-
-                string id = WaterGeysers[rng.Next(WaterGeysers.Length)];
-                var prefab = Assets.GetPrefab(new Tag(id));
-                if (prefab == null) continue;
-
-                CarveCave(cave, floor, rng);
-                int cell = Grid.XYToCell(x, y);
-                var go = GameUtil.KInstantiate(prefab, Grid.CellToPosCBC(cell, Grid.SceneLayer.BuildingBack), Grid.SceneLayer.BuildingBack);
-                go.SetActive(true);
-                Debug.Log($"[ONIT-Colonies] Placed {id} at {x},{y} (cave {cave.Count} cells)");
-                return true;
-            }
-            Debug.LogWarning("[ONIT-Colonies] No spot found for a water geyser");
-            return false;
-        }
-
-        /// <summary>Temperate / wet biomes where the Water Geyser shows up in worldgen.</summary>
-        private static readonly ProcGen.SubWorld.ZoneType[] DefaultWaterZones =
-        {
-            ProcGen.SubWorld.ZoneType.Sandstone, ProcGen.SubWorld.ZoneType.BoggyMarsh, ProcGen.SubWorld.ZoneType.Ocean, ProcGen.SubWorld.ZoneType.Forest,
-            ProcGen.SubWorld.ZoneType.Swamp, ProcGen.SubWorld.ZoneType.KelpForest, ProcGen.SubWorld.ZoneType.Reef, ProcGen.SubWorld.ZoneType.Beach,
+            ("poi/jungle/geyser_steam", ProcGen.SubWorld.ZoneType.ToxicJungle),
+            ("poi/hotmarsh/geyser_steam", ProcGen.SubWorld.ZoneType.BoggyMarsh),
         };
+
+        private const int VentMinDistFromColony = 30;
 
         private static ProcGen.SubWorld.ZoneType ZoneAt(int cell)
         {
@@ -169,167 +124,131 @@ namespace ONI_Together.Colonies
             catch { return ProcGen.SubWorld.ZoneType.Space; }
         }
 
-        /// <summary>
-        /// Biomes to place water vents in: the biomes this world already has water vents in (that's where its worldgen
-        /// put them), plus the usual temperate/wet biomes. Empty set = no biome data (place anywhere).
-        /// </summary>
-        private static HashSet<ProcGen.SubWorld.ZoneType> WaterVentZones(int worldId)
+        private static TemplateContainer LoadTemplate(string name)
         {
-            var set = new HashSet<ProcGen.SubWorld.ZoneType>(DefaultWaterZones);
             try
             {
-                var geysers = global::Components.Geysers.GetItems(worldId);
-                if (geysers != null) foreach (Geyser g in geysers)
-                {
-                    if (g == null || g.configuration == null) continue;
-                    if (g.configuration.GetElement() != SimHashes.Water) continue;
-                    var z = ZoneAt(Grid.PosToCell(g));
-                    if (z != ProcGen.SubWorld.ZoneType.Space) set.Add(z);
-                }
-                if (global::World.Instance?.zoneRenderData == null) set.Clear();
+                if (!TemplateCache.Initted) TemplateCache.Init();
+                return TemplateCache.TemplateExists(name) ? TemplateCache.GetTemplate(name) : null;
             }
-            catch { }
-            return set;
+            catch (Exception ex) { Debug.LogWarning($"[ONIT-Colonies] template {name}: {ex.Message}"); return null; }
         }
 
         /// <summary>
-        /// Irregular cave around a geyser whose origin (bottom-centre) is (gx, gy): a wobbly ellipse with a rough edge,
-        /// a level floor under the geyser's 4x2 footprint and room above it. floor = cells that must be solid.
+        /// Stamp one steam-vent POI where worldgen would have put it (its biome), away from every colony.
+        /// near &gt;= 0: of all valid spots pick the one closest to that cell (the host's base); otherwise a random one.
+        /// onDone runs when the stamp has finished (needs the game unpaused).
         /// </summary>
-        private static HashSet<int> ShapeCave(int gx, int gy, System.Random rng, out HashSet<int> floor)
+        public static bool PlaceSteamVent(int near, System.Random rng, System.Action onDone)
         {
-            var cave = new HashSet<int>();
-            floor = new HashSet<int>();
-            double rx = 5.5 + rng.NextDouble() * 3.0;   // 5.5..8.5 half-width
-            double ry = 3.2 + rng.NextDouble() * 1.6;   // 3.2..4.8 half-height
-            double cx = gx + 0.5 + (rng.NextDouble() - 0.5) * 2.0;
-            double cy = gy - 0.5 + ry * (0.75 + rng.NextDouble() * 0.2); // bottom of the ellipse sits around the geyser's feet
-            double p1 = rng.NextDouble() * 6.283, p2 = rng.NextDouble() * 6.283, p3 = rng.NextDouble() * 6.283;
-            double a1 = 0.12 + rng.NextDouble() * 0.1, a2 = 0.06 + rng.NextDouble() * 0.08, a3 = 0.04 + rng.NextDouble() * 0.05;
-            int ix0 = (int)Math.Floor(cx - rx * 1.4), ix1 = (int)Math.Ceiling(cx + rx * 1.4);
-            int iy0 = gy - 2, iy1 = (int)Math.Ceiling(cy + ry * 1.4);
-            for (int y = iy0; y <= iy1; y++)
+            var world = ClusterManager.Instance?.GetStartWorld();
+            if (world == null) return false;
+            var min = world.minimumBounds; var max = world.maximumBounds;
+
+            var pois = new List<(TemplateContainer Tpl, ProcGen.SubWorld.ZoneType Zone, string Name)>();
+            foreach (var p in SteamVentPois)
             {
-                for (int x = ix0; x <= ix1; x++)
+                var t = LoadTemplate(p.Template);
+                if (t?.cells != null && t.cells.Count > 0) pois.Add((t, p.Zone, p.Template));
+            }
+            if (pois.Count == 0) { Debug.LogWarning("[ONIT-Colonies] steam vent templates not found"); return false; }
+
+            int nx = 0, ny = 0;
+            if (near >= 0) Grid.CellToXY(near, out nx, out ny);
+            var found = new List<(int X, int Y, int P)>();
+            for (int attempt = 0; attempt < 4000 && found.Count < 40; attempt++)
+            {
+                int x = rng.Next((int)min.x + 8, (int)max.x - 8);
+                int y = rng.Next((int)min.y + 8, (int)max.y - 8);
+                int cell = Grid.XYToCell(x, y);
+                if (!Grid.IsValidCell(cell)) continue;
+                var zone = ZoneAt(cell);
+                int pi = pois.FindIndex(p => p.Zone == zone);
+                if (pi < 0) continue;
+                if (!PoiFits(pois[pi].Tpl, x, y, pois[pi].Zone)) continue;
+                found.Add((x, y, pi));
+            }
+            if (found.Count == 0)
+            {
+                Debug.LogWarning("[ONIT-Colonies] No jungle/marsh spot found for a steam vent (this asteroid may not have those biomes)");
+                return false;
+            }
+            var pick = found[rng.Next(found.Count)];
+            if (near >= 0)
+            {
+                long best = long.MaxValue;
+                foreach (var f in found)
                 {
-                    double dx = (x + 0.5 - cx) / rx, dy = (y + 0.5 - cy) / ry;
-                    double th = Math.Atan2(dy, dx);
-                    double r = 1.0 + a1 * Math.Sin(2 * th + p1) + a2 * Math.Sin(3 * th + p2) + a3 * Math.Sin(5 * th + p3);
-                    double dist = Math.Sqrt(dx * dx + dy * dy);
-                    if (dist > r) continue;
-                    if (dist > r * 0.82 && rng.NextDouble() < 0.3) continue; // ragged edge
-                    if (y < gy) continue;                                    // nothing below the geyser's floor line
-                    cave.Add(Grid.XYToCell(x, y));
+                    long d = (long)(f.X - nx) * (f.X - nx) + (long)(f.Y - ny) * (f.Y - ny);
+                    if (d < best) { best = d; pick = f; }
                 }
             }
-            // geyser footprint (x-1..x+2, 2 tall) + one row of headroom must be open
-            for (int x = gx - 1; x <= gx + 2; x++)
-                for (int y = gy; y <= gy + 2; y++)
-                    cave.Add(Grid.XYToCell(x, y));
-            // level floor under the footprint; elsewhere the cave keeps its natural bowl shape
-            for (int x = gx - 2; x <= gx + 3; x++)
-                floor.Add(Grid.XYToCell(x, gy - 1));
-            // cave cells right above the floor line that aren't over the footprint get a floor too (no hanging pits)
-            foreach (int c in cave)
+            var poi = pois[pick.P];
+            Debug.Log($"[ONIT-Colonies] Stamping {poi.Name} at {pick.X},{pick.Y}");
+            TemplateLoader.Stamp(poi.Tpl, new Vector2(pick.X, pick.Y), () =>
             {
-                int below = Grid.CellBelow(c);
-                if (!cave.Contains(below)) floor.Add(below);
-            }
-            floor.ExceptWith(cave);
-            return cave;
+                Debug.Log($"[ONIT-Colonies] Steam vent POI done at {pick.X},{pick.Y}");
+                try { onDone?.Invoke(); } catch (Exception ex) { Debug.LogWarning($"[ONIT-Colonies] steam vent callback: {ex.Message}"); }
+            });
+            return true;
         }
 
-        private static bool CaveOk(int gx, int gy, int allowNearCell, HashSet<int> cave, HashSet<int> floor)
+        /// <summary>Would the POI stamped at (x,y) stay in its biome and not wreck anything?</summary>
+        private static bool PoiFits(TemplateContainer tpl, int x, int y, ProcGen.SubWorld.ZoneType zone)
         {
-            foreach (var set in new[] { cave, floor })
+            int inZone = 0;
+            foreach (var c in tpl.cells)
             {
-                foreach (int c in set)
+                int tc = Grid.XYToCell(x + c.location_x, y + c.location_y);
+                if (!InStartWorld(tc, 3)) return false;
+                if (Grid.Element[tc].id == SimHashes.Unobtanium) return false;
+                if (ZoneAt(tc) == zone) inZone++;
+                for (int layer = 0; layer < (int)ObjectLayer.NumLayers; layer++)
                 {
-                    if (!InStartWorld(c, 4)) return false;
-                    if (Grid.Element[c].id == SimHashes.Unobtanium) return false;
-                    for (int layer = 0; layer < (int)ObjectLayer.NumLayers; layer++)
-                    {
-                        if (layer == (int)ObjectLayer.Pickupables) continue; // loose debris is fine
-                        if (Grid.Objects[c, layer] != null) return false;   // buildings, plants, pipes, tiles, other geysers
-                    }
+                    if (layer == (int)ObjectLayer.Pickupables) continue;
+                    var go = Grid.Objects[tc, layer];
+                    if (go == null) continue;
+                    // anything built, any geyser / pod: keep away (wild plants are fine, the POI brings its own)
+                    if (go.GetComponent<Building>() != null || go.GetComponent<Geyser>() != null || go.GetComponent<Telepad>() != null) return false;
                 }
             }
-            // keep the open cave mostly underground: don't punch into big open areas or space
-            int open = 0;
-            foreach (int c in cave) if (!Grid.Solid[c] && !Grid.IsLiquid(c)) open++;
-            if (open > cave.Count / 2) return false;
+            if (inZone < tpl.cells.Count * 0.7f) return false; // mostly inside the biome, like worldgen
 
+            foreach (MinionIdentity mi in global::Components.LiveMinionIdentities.Items)
+            {
+                if (mi == null) continue;
+                Grid.CellToXY(Grid.PosToCell(mi), out int mx, out int my);
+                if (Math.Abs(mx - x) < 20 && Math.Abs(my - y) < 15) return false;
+            }
             foreach (var col in ColonyRegistry.Colonies)
             {
-                if (!Grid.IsValidCell(col.HomeCell) || col.HomeCell == allowNearCell) continue;
+                if (!Grid.IsValidCell(col.HomeCell)) continue;
                 Grid.CellToXY(col.HomeCell, out int cx, out int cy);
-                int r = Math.Max(16, ColonyRegistry.TerritoryRadius + 6);
-                if ((cx - gx) * (cx - gx) + (cy - gy) * (cy - gy) < r * r) return false;
-            }
-            if (Grid.IsValidCell(allowNearCell))
-            {
-                // not inside the host's own base either
-                Grid.CellToXY(allowNearCell, out int hx, out int hy);
-                if ((hx - gx) * (hx - gx) + (hy - gy) * (hy - gy) < 16 * 16) return false;
+                int r = Math.Max(VentMinDistFromColony, ColonyRegistry.TerritoryRadius + 12);
+                if ((cx - x) * (cx - x) + (cy - y) * (cy - y) < r * r) return false;
             }
             var startWorld = ClusterManager.Instance?.GetStartWorld();
+            if (startWorld != null && ColonyRegistry.Colonies.Count == 0)
+            {
+                // no colonies registered (mode off / single player): keep away from every Printing Pod
+                foreach (Telepad pad in global::Components.Telepads.Items)
+                {
+                    if (pad == null) continue;
+                    Grid.CellToXY(Grid.PosToCell(pad), out int px, out int py);
+                    if ((px - x) * (px - x) + (py - y) * (py - y) < VentMinDistFromColony * VentMinDistFromColony) return false;
+                }
+            }
             var geysers = startWorld != null ? global::Components.Geysers.GetItems(startWorld.id) : null;
             if (geysers != null) foreach (Geyser g in geysers)
             {
                 if (g == null) continue;
-                Grid.CellToXY(Grid.PosToCell(g), out int ex, out int ey);
-                if (Math.Abs(ex - gx) < 16 && Math.Abs(ey - gy) < 12) return false;
+                Grid.CellToXY(Grid.PosToCell(g), out int gx, out int gy);
+                if (Math.Abs(gx - x) < 22 && Math.Abs(gy - y) < 16) return false;
             }
             return true;
         }
 
-        /// <summary>Replace the cave with the surrounding gas and give it a floor of the surrounding rock, at the local temperature.</summary>
-        private static void CarveCave(HashSet<int> cave, HashSet<int> floor, System.Random rng)
-        {
-            // look at a ring around the cave to copy what nature put there
-            var ring = new HashSet<int>();
-            foreach (int c in cave)
-                foreach (int n in new[] { Grid.CellLeft(c), Grid.CellRight(c), Grid.CellAbove(c), Grid.CellBelow(c),
-                                          Grid.OffsetCell(c, 2, 0), Grid.OffsetCell(c, -2, 0), Grid.OffsetCell(c, 0, 2), Grid.OffsetCell(c, 0, -2) })
-                    if (Grid.IsValidCell(n) && !cave.Contains(n)) ring.Add(n);
-
-            var gasCount = new Dictionary<SimHashes, int>();
-            var solidCount = new Dictionary<SimHashes, int>();
-            var solidMass = new Dictionary<SimHashes, float>();
-            float tSum = 0f; int tN = 0;
-            foreach (int c in ring)
-            {
-                var e = Grid.Element[c];
-                if (e == null) continue;
-                if (Grid.Mass[c] > 0f) { tSum += Grid.Temperature[c]; tN++; }
-                if (e.IsGas && e.id != SimHashes.Vacuum) gasCount[e.id] = (gasCount.TryGetValue(e.id, out int g) ? g : 0) + 1;
-                else if (e.IsSolid && e.id != SimHashes.Unobtanium)
-                {
-                    solidCount[e.id] = (solidCount.TryGetValue(e.id, out int s) ? s : 0) + 1;
-                    solidMass[e.id] = (solidMass.TryGetValue(e.id, out float m) ? m : 0f) + Grid.Mass[c];
-                }
-            }
-            SimHashes gas = SimHashes.Oxygen, rock = SimHashes.SandStone;
-            int best = 0;
-            foreach (var kv in gasCount) if (kv.Value > best) { best = kv.Value; gas = kv.Key; }
-            best = 0;
-            foreach (var kv in solidCount) if (kv.Value > best) { best = kv.Value; rock = kv.Key; }
-            float rockMass = solidCount.TryGetValue(rock, out int rc) && rc > 0 ? Mathf.Clamp(solidMass[rock] / rc, 200f, 2000f) : 1000f;
-            float temp = tN > 0 ? Mathf.Clamp(tSum / tN, 250f, 330f) : 300f;
-
-            foreach (int c in cave)
-            {
-                float mass = 0.8f + (float)rng.NextDouble() * 0.9f;
-                SimMessages.ReplaceElement(c, gas, CellEventLogger.Instance.TemplateLoader, mass, temp);
-            }
-            foreach (int c in floor)
-            {
-                if (Grid.Solid[c]) continue; // keep the natural rock that is already there
-                SimMessages.ReplaceElement(c, rock, CellEventLogger.Instance.TemplateLoader, rockMass * (0.85f + (float)rng.NextDouble() * 0.3f), temp);
-            }
-        }
-
-        /// <summary>Host / single player, freshly generated world: add the configured number of water geysers once.</summary>
+        /// <summary>Host / single player, freshly generated world: add the configured number of steam vents once.</summary>
         public static void AddExtraWaterIfNew()
         {
             if (ColonySaveData.ExtraWaterDone) return;
@@ -338,13 +257,13 @@ namespace ONI_Together.Colonies
             if (n <= 0 || GameClock.Instance == null || GameClock.Instance.GetCycle() > 0) return; // only brand-new worlds
             var rng = new System.Random(Grid.WidthInCells * 7919 + Grid.HeightInCells);
             int placed = 0;
-            for (int i = 0; i < n; i++) if (PlaceWaterGeyser(-1, rng)) placed++;
-            Debug.Log($"[ONIT-Colonies] Extra water: placed {placed}/{n} geysers");
+            for (int i = 0; i < n; i++) if (PlaceSteamVent(-1, rng, null)) placed++;
+            Debug.Log($"[ONIT-Colonies] Extra water: stamping {placed}/{n} steam vents");
         }
 
         /// <summary>
-        /// Host / single player: make sure the configured number of water geysers sits near the host's base.
-        /// Works on existing saves too; the count placed is stored in the save so it never stacks up on reload.
+        /// Host / single player: make sure the configured number of steam vents exists for the host — in the nearest
+        /// jungle / marsh area, where worldgen puts them. Works on existing saves; the count is stored in the save.
         /// </summary>
         public static void AddHostWaterIfNeeded()
         {
@@ -353,16 +272,18 @@ namespace ONI_Together.Colonies
             int home = HostHomeCell();
             if (!Grid.IsValidCell(home)) { Debug.LogWarning("[ONIT-Colonies] Host water: no host Printing Pod found"); return; }
             var rng = new System.Random(home * 131 + ColonySaveData.HostWaterPlaced * 17 + Grid.WidthInCells);
-            int placed = 0;
+            int started = 0;
             while (ColonySaveData.HostWaterPlaced < want)
             {
-                int dmin = Mathf.Clamp(Configuration.Instance?.Colonies?.HostWaterDistance ?? 45, 20, 150);
-                if (!PlaceWaterGeyser(home, rng, dmin, dmin + 25)) break;
+                // count it right away so a reload can't start a second stamp for the same slot
+                if (!PlaceSteamVent(home, rng, () =>
+                    {
+                        if (ColonyNet.InSession) ColonySession.ScheduleHardSync(3f, "steam vent for the host");
+                    })) break;
                 ColonySaveData.HostWaterPlaced++;
-                placed++;
+                started++;
             }
-            Debug.Log($"[ONIT-Colonies] Host water: placed {placed}, total {ColonySaveData.HostWaterPlaced}/{want}");
-            if (placed > 0 && ColonyNet.InSession) ColonySession.ScheduleHardSync(3f, "water geyser near host base");
+            Debug.Log($"[ONIT-Colonies] Host water: stamping {started}, total {ColonySaveData.HostWaterPlaced}/{want}");
         }
 
         /// <summary>The host's colony home, else the first colony's, else the start world's Printing Pod.</summary>

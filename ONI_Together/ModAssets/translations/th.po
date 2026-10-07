@@ -1595,33 +1595,22 @@ msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.WORLD_SCALE_PER
 msgid "Scales the generated asteroid (100 = vanilla, 200 = twice as wide and tall). Only affects worlds generated while this mod is enabled."
 msgstr "ขยายขนาดดาวเคราะห์น้อยที่สร้าง (100 = ปกติ, 200 = กว้างและสูงเป็นสองเท่า) มีผลเฉพาะโลกที่สร้างตอนเปิดม็อดนี้"
 
-
 #. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_EXTRA_WATER_GEYSERS
 msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_EXTRA_WATER_GEYSERS"
-msgid "Extra water vents (new games)"
-msgstr "ปล่องน้ำเพิ่ม (เกมใหม่)"
+msgid "Extra steam vents (new games)"
+msgstr "ปล่องไอน้ำเพิ่ม (เกมใหม่)"
 
 #. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_EXTRA_WATER_GEYSERS
 msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_EXTRA_WATER_GEYSERS"
-msgid "Water Geysers (clean water vents) added to a freshly generated world (host), in natural caves in biomes where water vents normally form. 0 = vanilla."
-msgstr "จำนวนปล่องน้ำ (Water Geyser น้ำสะอาด) ที่เพิ่มลงในโลกที่เพิ่งสร้าง (โฮสต์) อยู่ในถ้ำธรรมชาติในไบโอมที่ปกติมีปล่องน้ำ 0 = เหมือนเกมปกติ"
+msgid "Cool Steam Vents added to a freshly generated world (host), using the game's own steam vent structures in jungle / marsh biomes like worldgen does. 0 = vanilla."
+msgstr "จำนวน Cool Steam Vent ที่เพิ่มลงในโลกที่เพิ่งสร้าง (โฮสต์) ใช้โครงสร้างปล่องไอน้ำของเกมเอง วางในไบโอมป่าหรือหนองน้ำแบบเดียวกับตอนสร้างโลก 0 = เหมือนเกมปกติ"
 
 #. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_HOST_WATER_GEYSERS
 msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_HOST_WATER_GEYSERS"
-msgid "Water vents near the host's base"
-msgstr "ปล่องน้ำใกล้ฐานโฮสต์"
+msgid "Steam vents for the host"
+msgstr "ปล่องไอน้ำสำหรับโฮสต์"
 
 #. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_HOST_WATER_GEYSERS
 msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_HOST_WATER_GEYSERS"
-msgid "Water Geysers (clean water vents) placed in a natural cave in a biome where water vents normally form, away from the host's Printing Pod. Added once per save (existing saves too); raising the number later adds the difference. 0 = off."
-msgstr "ปล่องน้ำ (Water Geyser น้ำสะอาด) ในถ้ำธรรมชาติ ในไบโอมที่ปกติมีปล่องน้ำ ห่างจาก Printing Pod ของโฮสต์ เพิ่มครั้งเดียวต่อเซฟ (เซฟเก่าก็ได้) ถ้าเพิ่มจำนวนทีหลังจะวางเพิ่มเฉพาะส่วนที่ขาด 0 = ปิด"
-
-#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_HOST_WATER_DISTANCE
-msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_HOST_WATER_DISTANCE"
-msgid "Water vent distance from the host (cells)"
-msgstr "ระยะปล่องน้ำจากโฮสต์ (ช่อง)"
-
-#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_HOST_WATER_DISTANCE
-msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_HOST_WATER_DISTANCE"
-msgid "How far from the host's Printing Pod new water vents are placed: between this distance and 25 cells further."
-msgstr "ระยะห่างจาก Printing Pod ของโฮสต์ที่จะวางปล่องน้ำใหม่: ระหว่างค่านี้ถึงไกลกว่านี้อีก 25 ช่อง"
+msgid "Cool Steam Vents for the host, using the game's own steam vent structure (jungle / marsh POI), placed in the jungle or marsh biome nearest to the host, where worldgen would put one, and away from every colony. Added once per save (existing saves too); raising the number later adds the difference. 0 = off."
+msgstr "Cool Steam Vent สำหรับโฮสต์ ใช้โครงสร้างปล่องไอน้ำของเกมเอง (POI ในป่า/หนองน้ำ) วางในไบโอมป่าหรือหนองน้ำที่ใกล้โฮสต์ที่สุด ตรงที่การสร้างโลกจะวางไว้ และห่างจากทุกโคโลนี เพิ่มครั้งเดียวต่อเซฟ (เซฟเก่าก็ได้) ถ้าเพิ่มจำนวนทีหลังจะวางเพิ่มเฉพาะส่วนที่ขาด 0 = ปิด"

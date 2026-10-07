@@ -39,6 +39,8 @@ namespace ONI_Together.Colonies
             public List<int> ScheduleOwners;
             public bool ExtraWaterDone;
             public int HostWaterPlaced;
+            /// <summary>2 = steam vent POIs (v0.9.4+). Older saves counted plain water geysers: they get a steam vent too.</summary>
+            public int HostWaterStyle;
         }
 
         public override void OnPrefabInit()
@@ -73,6 +75,7 @@ namespace ONI_Together.Colonies
                     ScheduleOwners = ColonySchedules.Snapshot(),
                     ExtraWaterDone = ExtraWaterDone,
                     HostWaterPlaced = HostWaterPlaced,
+                    HostWaterStyle = 2,
                 };
                 foreach (var kv in ColonyRegistry.SnapshotOwnership(pruneDead: true))
                 {
@@ -102,7 +105,7 @@ namespace ONI_Together.Colonies
                 if (p.Rules != null) ColonyRules.Data = p.Rules;
                 ColonySchedules.LoadFromSave(p.ScheduleOwners);
                 ExtraWaterDone = p.ExtraWaterDone;
-                HostWaterPlaced = p.HostWaterPlaced;
+                HostWaterPlaced = p.HostWaterStyle >= 2 ? p.HostWaterPlaced : 0;
                 Debug.Log($"[ONIT-Colonies] Loaded {p.Colonies.Count} colonies, {owned.Count} owned objects (enabled={p.Enabled})");
             }
             catch (Exception ex)

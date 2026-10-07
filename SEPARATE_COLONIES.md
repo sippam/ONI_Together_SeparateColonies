@@ -29,12 +29,16 @@ your buildings/dupes.
 | Help other colonies when idle | on | with separate errands: own colony's errands first (`ChoreConsumer.ChooseChore` reorder: idle < other colonies < own), help others only when nothing of their own is left |
 | Cancel only your own orders | on | cancel tool skips other colonies' markers/blueprints even when building protection is off |
 | Extra water geysers (new games) | 2 | water geysers / cool steam vents added once to a freshly generated world |
-| Water vents near the host's base | 1 | Water Geysers (clean water) in a natural cave, in a biome where water vents normally form; added once per save (existing saves too), raising it adds the difference |
-| Water vent distance from the host | 45 | vents are placed this far to +25 cells from the host's Printing Pod |
+| Steam vents for the host | 1 | Cool Steam Vents stamped from the game's own POI (poi/jungle/geyser_steam, poi/hotmarsh/geyser_steam) in the jungle / marsh biome nearest to the host, like worldgen; added once per save (existing saves too), raising it adds the difference |
 | Separate schedules | on | schedule owner per index (`ColonySchedules`, host re-broadcasts owners in the registry); each player sees only their schedules; dupes are kept on their colony's schedules; a new colony gets "&lt;name&gt; schedule" |
 
 The host's rules are used for the session (sent to clients, stored in the save). Switching research back to
 shared hard-syncs everyone to the host's tree.
+
+## v0.9.4 notes
+- Host water is now a Cool Steam Vent built from the game's own worldgen structures: the POI templates poi/jungle/geyser_steam (ToxicJungle) and poi/hotmarsh/geyser_steam (BoggyMarsh) are stamped as-is (rock shell, cave, plants, vent), only in the biome worldgen allows for that POI (worldTemplateRules zoneTypes) with at least 70% of the template inside it. Of the valid spots the one nearest to the host is used, at least 30 cells (or territory + 12) from every colony. No distance option any more: the biome decides, like worldgen.
+- "Extra steam vents (new games)" uses the same POIs at random valid spots.
+- Saves from v0.9.3 and older (plain water geyser) get one steam vent too; the old geyser stays.
 
 ## v0.9.3 notes
 - Host water: only Water Geysers (clean water vents), placed 45-70 cells from the host by default (new option "Water vent distance from the host"), only in biomes where water vents form (biomes this world already has water vents in + temperate/wet biomes: Sandstone, Marsh, Ocean, Forest, Swamp...).
