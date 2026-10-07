@@ -72,11 +72,12 @@ namespace ONI_Together.Networking.Packets.DuplicantActions
 
 			if(!NetworkIdentityRegistry.TryGet(MinionNetId, out var minionId))
 			{
-				DebugConsole.LogError("Could not find minion with net id " + MinionNetId + " to toggle effect " + EffectId + " to " + (IsAdding ? "on" : "off"), false);
+				DebugConsole.LogWarning("Could not find minion with net id " + MinionNetId + " to toggle effect " + EffectId + " to " + (IsAdding ? "on" : "off"));
+				return;
 			}
-			if(!minionId.TryGetComponent<Effects>(out var minionEffects))
+			if(minionId == null || !minionId.TryGetComponent<Effects>(out var minionEffects))
 			{
-				DebugConsole.LogError("Could not find effects instance on minion "+minionId.gameObject.GetProperName(), false);
+				return;
 			}
 			if (IsAdding)
 			{

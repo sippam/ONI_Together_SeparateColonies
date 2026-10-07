@@ -95,6 +95,8 @@ namespace ONI_Together.Patches.World.Buildings
 
 				if (!MultiplayerSession.IsClient)
 					return true;
+				// destroyed buildings still get OnNewDay; throwing here aborted the whole new-day event on clients
+				if (__instance == null) { __result = false; return false; }
 
 				if (__instance.TryGetComponent<ClientReceiver_Operational>(out var wrap))
 				{

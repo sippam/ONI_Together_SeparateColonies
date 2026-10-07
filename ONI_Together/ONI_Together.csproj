@@ -3,7 +3,7 @@
 	<!-- General Package Properties -->
 	<PropertyGroup>
 		<PackageId>ItsLukesMultiplayerMod</PackageId>
-		<Version>0.7.3-alpha-colonies.0.9.7</Version>
+		<Version>0.7.3-alpha-colonies.0.9.8</Version>
 		<Authors>ItsLuke,Sgt_Lmalas</Authors>
 		<Copyright>$(AssemblyCopyright)</Copyright>
 	</PropertyGroup>

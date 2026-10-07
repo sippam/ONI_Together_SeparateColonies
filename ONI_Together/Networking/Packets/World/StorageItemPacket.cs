@@ -87,6 +87,7 @@ namespace ONI_Together.Networking.Packets.World
 
             if (!NetworkIdentityRegistry.TryGetComponent<Pickupable>(NetId, out var pickupable))
             {
+                if (PendingPickupNetIds.Count > 4096) PendingPickupNetIds.Clear(); // nothing consumes stale ids; ItemSync fixes the item
                 PendingPickupNetIds.Add(NetId);
                 DebugConsole.LogWarning($"[StoreItemPacket] Pickupable NetId {NetId} not yet registered; queued pending removal");
                 return;

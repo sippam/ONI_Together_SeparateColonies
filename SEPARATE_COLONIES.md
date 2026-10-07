@@ -35,6 +35,10 @@ your buildings/dupes.
 The host's rules are used for the session (sent to clients, stored in the save). Switching research back to
 shared hard-syncs everyone to the host's tree.
 
+## v0.9.8 notes
+- Item sync (background, part of "Background structure sync"): a client's Player.log on a cycle-30 save showed ~500 failed item lookups per minute (pickup / store / eat packets for NetIds the client didn't have), so loose items drifted further apart every cycle. The host now sends a hash per 16x16 block of its loose items (NetId + prefab + cell) every 6 s; blocks that still differ after 3 s are requested and fixed: the client adopts the host NetId for its own copy, moves strays, removes phantoms, spawns what is missing and corrects mass/temperature. Stored/carried items, critters and duplicants are left alone.
+- Crash fixes on clients: Operational.IsActive patch threw on destroyed buildings during OnNewDay (aborting the new-day event), FallingObjectPacket during world load (Grid not ready), ToggleEffect / ToggleAnimOverride on missing entities. The pending pickup id sets are now bounded.
+
 ## v0.9.7 notes
 - Storage / bottle emptier filter checkboxes no longer flip back: the host relayed every building-config change back to the client that made it (the relay overwrote the sender id), and late echoes of earlier clicks undid newer ones. The original sender is now kept, so a client never re-applies its own change. Storage filters are sent as the full accepted set (idempotent) instead of add/remove steps.
 

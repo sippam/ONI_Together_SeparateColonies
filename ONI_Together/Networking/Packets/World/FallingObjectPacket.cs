@@ -63,6 +63,8 @@ namespace ONI_Together.Networking.Packets.World
 		{
 			using var _ = Profiler.Scope();
 
+			// packets that arrive while the world is still loading (Grid not built yet) used to throw DivideByZero
+			if (Grid.WidthInCells == 0 || !Grid.IsValidCell(Cell)) return;
 			IsApplying = true;
 			try
 			{

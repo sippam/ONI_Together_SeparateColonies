@@ -41,6 +41,7 @@ namespace ONI_Together.Colonies
                 _sessionInitDone = false;
                 _gameSeenAt = game != null ? Time.realtimeSinceStartup : -1f;
                 StructureSync.Reset();
+                ItemSync.Reset();
                 FoodSync.Reset();
             }
             bool inSession = MultiplayerSession.InSession;
@@ -78,6 +79,8 @@ namespace ONI_Together.Colonies
                 ColonyImmigration.Tick();
                 StructureSync.HostTick();
                 StructureSync.ClientTick();
+                ItemSync.HostTick();
+                ItemSync.ClientTick();
                 FoodSync.HostTick();
                 ColonyPriority.Flush();
                 PlantPlotLink.ClientTick();
