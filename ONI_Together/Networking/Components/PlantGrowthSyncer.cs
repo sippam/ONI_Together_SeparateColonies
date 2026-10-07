@@ -1,4 +1,4 @@
-using ONI_Together.DebugTools;
+﻿using ONI_Together.DebugTools;
 using ONI_Together.Networking.Packets.World;
 using ONI_Together.Networking.Trackers;
 using Shared.Profiling;
@@ -481,11 +481,17 @@ namespace ONI_Together.Networking.Components
 				ObjectLayer.AttachableBuilding,
 			};
 
-			foreach (var layer in layersToCheck)
+			// the plant stands one cell above its farm tile / planter (below for ceiling plots)
+			int[] cells = { data.Cell, Grid.CellBelow(data.Cell), Grid.CellAbove(data.Cell) };
+			foreach (int cell in cells)
 			{
-				var obj = Grid.Objects[data.Cell, (int)layer];
-				if (obj != null && obj.TryGetComponent<SingleEntityReceptacle>(out var receptacle))
-					return receptacle;
+				if (!Grid.IsValidCell(cell)) continue;
+				foreach (var layer in layersToCheck)
+				{
+					var obj = Grid.Objects[cell, (int)layer];
+					if (obj != null && obj.TryGetComponent<SingleEntityReceptacle>(out var receptacle))
+						return receptacle;
+				}
 			}
 
 			return null;

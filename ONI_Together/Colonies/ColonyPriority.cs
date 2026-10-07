@@ -20,6 +20,9 @@ namespace ONI_Together.Colonies
     {
         public static bool Applying { get; private set; }
 
+        /// <summary>&gt; 0 while the mod itself changes priorities locally (e.g. relinking plants) — not a player action.</summary>
+        public static int Suppress;
+
         private static readonly Dictionary<long, ColonyPriorityPacket.Entry> _pending = new Dictionary<long, ColonyPriorityPacket.Entry>();
 
         private static long Key(int cell, int tagHash) => ((long)cell << 32) ^ (uint)tagHash;
@@ -97,7 +100,7 @@ namespace ONI_Together.Colonies
             {
                 if (!__runOriginal || __instance == null) return;          // blocked by a colony guard
                 if (!MultiplayerSession.InSession) return;
-                if (Applying || PrioritizeStatePacket.IsApplying || StructureSync.Applying) return;
+                if (Applying || Suppress > 0 || PrioritizeStatePacket.IsApplying || StructureSync.Applying) return;
                 if (ColonyNet.DispatchDepth > 0) return;                    // applying someone else's packet
                 try { Queue(__instance, priority); }
                 catch (Exception ex) { Debug.LogWarning($"[ONIT-Colonies] priority queue: {ex.Message}"); }

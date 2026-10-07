@@ -35,6 +35,9 @@ your buildings/dupes.
 The host's rules are used for the session (sent to clients, stored in the save). Switching research back to
 shared hard-syncs everyone to the host's tree.
 
+## v0.9.6 notes
+- Farm tiles / planters on clients no longer say "No seed selected" (with a red seed preview and a seed delivery errand) while a plant grows on them: synced plants were sometimes spawned beside the plot instead of inside it. Clients now link such plants into their plot every 2 s (exact occupant cell, so stacked farm rows don't swap plants), and the plant sync also finds the plot one cell below/above the plant.
+
 ## v0.9.5 notes
 - Toilets on clients no longer blink between "needs emptying / unclogging" and ready: every state packet rebuilt the storage, which fired the toilet state machine's storage transitions. Outhouse and lavatory now take their predicates (needs dirt, waste removed, water full, contaminated) and their top-level state from the host.
 - Errand priority (1-9 / !!) set by a client now sticks: ONI Together only synced priorities of objects with a NetId (finished buildings), so dig orders, blueprints, mop/sweep markers etc. went back to 5. New ColonyPriorityPacket syncs by cell + prefab (client -> host under the client's colony -> all clients, batched per frame). Background structure sync now also compares and fixes priorities.
