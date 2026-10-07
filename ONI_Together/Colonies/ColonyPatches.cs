@@ -90,14 +90,16 @@ namespace ONI_Together.Colonies
         }
 
         /// <summary>
-        /// "Own colony first": before the dupe picks from its sorted candidate list (best = last), move other
-        /// colonies' errands below all of its own work, and idling below everything. So a dupe only helps another
-        /// colony when it has nothing of its own to do. Host only (clients don't run dupe AI in ONI Together).
+        /// Work order ("whose work first"): before the dupe picks from its sorted candidate list (best = last),
+        /// regroup errands by colony following the dupe's colony WorkOrder (e.g. Host > P2 > P3), keeping vanilla
+        /// order inside each group. Unowned/shared work counts as the dupe's own colony. Tiers are never mixed:
+        /// idle &lt; normal errands &lt; personal needs &lt; emergency (!!) errands &lt; compulsory, so eating/sleeping
+        /// always beats other colonies' errands. Host only (clients don't run dupe AI in ONI Together).
         /// </summary>
         [HarmonyPatch(typeof(ChoreConsumer), "ChooseChore")]
         public static class ChoreConsumer_ChooseChore
         {
-            [ThreadStatic] private static List<Chore.Precondition.Context> _idle, _foreign, _own;
+            [ThreadStatic] private static List<Chore.Precondition.Context>[] _buckets;
 
             public static void Prefix(ChoreConsumer __instance, List<Chore.Precondition.Context> succeeded_contexts)
             {
@@ -105,27 +107,49 @@ namespace ONI_Together.Colonies
                 if (succeeded_contexts == null || succeeded_contexts.Count < 2 || __instance == null) return;
                 int worker = ColonyRegistry.GetOwner(__instance.gameObject);
                 if (worker == ColonyRegistry.NoColony) return;
+                var ranks = ColonyWorkOrder.Ranks(worker);
+                if (ranks == null || !ranks.TryGetValue(worker, out int ownSlot)) return;
 
+                int n = ranks.Count;            // colony slots; slot n = unknown colony (after all listed)
+                int span = n + 1;
+                // bucket layout (ascending preference):
+                // 0 idle | 1..span normal errands (worst slot first) | span+1 personal needs | span+2.. emergency | last compulsory
+                int total = 2 * span + 3;
+                if (_buckets == null || _buckets.Length < total)
+                {
+                    _buckets = new List<Chore.Precondition.Context>[Math.Max(total, 16)];
+                    for (int i = 0; i < _buckets.Length; i++) _buckets[i] = new List<Chore.Precondition.Context>();
+                }
                 var idleType = Db.Get().ChoreTypes.Idle;
-                if (_idle == null) { _idle = new List<Chore.Precondition.Context>(); _foreign = new List<Chore.Precondition.Context>(); _own = new List<Chore.Precondition.Context>(); }
-                _idle.Clear(); _foreign.Clear(); _own.Clear();
-                bool anyForeign = false;
+                int firstBucket = -1;
+                bool mixed = false;
                 foreach (var ctx in succeeded_contexts)
                 {
                     var chore = ctx.chore;
-                    if (chore != null && chore.choreType == idleType) { _idle.Add(ctx); continue; }
-                    var go = chore?.gameObject;
-                    int owner = go != null ? ColonyRegistry.GetOwner(go) : ColonyRegistry.NoColony;
-                    if (owner != ColonyRegistry.NoColony && owner != worker && !IsSharedTarget(go)) { _foreign.Add(ctx); anyForeign = true; }
-                    else _own.Add(ctx);
+                    var pc = ctx.masterPriority.priority_class;
+                    int b;
+                    if (pc == PriorityScreen.PriorityClass.idle || (chore != null && chore.choreType == idleType)) b = 0;
+                    else if (pc == PriorityScreen.PriorityClass.personalNeeds) b = span + 1;
+                    else if (pc == PriorityScreen.PriorityClass.compulsory) b = total - 1;
+                    else
+                    {
+                        int slot = ownSlot;
+                        var go = chore?.gameObject;
+                        int owner = go != null ? ColonyRegistry.GetOwner(go) : ColonyRegistry.NoColony;
+                        if (owner != ColonyRegistry.NoColony && owner != worker && !IsSharedTarget(go))
+                            slot = ranks.TryGetValue(owner, out int s) ? s : n;
+                        int inTier = n - slot; // first slot -> highest
+                        b = (pc == PriorityScreen.PriorityClass.topPriority ? span + 2 : 1) + inTier;
+                    }
+                    if (firstBucket < 0) firstBucket = b; else if (b != firstBucket) mixed = true;
+                    _buckets[b].Add(ctx);
                 }
-                if (!anyForeign && _idle.Count == 0) return;
-                // ascending preference: idle < other colonies < own colony (each group keeps vanilla order)
-                succeeded_contexts.Clear();
-                succeeded_contexts.AddRange(_idle);
-                succeeded_contexts.AddRange(_foreign);
-                succeeded_contexts.AddRange(_own);
-                _idle.Clear(); _foreign.Clear(); _own.Clear();
+                if (mixed)
+                {
+                    succeeded_contexts.Clear();
+                    for (int i = 0; i < total; i++) succeeded_contexts.AddRange(_buckets[i]);
+                }
+                for (int i = 0; i < total; i++) _buckets[i].Clear();
             }
         }
 

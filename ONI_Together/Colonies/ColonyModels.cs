@@ -25,6 +25,9 @@ namespace ONI_Together.Colonies
 
         /// <summary>Per-colony Printing Pod timer (only used when ColonyRules.SeparatePrintingPod). Host-authoritative.</summary>
         public ImmigrationProfile Immigration = new ImmigrationProfile();
+
+        /// <summary>Whose errands this colony's dupes do first (colony ids, best first). Empty = own first, then founding order.</summary>
+        public List<int> WorkOrder = new List<int>();
     }
 
     /// <summary>Copy of Immigration's timer fields.</summary>

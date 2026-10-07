@@ -264,6 +264,7 @@ namespace ONI_Together.Colonies
                 GUILayout.Label((ColonyRules.SeparateResearch ? "Research: your own tree. " : "Research: shared tree. ") +
                                 (ColonyRules.SeparatePrintingPod ? "Printing Pod: your own timer and choices. " : "Printing Pod: shared timer (first to accept gets it). ") +
                                 (ColonyRules.SeparateSchedules ? "Schedules: your own." : "Schedules: shared."));
+                DrawWorkOrder(local);
             }
             Footer();
         }
@@ -296,6 +297,33 @@ namespace ONI_Together.Colonies
         {
             for (int i = 0; i < _starters.Length; i++) if (_starters[i] == null) _starters[i] = Roll(i);
             return _starters.Where(x => x != null).ToList();
+        }
+
+        /// <summary>"Whose work first" list for the local colony, with up/down buttons.</summary>
+        private void DrawWorkOrder(int local)
+        {
+            if (ColonyRegistry.Colonies.Count < 2) return;
+            GUILayout.Space(6);
+            GUILayout.Label("<b>Work priority</b> — your duplicants do errands in this order", Rich());
+            if (!ColonyRules.SeparateErrands || !ColonyRules.HelpOtherColonies)
+                GUILayout.Label("<color=#ffb060>Only used when the host turns on \"Separate errands\" and \"Help other colonies\".</color>", Rich());
+            var order = ColonyWorkOrder.Get(local);
+            for (int i = 0; i < order.Count; i++)
+            {
+                var c = ColonyRegistry.Get(order[i]);
+                if (c == null) continue;
+                string hex = ColorUtility.ToHtmlStringRGB(new Color(c.ColorR, c.ColorG, c.ColorB));
+                GUILayout.BeginHorizontal();
+                GUILayout.Label($"{i + 1}. <color=#{hex}>■</color> <b>{c.Name}</b> ({c.OwnerName}){(c.Id == local ? " — yours + unowned work" : "")}", Rich());
+                GUI.enabled = i > 0;
+                if (GUILayout.Button("▲", GUILayout.Width(28))) ColonyWorkOrder.LocalMove(i, -1);
+                GUI.enabled = i < order.Count - 1;
+                if (GUILayout.Button("▼", GUILayout.Width(28))) ColonyWorkOrder.LocalMove(i, +1);
+                GUI.enabled = true;
+                GUILayout.EndHorizontal();
+            }
+            if (GUILayout.Button("Reset (yours first)", GUILayout.Width(160))) ColonyWorkOrder.LocalReset();
+            GUILayout.Label("Eating, sleeping and other personal needs always come first. A dupe finishes its current errand before switching.");
         }
 
         private void DrawStarterPicker()

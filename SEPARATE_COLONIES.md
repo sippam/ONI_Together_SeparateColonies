@@ -35,6 +35,11 @@ your buildings/dupes.
 The host's rules are used for the session (sent to clients, stored in the save). Switching research back to
 shared hard-syncs everyone to the host's tree.
 
+## v0.9.0 notes
+- Work priority per colony: each player arranges "whose errands first" in the Colonies panel (▲/▼). Defaults: own colony first, then the others in founding order (Host: Host > P2 > P3, P2: P2 > Host > P3, P3: P3 > Host > P2). Your dupes do the first colony's errands, then the next, and so on; your slot also covers unowned/shared work. One entry per colony on the asteroid.
+- Personal needs (eat, sleep, toilet...) and compulsory chores always stay above other colonies' errands; emergency (!!) errands are ordered the same way within their own tier. Dupes finish their current errand before switching (vanilla interrupt rules).
+- Needs the host rules "Separate errands" and "Help other colonies". Saved with the colony and replicated with the registry.
+
 ## v0.8.3 notes
 - Colony food calories are host-authoritative: every 3 s the host sends the per-world kcal total (and per-food units) that RationTracker counts; clients use it for the top-left kcal meter, its tooltip, the Food diagnostic and the kcal graph. Falls back to the local count if no update arrived for 20 s. Dupe stomach calories were already synced by VitalStatsPacket (1/s).
 
