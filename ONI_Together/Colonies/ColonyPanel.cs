@@ -36,7 +36,6 @@ namespace ONI_Together.Colonies
         // starting dupe picker (like the new-game "choose your duplicants" screen)
         private readonly MinionStartingStats[] _starters = new MinionStartingStats[ColonyFounder.StartingDupes];
         private readonly int[] _starterModel = new int[ColonyFounder.StartingDupes]; // 0 any, 1 standard, 2 bionic
-        private bool _showStarters = true;
         private bool _startersChosen;
 
         private void OnStartersChosen(List<MinionStartingStats> picks)
@@ -95,10 +94,7 @@ namespace ONI_Together.Colonies
             ColonyFounder.ValidateHomeCell(_hoverCell, out _placeReason);
             ColonyPlacementOverlay.Update(_hoverCell);
 
-            Vector2 mouse = Input.mousePosition;
-            mouse.y = Screen.height - mouse.y;
-            bool overWindow = _visible && _window.Contains(mouse);
-            if (Input.GetMouseButtonDown(0) && !overWindow)
+            if (Input.GetMouseButtonDown(0))
             {
                 if (ColonyFounder.RequestFound(_hoverCell, _colonyName, CurrentStarters(), out string reason))
                 {
@@ -109,9 +105,15 @@ namespace ONI_Together.Colonies
             }
         }
 
+        private enum PanelTab { Colony, Colonies, Rules, View }
+        private PanelTab _tab = PanelTab.Colony;
+
         private void OnGUI()
         {
             if (!InGame) return;
+            // the game's duplicant cards are open: keep IMGUI out of the way
+            if (StarterPicker.Active) return;
+            ColonyTheme.Ensure();
 
             if (ColonyRegistry.Active)
             {
@@ -122,86 +124,310 @@ namespace ONI_Together.Colonies
             // spectators can't dig/build: make that impossible to miss
             if (ColonyRegistry.Active && ColonyRegistry.LocalColonyId == ColonyRegistry.NoColony && !_placing)
             {
-                var bs = new GUIStyle(GUI.skin.box) { fontSize = 15, alignment = TextAnchor.MiddleCenter, wordWrap = true };
-                bs.normal.textColor = new Color(1f, 0.85f, 0.3f);
-                var r = new Rect(Screen.width / 2f - 260, 70, 520, 46);
-                GUI.Box(r, "You are SPECTATING (no colony yet) — orders are ignored.\nOpen Colonies (Ctrl+Shift+C) → \"Found my colony\" to start your own base.", bs);
-                if (Event.current.type == EventType.MouseDown && r.Contains(Event.current.mousePosition)) { _visible = true; Event.current.Use(); }
+                var r = new Rect(Screen.width / 2f - 280, 64, 560, 52);
+                GUI.Box(r, $"{ColonyTheme.Colored("<b>SPECTATING</b>", ColonyTheme.Accent)} — you don't have a colony yet, your orders are ignored.\n" +
+                           $"{ColonyTheme.Colored("Click here", ColonyTheme.Accent)} to start your own base.", ColonyTheme.Banner);
+                if (Event.current.type == EventType.MouseDown && r.Contains(Event.current.mousePosition)) { _visible = true; _tab = PanelTab.Colony; Event.current.Use(); }
             }
 
             if (_placing)
             {
                 if (Event.current.type == EventType.Repaint)
                     ColonyPlacementOverlay.Draw(_hoverCell, _placeReason == null);
-                string txt = _placeReason == null
-                    ? "Click to place your Printing Pod here (Esc/right-click cancels)"
-                    : $"Can't place here: {_placeReason}";
+                bool ok = _placeReason == null;
+                string txt = ok
+                    ? ColonyTheme.Colored("<b>Click to place your Printing Pod here</b>", ColonyTheme.Good)
+                    : ColonyTheme.Colored($"<b>Can't place here:</b> {_placeReason}", ColonyTheme.Bad);
+                txt += ColonyTheme.Colored("   (Esc / right-click cancels)", ColonyTheme.Muted);
                 string sum = ColonyPlacementOverlay.Summary;
-                if (sum != null) txt += "\n" + sum + "\n" + ColonyPlacementOverlay.Legend;
-                var style = new GUIStyle(GUI.skin.box) { wordWrap = true, alignment = TextAnchor.UpperLeft };
-                style.normal.textColor = _placeReason == null ? Color.green : new Color(1f, 0.5f, 0.4f);
-                float w = 520f, h = style.CalcHeight(new GUIContent(txt), w);
-                // pinned at the top so it never hides the base preview under the cursor
-                GUI.Box(new Rect(Screen.width / 2f - w / 2f, 70, w, h), txt, style);
+                if (sum != null)
+                    txt += "\n" + sum + "\n" +
+                           $"{ColonyTheme.Colored("■", new Color(0.2f, 0.95f, 0.3f))} free   {ColonyTheme.Colored("■", new Color(1f, 0.85f, 0.2f))} cleared   " +
+                           $"{ColonyTheme.Colored("■", new Color(0.95f, 0.3f, 0.95f))} building stays   {ColonyTheme.Colored("■", new Color(1f, 0.25f, 0.2f))} blocked   " +
+                           $"{ColonyTheme.Colored("□", new Color(0.3f, 0.9f, 1f))} Printing Pod   {ColonyTheme.Colored("○", new Color(1f, 0.3f, 0.25f))} keep-out ring";
+                var style = ColonyTheme.Banner;
+                float w = 600f, h = style.CalcHeight(new GUIContent(txt), w);
+                GUI.Box(new Rect(Screen.width / 2f - w / 2f, 64, w, h), txt, style);
             }
 
+            if (_placing) return; // window hidden while placing so the whole base preview is visible
             if (!_visible)
             {
-                if (GUI.Button(new Rect(Screen.width - 110, 60, 90, 24), "Colonies"))
+                if (GUI.Button(new Rect(Screen.width - 124, 58, 104, 28), "Colonies", ColonyTheme.ButtonPrimary))
                     _visible = true;
                 return;
             }
-            _window = GUI.Window(0x4A6C01, _window, DrawWindow, "Separate colonies (Ctrl+Shift+C)");
+            _window.width = 500;
+            _window.height = Mathf.Min(720, Screen.height - 120);
+            _window = GUI.Window(0x4A6C01, _window, DrawWindow, GUIContent.none, ColonyTheme.Window);
         }
 
         private void DrawWindow(int id)
         {
-            if (GUI.Button(new Rect(_window.width - 24, 2, 20, 16), "x")) _visible = false;
-            _scroll = GUILayout.BeginScrollView(_scroll);
+            ColonyTheme.Ensure();
+            int local = ColonyRegistry.LocalColonyId;
+            var mine = ColonyRegistry.Get(local);
 
-            _showTerritory = GUILayout.Toggle(_showTerritory, " Show territory borders");
-            _showHoverOwner = GUILayout.Toggle(_showHoverOwner, " Show owner under cursor");
-
-            GUILayout.Label($"Separate colonies: <b>{(ColonyRegistry.Enabled ? "ON" : "OFF")}</b>", Rich());
-            if (MultiplayerSession.IsHost)
+            // ---- header ----
+            GUILayout.BeginVertical(ColonyTheme.HeaderBar);
+            GUILayout.BeginHorizontal();
+            GUILayout.BeginVertical();
+            GUILayout.Label("Separate Colonies", ColonyTheme.Title);
+            string sub;
+            if (!ColonyRegistry.Enabled) sub = "Shared colony mode";
+            else
             {
-                if (GUILayout.Button(ColonyRegistry.Enabled ? "Disable separate colonies (shared colony)" : "Enable separate colonies for this save"))
-                    ColonyFounder.HostSetMode(!ColonyRegistry.Enabled);
-                if (GUILayout.Button("Hard sync all clients now"))
-                    GameServerHardSync.PerformHardSync(false);
+                sub = $"{ColonyRegistry.Colonies.Count} colonies on this asteroid";
+                sub += mine != null
+                    ? $"  ·  you: {ColonyTheme.Colored(mine.Name, new Color(mine.ColorR, mine.ColorG, mine.ColorB))}"
+                    : $"  ·  {ColonyTheme.Colored("you are spectating", ColonyTheme.Accent)}";
             }
+            GUILayout.Label(sub + ColonyTheme.Colored("   ·   Ctrl+Shift+C", ColonyTheme.Muted), ColonyTheme.Subtitle);
+            GUILayout.EndVertical();
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("X", ColonyTheme.CloseButton, GUILayout.Width(26), GUILayout.Height(24))) _visible = false;
+            GUILayout.EndHorizontal();
+            GUILayout.EndVertical();
+
+            // ---- tabs ----
+            GUILayout.BeginHorizontal();
+            TabButton(PanelTab.Colony, mine != null ? "My colony" : "Start");
+            TabButton(PanelTab.Colonies, $"Colonies ({ColonyRegistry.Colonies.Count})");
+            TabButton(PanelTab.Rules, "Rules");
+            TabButton(PanelTab.View, "View");
+            GUILayout.EndHorizontal();
+            GUILayout.Space(4);
+
+            _scroll = GUILayout.BeginScrollView(_scroll, false, false, GUIStyle.none, GUI.skin.verticalScrollbar, GUIStyle.none);
+            switch (_tab)
+            {
+                case PanelTab.Colony: DrawColonyTab(local, mine); break;
+                case PanelTab.Colonies: DrawColoniesTab(local); break;
+                case PanelTab.Rules: DrawRulesTab(); break;
+                case PanelTab.View: DrawViewTab(); break;
+            }
+            GUILayout.Space(6);
+            GUILayout.EndScrollView();
+
+            // ---- status bar ----
+            var lines = new List<string>();
+            if (!string.IsNullOrEmpty(_status)) lines.Add(ColonyTheme.Colored(_status, ColonyTheme.Text));
+            foreach (var l in ColonyMessages.Recent.Skip(System.Math.Max(0, ColonyMessages.Recent.Count - 2)))
+                if (l != _status) lines.Add("• " + l);
+            if (lines.Count > 0) GUILayout.Label(string.Join("\n", lines), ColonyTheme.StatusBar);
+
+            GUI.DragWindow(new Rect(0, 0, _window.width - 40, 52)); // drag by the header only
+        }
+
+        private void TabButton(PanelTab tab, string label)
+        {
+            if (GUILayout.Button(label, _tab == tab ? ColonyTheme.TabActive : ColonyTheme.Tab)) { _tab = tab; _scroll = Vector2.zero; }
+        }
+
+        private static void BeginCard(bool highlight = false) => GUILayout.BeginVertical(highlight ? ColonyTheme.CardHighlight : ColonyTheme.CardStyle);
+        private static void EndCard() => GUILayout.EndVertical();
+
+        // ---------------------------------------------------------------- tab: my colony / start
+
+        private void DrawColonyTab(int local, ColonyInfo mine)
+        {
             if (!ColonyRegistry.Enabled)
             {
-                GUILayout.Label(MultiplayerSession.IsHost ? "Shared colony mode (vanilla ONI Together)." : "The host has to enable separate colonies.");
-                Footer();
+                BeginCard();
+                GUILayout.Label("Separate colonies are off", ColonyTheme.SectionTitle);
+                GUILayout.Label(MultiplayerSession.IsHost
+                    ? "Everyone shares one colony (vanilla ONI Together). Turn it on to let every player run their own base on this asteroid."
+                    : "Everyone shares one colony. The host can turn on separate colonies.", ColonyTheme.MutedLabel);
+                if (MultiplayerSession.IsHost && GUILayout.Button("Enable separate colonies for this save", ColonyTheme.ButtonPrimary))
+                    ColonyFounder.HostSetMode(true);
+                EndCard();
                 return;
             }
 
-            // ---- rules (host edits, everyone sees) ----
+            if (mine == null) { DrawStartCard(); return; }
+
+            var col = new Color(mine.ColorR, mine.ColorG, mine.ColorB);
+            BeginCard(true);
+            GUILayout.BeginHorizontal();
+            ColonyTheme.Swatch(col, 18);
+            GUILayout.Space(6);
+            GUILayout.Label($"<size=17><b>{mine.Name}</b></size>", ColonyTheme.Label);
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            GUILayout.Label($"{CountDupes(local)} duplicants", ColonyTheme.Badge);
+            if (ColonyRules.SeparateResearch) GUILayout.Label($"Research: {ColonyResearch.ActiveName(local)}", ColonyTheme.Badge);
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+            if (ColonyImmigration.SeparateActive) GUILayout.Label("Printing Pod: " + ColonyImmigration.Describe(local), ColonyTheme.MutedLabel);
             GUILayout.Space(4);
-            GUILayout.Label("<b>Rules</b>" + (MultiplayerSession.IsHost ? " (click to change)" : " (set by host)"), Rich());
-            var cur = ColonyRules.Data;
-            var next = new ColonyRulesData
+            ColonyTheme.Divider();
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Name", ColonyTheme.MutedLabel, GUILayout.Width(44));
+            if (_renameText == null) _renameText = mine.Name ?? "";
+            _renameText = GUILayout.TextField(_renameText, 24, ColonyTheme.TextField);
+            GUI.enabled = !string.IsNullOrEmpty(_renameText) && _renameText.Trim() != mine.Name;
+            if (GUILayout.Button("Rename", ColonyTheme.ButtonSmall, GUILayout.Width(74))) ColonyFounder.RequestRename(_renameText);
+            GUI.enabled = true;
+            GUILayout.EndHorizontal();
+            if (ColonyRules.PrefixDupeNames) GUILayout.Label("New duplicants get the colony name as a prefix.", ColonyTheme.SmallLabel);
+            EndCard();
+
+            BeginCard();
+            GUILayout.Label("What is yours alone", ColonyTheme.SectionTitle);
+            Feature("Research", ColonyRules.SeparateResearch, "your own tech tree", "shared tech tree");
+            Feature("Printing Pod", ColonyRules.SeparatePrintingPod, "your own timer and choices", "shared — first to accept gets it");
+            Feature("Schedules", ColonyRules.SeparateSchedules, "your own", "shared");
+            Feature("Errands", ColonyRules.SeparateErrands, ColonyRules.HelpOtherColonies ? "your dupes, your orders first (see Work priority)" : "your dupes only work for you", "anyone's dupes do anyone's work");
+            Feature("Buildings & food", !ColonyRules.SharedResources, "only your colony uses them", "shared with everyone");
+            EndCard();
+
+            DrawWorkOrder(local);
+        }
+
+        private static void Feature(string name, bool own, string ownText, string sharedText)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(name, ColonyTheme.Label, GUILayout.Width(120));
+            GUILayout.Label(own ? ColonyTheme.Colored("● ", ColonyTheme.Good) + ownText : ColonyTheme.Colored("● ", ColonyTheme.Muted) + sharedText, ColonyTheme.MutedLabel);
+            GUILayout.EndHorizontal();
+        }
+
+        private void DrawStartCard()
+        {
+            BeginCard(true);
+            GUILayout.Label("<size=16><b>Start your own colony</b></size>", ColonyTheme.Label);
+            GUILayout.Label("You are spectating. Found a colony to get a Printing Pod, a starting base and 3 duplicants of your own.", ColonyTheme.MutedLabel);
+            GUILayout.Space(6);
+
+            Step(1, "Name your colony", !string.IsNullOrEmpty(_colonyName?.Trim()));
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(34);
+            _colonyName = GUILayout.TextField(_colonyName ?? "", 24, ColonyTheme.TextField);
+            GUILayout.EndHorizontal();
+            GUILayout.Space(4);
+
+            bool cards = StarterPicker.Available;
+            Step(2, "Choose 3 starting duplicants", _startersChosen || (!cards && _starters.All(x => x != null)));
+            if (_startersChosen)
             {
-                TerritoryProtection = RuleToggle(cur.TerritoryProtection, "Territory protection (no building/digging near other colonies)"),
-                BuildingProtection = RuleToggle(cur.BuildingProtection, "Building protection (no orders on other colonies' buildings/dupes)"),
-                SeparateErrands = RuleToggle(cur.SeparateErrands, "Separate errands (dupes only work for their own colony)"),
-                SeparateResearch = RuleToggle(cur.SeparateResearch, "Separate research trees"),
-                SharedDupeManagement = RuleToggle(cur.SharedDupeManagement, "Shared dupe priorities / management screens"),
-                SeparatePrintingPod = RuleToggle(cur.SeparatePrintingPod, "Separate Printing Pod timers & choices"),
-                SeparateSchedules = RuleToggle(cur.SeparateSchedules, "Separate schedules"),
-                HelpOtherColonies = RuleToggle(cur.HelpOtherColonies, "Dupes help other colonies when they have nothing to do"),
-                CancelOnlyOwnOrders = RuleToggle(cur.CancelOnlyOwnOrders, "Cancel tool only removes your own orders"),
-                SharedResources = RuleToggle(cur.SharedResources, "Share buildings, machines & food (only dupe control separate)"),
-                PrefixDupeNames = RuleToggle(cur.PrefixDupeNames, "Colony name as prefix for new dupes"),
-            };
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(34);
+                GUILayout.Label(string.Join(", ", _starters.Where(x => x != null).Select(x => x.Name)), ColonyTheme.MutedLabel);
+                GUILayout.EndHorizontal();
+            }
+            if (!cards) DrawStarterPicker();
+            GUILayout.Space(4);
+
+            Step(3, "Click the map to place your Printing Pod", false);
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(34);
+            GUILayout.Label($"At least {ColonyFounder.MinColonyDistance} cells from other colonies. " +
+                            (ColonyWorldTools.GetStartTemplate() != null ? "A preview shows the whole base; the area is cleared and you get the same starting room as the host."
+                                                                         : "Needs a floor with a free 4x4 area."), ColonyTheme.SmallLabel);
+            GUILayout.EndHorizontal();
+            GUILayout.Space(8);
+
+            string btn = _placing ? "Placing… click the map (Esc cancels)"
+                       : cards ? (_startersChosen ? "Place my colony" : "Choose duplicants")
+                       : "Place my colony";
+            if (GUILayout.Button(btn, ColonyTheme.ButtonPrimary))
+            {
+                if (_placing) _placing = false;
+                else if (cards && !_startersChosen) { if (!StarterPicker.Open(OnStartersChosen)) _placing = true; }
+                else _placing = true;
+            }
+            if (cards && _startersChosen && !_placing && GUILayout.Button("Choose duplicants again", ColonyTheme.ButtonSmall))
+                StarterPicker.Open(OnStartersChosen);
+            EndCard();
+        }
+
+        private static void Step(int n, string text, bool done)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(done ? "✓" : n.ToString(), ColonyTheme.RankBadge);
+            GUILayout.Label(done ? ColonyTheme.Colored($"<b>{text}</b>", ColonyTheme.Good) : $"<b>{text}</b>", ColonyTheme.Label);
+            GUILayout.EndHorizontal();
+        }
+
+        // ---------------------------------------------------------------- tab: colonies
+
+        private void DrawColoniesTab(int local)
+        {
+            if (!ColonyRegistry.Enabled || ColonyRegistry.Colonies.Count == 0)
+            {
+                BeginCard();
+                GUILayout.Label("No colonies yet.", ColonyTheme.MutedLabel);
+                EndCard();
+                return;
+            }
+            foreach (var c in ColonyRegistry.Colonies)
+            {
+                var col = new Color(c.ColorR, c.ColorG, c.ColorB);
+                bool me = c.Id == local;
+                BeginCard(me);
+                GUILayout.BeginHorizontal();
+                ColonyTheme.ColorBar(col, 40);
+                GUILayout.BeginVertical();
+                GUILayout.Label($"<b>{c.Name}</b>" + (me ? ColonyTheme.Colored("  (you)", ColonyTheme.Accent) : ""), ColonyTheme.Label);
+                GUILayout.Label($"{c.OwnerName}  ·  {CountDupes(c.Id)} duplicants  ·  colony #{c.Id}", ColonyTheme.MutedLabel);
+                bool details = me || MultiplayerSession.IsHost;
+                if (details && ColonyRules.SeparateResearch) GUILayout.Label("Researching: " + ColonyResearch.ActiveName(c.Id), ColonyTheme.SmallLabel);
+                if (details && ColonyImmigration.SeparateActive) GUILayout.Label("Printing Pod: " + ColonyImmigration.Describe(c.Id), ColonyTheme.SmallLabel);
+                GUILayout.EndVertical();
+                GUILayout.EndHorizontal();
+                EndCard();
+            }
+        }
+
+        // ---------------------------------------------------------------- tab: rules
+
+        private void DrawRulesTab()
+        {
+            bool host = MultiplayerSession.IsHost;
+            BeginCard();
+            GUILayout.Label(host ? "You are the host — changes apply to everyone right away and are saved in your mod options."
+                                 : "Set by the host. Shown here so you know how this save plays.", ColonyTheme.MutedLabel);
+            EndCard();
+            if (!ColonyRegistry.Enabled)
+            {
+                DrawHostTools();
+                return;
+            }
+
+            var cur = ColonyRules.Data;
+            var next = new ColonyRulesData();
+
+            BeginCard();
+            GUILayout.Label("Protection", ColonyTheme.SectionTitle);
+            next.TerritoryProtection = ColonyTheme.CheckToggle(cur.TerritoryProtection, "Territory protection", "No building or digging inside other colonies' circles.", host);
+            next.BuildingProtection = ColonyTheme.CheckToggle(cur.BuildingProtection, "Building protection", "No orders on other colonies' buildings and duplicants.", host);
+            next.CancelOnlyOwnOrders = ColonyTheme.CheckToggle(cur.CancelOnlyOwnOrders, "Cancel only your own orders", "The cancel tool leaves other colonies' orders alone.", host);
+            EndCard();
+
+            BeginCard();
+            GUILayout.Label("Work", ColonyTheme.SectionTitle);
+            next.SeparateErrands = ColonyTheme.CheckToggle(cur.SeparateErrands, "Separate errands", "Duplicants work for their own colony.", host);
+            next.HelpOtherColonies = ColonyTheme.CheckToggle(cur.HelpOtherColonies, "Help other colonies", "Duplicants also do other colonies' errands, in each player's Work priority order.", host);
+            next.SharedResources = ColonyTheme.CheckToggle(cur.SharedResources, "Share buildings, machines & food", "Only duplicant control stays separate.", host);
+            next.SharedDupeManagement = ColonyTheme.CheckToggle(cur.SharedDupeManagement, "Shared duplicant management", "Anyone can change any dupe's priorities, food and skills.", host);
+            EndCard();
+
+            BeginCard();
+            GUILayout.Label("Colony systems", ColonyTheme.SectionTitle);
+            next.SeparateResearch = ColonyTheme.CheckToggle(cur.SeparateResearch, "Separate research", "Every colony has its own tech tree.", host);
+            next.SeparatePrintingPod = ColonyTheme.CheckToggle(cur.SeparatePrintingPod, "Separate Printing Pods", "Own timer and own choices for every colony.", host);
+            next.SeparateSchedules = ColonyTheme.CheckToggle(cur.SeparateSchedules, "Separate schedules", "Every colony manages its own schedules.", host);
+            next.PrefixDupeNames = ColonyTheme.CheckToggle(cur.PrefixDupeNames, "Colony name as dupe prefix", "New duplicants are named \"Colony Name\".", host);
+            EndCard();
+
             bool changed = next.TerritoryProtection != cur.TerritoryProtection || next.BuildingProtection != cur.BuildingProtection
                            || next.SeparateErrands != cur.SeparateErrands || next.SeparateResearch != cur.SeparateResearch
                            || next.SharedDupeManagement != cur.SharedDupeManagement
                            || next.SeparatePrintingPod != cur.SeparatePrintingPod || next.SeparateSchedules != cur.SeparateSchedules
                            || next.HelpOtherColonies != cur.HelpOtherColonies || next.CancelOnlyOwnOrders != cur.CancelOnlyOwnOrders
                            || next.SharedResources != cur.SharedResources || next.PrefixDupeNames != cur.PrefixDupeNames;
-            if (changed && MultiplayerSession.IsHost)
+            if (changed && host)
             {
                 ColonyRules.Apply(next);
                 ColonyRules.SaveToConfig();
@@ -209,64 +435,38 @@ namespace ONI_Together.Colonies
                 _status = "Rules updated";
             }
 
-            GUILayout.Space(4);
-            GUILayout.Label("<b>Colonies</b>", Rich());
-            int local = ColonyRegistry.LocalColonyId;
-            foreach (var c in ColonyRegistry.Colonies)
-            {
-                var col = new Color(c.ColorR, c.ColorG, c.ColorB);
-                string hex = ColorUtility.ToHtmlStringRGB(col);
-                GUILayout.Label($"<color=#{hex}>■</color> #{c.Id} <b>{c.Name}</b>{(c.Id == local ? " (you)" : "")}\n" +
-                                $"    {c.OwnerName} · {CountDupes(c.Id)} dupes" +
-                                (ColonyRules.SeparateResearch && (c.Id == local || MultiplayerSession.IsHost) ? $" · researching: {ColonyResearch.ActiveName(c.Id)}" : "") +
-                                ((c.Id == local || MultiplayerSession.IsHost) && ColonyImmigration.SeparateActive ? $" · {ColonyImmigration.Describe(c.Id)}" : ""), Rich());
-            }
+            DrawHostTools();
+        }
 
-            if (local == ColonyRegistry.NoColony)
-            {
-                GUILayout.Space(6);
-                GUILayout.Label("<b>You don't have a colony yet.</b>", Rich());
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Name", GUILayout.Width(45));
-                _colonyName = GUILayout.TextField(_colonyName);
-                GUILayout.EndHorizontal();
-                if (StarterPicker.Available)
-                {
-                    // same duplicant cards as the host's new-game screen; Embark -> pick the spot
-                    if (GUILayout.Button(_placing ? "Placing... (click the map)" : "Found my colony — choose duplicants"))
-                    {
-                        if (_placing) _placing = false;
-                        else if (!StarterPicker.Open(OnStartersChosen)) _placing = true;
-                    }
-                    if (_startersChosen)
-                        GUILayout.Label("Duplicants chosen: " + string.Join(", ", _starters.Where(x => x != null).Select(x => x.Name)) + " — click the map to place your base.");
-                    _showStarters = false;
-                }
-                else
-                {
-                    DrawStarterPicker();
-                    if (GUILayout.Button(_placing ? "Placing... (click the map)" : "Found my colony — pick a spot"))
-                        _placing = !_placing;
-                }
-                GUILayout.Label($"Must be at least {(ColonyRules.TerritoryProtection ? System.Math.Max(10, ColonyRegistry.TerritoryRadius * 2 + 4) : 10)} cells from other colonies. " +
-                                (ColonyWorldTools.GetStartTemplate() != null ? "The area is cleared and you get the same starting room as the host." : "Needs a floor with a free 4x4 area."));
-            }
-            else
-            {
-                GUILayout.Space(4);
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Rename", GUILayout.Width(55));
-                if (_renameText == null) _renameText = ColonyRegistry.Get(local)?.Name ?? "";
-                _renameText = GUILayout.TextField(_renameText, 24);
-                if (GUILayout.Button("OK", GUILayout.Width(40))) ColonyFounder.RequestRename(_renameText);
-                GUILayout.EndHorizontal();
-                if (ColonyRules.PrefixDupeNames) GUILayout.Label("New dupes get this name as a prefix.");
-                GUILayout.Label((ColonyRules.SeparateResearch ? "Research: your own tree. " : "Research: shared tree. ") +
-                                (ColonyRules.SeparatePrintingPod ? "Printing Pod: your own timer and choices. " : "Printing Pod: shared timer (first to accept gets it). ") +
-                                (ColonyRules.SeparateSchedules ? "Schedules: your own." : "Schedules: shared."));
-                DrawWorkOrder(local);
-            }
-            Footer();
+        private void DrawHostTools()
+        {
+            if (!MultiplayerSession.IsHost) return;
+            BeginCard();
+            GUILayout.Label("Host tools", ColonyTheme.SectionTitle);
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button(ColonyRegistry.Enabled ? "Turn separate colonies off" : "Turn separate colonies on", ColonyTheme.ButtonSecondary))
+                ColonyFounder.HostSetMode(!ColonyRegistry.Enabled);
+            if (GUILayout.Button("Hard sync all clients", ColonyTheme.ButtonSecondary))
+                GameServerHardSync.PerformHardSync(false);
+            GUILayout.EndHorizontal();
+            GUILayout.Label("Hard sync sends your exact world to everyone (short pause). Background sync fixes small differences on its own.", ColonyTheme.SmallLabel);
+            EndCard();
+        }
+
+        // ---------------------------------------------------------------- tab: view
+
+        private void DrawViewTab()
+        {
+            BeginCard();
+            GUILayout.Label("Overlays", ColonyTheme.SectionTitle);
+            _showTerritory = ColonyTheme.CheckToggle(_showTerritory, "Territory borders", "Dotted circle in each colony's colour (when territory protection is on).");
+            _showHoverOwner = ColonyTheme.CheckToggle(_showHoverOwner, "Owner under the cursor", "Small box at the bottom-left: whose territory and building you are pointing at.");
+            EndCard();
+            BeginCard();
+            GUILayout.Label("Keys", ColonyTheme.SectionTitle);
+            GUILayout.Label("<b>Ctrl+Shift+C</b>  open / close this window", ColonyTheme.MutedLabel);
+            GUILayout.Label("<b>Esc / right-click</b>  cancel placing a colony", ColonyTheme.MutedLabel);
+            EndCard();
         }
 
         #region Starting dupe picker
@@ -303,52 +503,65 @@ namespace ONI_Together.Colonies
         private void DrawWorkOrder(int local)
         {
             if (ColonyRegistry.Colonies.Count < 2) return;
-            GUILayout.Space(6);
-            GUILayout.Label("<b>Work priority</b> — your duplicants do errands in this order", Rich());
+            BeginCard();
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Work priority", ColonyTheme.SectionTitle);
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("Reset", ColonyTheme.ButtonSmall, GUILayout.Width(64))) ColonyWorkOrder.LocalReset();
+            GUILayout.EndHorizontal();
+            GUILayout.Label("Your duplicants finish the errands of the colony at the top first, then move down the list.", ColonyTheme.MutedLabel);
             if (!ColonyRules.SeparateErrands || !ColonyRules.HelpOtherColonies)
-                GUILayout.Label("<color=#ffb060>Only used when the host turns on \"Separate errands\" and \"Help other colonies\".</color>", Rich());
+                GUILayout.Label(ColonyTheme.Colored("Not active: the host has to turn on \"Separate errands\" and \"Help other colonies\".", ColonyTheme.Accent), ColonyTheme.SmallLabel);
+            GUILayout.Space(4);
             var order = ColonyWorkOrder.Get(local);
             for (int i = 0; i < order.Count; i++)
             {
                 var c = ColonyRegistry.Get(order[i]);
                 if (c == null) continue;
-                string hex = ColorUtility.ToHtmlStringRGB(new Color(c.ColorR, c.ColorG, c.ColorB));
+                bool me = c.Id == local;
                 GUILayout.BeginHorizontal();
-                GUILayout.Label($"{i + 1}. <color=#{hex}>■</color> <b>{c.Name}</b> ({c.OwnerName}){(c.Id == local ? " — yours + unowned work" : "")}", Rich());
+                GUILayout.Label((i + 1).ToString(), ColonyTheme.RankBadge);
+                ColonyTheme.ColorBar(new Color(c.ColorR, c.ColorG, c.ColorB), 24);
+                GUILayout.BeginVertical();
+                GUILayout.Label($"<b>{c.Name}</b>" + (me ? ColonyTheme.Colored("  you", ColonyTheme.Accent) : ""), ColonyTheme.Label);
+                GUILayout.Label(me ? "your orders + unowned work" : c.OwnerName, ColonyTheme.SmallLabel);
+                GUILayout.EndVertical();
+                GUILayout.FlexibleSpace();
                 GUI.enabled = i > 0;
-                if (GUILayout.Button("▲", GUILayout.Width(28))) ColonyWorkOrder.LocalMove(i, -1);
+                if (GUILayout.Button("▲", ColonyTheme.ButtonIcon)) ColonyWorkOrder.LocalMove(i, -1);
                 GUI.enabled = i < order.Count - 1;
-                if (GUILayout.Button("▼", GUILayout.Width(28))) ColonyWorkOrder.LocalMove(i, +1);
+                if (GUILayout.Button("▼", ColonyTheme.ButtonIcon)) ColonyWorkOrder.LocalMove(i, +1);
                 GUI.enabled = true;
                 GUILayout.EndHorizontal();
+                if (i < order.Count - 1) ColonyTheme.Divider();
             }
-            if (GUILayout.Button("Reset (yours first)", GUILayout.Width(160))) ColonyWorkOrder.LocalReset();
-            GUILayout.Label("Eating, sleeping and other personal needs always come first. A dupe finishes its current errand before switching.");
+            GUILayout.Space(2);
+            GUILayout.Label("Eating, sleeping and other personal needs always come first. A duplicant finishes its current errand before switching.", ColonyTheme.SmallLabel);
+            EndCard();
         }
 
+        /// <summary>Fallback picker when the game's duplicant cards can't be used.</summary>
         private void DrawStarterPicker()
         {
-            GUILayout.Space(4);
-            _showStarters = GUILayout.Toggle(_showStarters, " <b>Choose your 3 starting duplicants</b>", RichToggle());
-            if (!_showStarters) return;
             for (int i = 0; i < _starters.Length; i++)
             {
                 if (_starters[i] == null) _starters[i] = Roll(i);
                 var st = _starters[i];
-                GUILayout.BeginVertical(GUI.skin.box);
+                GUILayout.BeginVertical(ColonyTheme.CardStyle);
                 GUILayout.BeginHorizontal();
-                GUILayout.Label($"<b>{i + 1}. {st?.Name ?? "?"}</b>" + (st?.personality != null && st.personality.model == GameTags.Minions.Models.Bionic ? " (Bionic)" : ""), Rich());
-                if (BionicAvailable && GUILayout.Button(ModelNames[_starterModel[i]], GUILayout.Width(70)))
+                GUILayout.Label($"<b>{st?.Name ?? "?"}</b>" + (st?.personality != null && st.personality.model == GameTags.Minions.Models.Bionic ? ColonyTheme.Colored("  Bionic", ColonyTheme.Accent) : ""), ColonyTheme.Label);
+                GUILayout.FlexibleSpace();
+                if (BionicAvailable && GUILayout.Button(ModelNames[_starterModel[i]], ColonyTheme.ButtonSmall, GUILayout.Width(80)))
                 {
                     _starterModel[i] = (_starterModel[i] + 1) % 3;
                     _starters[i] = Roll(i);
                 }
-                if (GUILayout.Button("Reroll", GUILayout.Width(60))) _starters[i] = Roll(i);
+                if (GUILayout.Button("Reroll", ColonyTheme.ButtonSmall, GUILayout.Width(64))) _starters[i] = Roll(i);
                 GUILayout.EndHorizontal();
-                if (st != null) GUILayout.Label(DescribeStarter(st), Rich());
+                if (st != null) GUILayout.Label(DescribeStarter(st), ColonyTheme.SmallLabel);
                 GUILayout.EndVertical();
             }
-            if (GUILayout.Button("Reroll all"))
+            if (GUILayout.Button("Reroll all", ColonyTheme.ButtonSmall))
                 for (int i = 0; i < _starters.Length; i++) _starters[i] = Roll(i);
         }
 
@@ -379,35 +592,7 @@ namespace ONI_Together.Colonies
         private static string STRINGS_Strip(string s) =>
             System.Text.RegularExpressions.Regex.Replace(s ?? "", "</?link[^>]*>|</?style[^>]*>", "");
 
-        private static GUIStyle _richToggle;
-        private static GUIStyle RichToggle()
-        {
-            if (_richToggle == null) _richToggle = new GUIStyle(GUI.skin.toggle) { richText = true };
-            return _richToggle;
-        }
-
         #endregion
-
-        /// <summary>Host: clickable toggle. Clients: read-only label.</summary>
-        private static bool RuleToggle(bool value, string label)
-        {
-            if (MultiplayerSession.IsHost) return GUILayout.Toggle(value, " " + label);
-            GUILayout.Label((value ? "[x] " : "[ ] ") + label);
-            return value;
-        }
-
-        private void Footer()
-        {
-            if (!string.IsNullOrEmpty(_status))
-            {
-                GUILayout.Space(4);
-                GUILayout.Label($"<i>{_status}</i>", Rich());
-            }
-            foreach (var l in ColonyMessages.Recent.Skip(System.Math.Max(0, ColonyMessages.Recent.Count - 3)))
-                GUILayout.Label("• " + l);
-            GUILayout.EndScrollView();
-            GUI.DragWindow();
-        }
 
         #region Territory overlay
 
@@ -438,7 +623,6 @@ namespace ONI_Together.Colonies
             GUI.color = prev;
         }
 
-        private static GUIStyle _hoverStyle;
 
         /// <summary>Small label at the bottom-left: whose territory / building is under the cursor.</summary>
         private static void DrawHoverOwner()
@@ -462,12 +646,9 @@ namespace ONI_Together.Colonies
                 break;
             }
             if (text == null) return;
-            if (_hoverStyle == null)
-            {
-                _hoverStyle = new GUIStyle(GUI.skin.box) { alignment = TextAnchor.UpperLeft, wordWrap = true };
-                _hoverStyle.normal.textColor = Color.white;
-            }
-            GUI.Box(new Rect(10, Screen.height - 70, 280, 46), text, _hoverStyle);
+            var hs = ColonyTheme.Tooltip;
+            float h = hs.CalcHeight(new GUIContent(text), 300f);
+            GUI.Box(new Rect(12, Screen.height - h - 24, 300, h), text, hs);
         }
 
         #endregion
@@ -478,13 +659,6 @@ namespace ONI_Together.Colonies
             foreach (MinionIdentity mi in global::Components.LiveMinionIdentities.Items)
                 if (mi != null && ColonyRegistry.GetOwner(mi.gameObject) == colonyId) n++;
             return n;
-        }
-
-        private static GUIStyle _rich;
-        private static GUIStyle Rich()
-        {
-            if (_rich == null) _rich = new GUIStyle(GUI.skin.label) { richText = true, wordWrap = true };
-            return _rich;
         }
     }
 }

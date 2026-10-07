@@ -35,6 +35,10 @@ your buildings/dupes.
 The host's rules are used for the session (sent to clients, stored in the save). Switching research back to
 shared hard-syncs everyone to the host's tree.
 
+## v0.9.1 notes
+- New look for the Colonies window (ColonyTheme: ONI-style dark navy panels, plum/slate buttons, custom checkboxes): header with your colony, tabs "My colony / Start", "Colonies", "Rules", "View", cards instead of plain text, step-by-step "Start your own colony", work priority rows with rank badges and colour bars, grouped rules with explanations, status bar at the bottom.
+- Banners (spectating, placement with colour legend) and the owner-under-cursor box use the same style. The window hides while you place a colony and while the game's duplicant cards are open.
+
 ## v0.9.0 notes
 - Work priority per colony: each player arranges "whose errands first" in the Colonies panel (▲/▼). Defaults: own colony first, then the others in founding order (Host: Host > P2 > P3, P2: P2 > Host > P3, P3: P3 > Host > P2). Your dupes do the first colony's errands, then the next, and so on; your slot also covers unowned/shared work. One entry per colony on the asteroid.
 - Personal needs (eat, sleep, toilet...) and compulsory chores always stay above other colonies' errands; emergency (!!) errands are ordered the same way within their own tier. Dupes finish their current errand before switching (vanilla interrupt rules).
