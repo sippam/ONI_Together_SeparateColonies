@@ -163,6 +163,7 @@ namespace ONI_Together.Colonies
         public static void ClientTick()
         {
             if (!Enabled || MultiplayerSession.IsHost || !MultiplayerSession.InSession || _pending.Count == 0) return;
+            if (ColonySession.GameAge < 15f) return;
             _clientTimer += Time.unscaledDeltaTime;
             if (_clientTimer < 1f) return;
             _clientTimer = 0f;

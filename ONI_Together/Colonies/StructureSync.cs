@@ -279,8 +279,12 @@ namespace ONI_Together.Colonies
             var have = new Dictionary<long, (GameObject go, byte state, string id)>();
             ForEachInBlock(p.Block, (cell, layer, go, state, id) => have[Key(cell, layer)] = (go, state, id));
 
+            // just after a (re)load objects are still spawning: deleting them now is what crashed the game
+            if (ColonySession.GameAge < 15f) return;
+
             int changes = 0;
             Applying = true;
+            _deleted.Clear();
             try
             {
                 // 1) remove what the host doesn't have (or has differently)
@@ -288,8 +292,7 @@ namespace ONI_Together.Colonies
                 {
                     if (want.TryGetValue(kv.Key, out var e) && e.Id == kv.Value.id && e.State == kv.Value.state) continue;
                     if (kv.Value.state == StatePlant && want.TryGetValue(kv.Key, out var pe) && pe.State == StatePlant) continue; // plant packet handles
-                    try { kv.Value.go.DeleteObject(); changes++; }
-                    catch (Exception ex) { Debug.LogWarning($"[ONIT-Colonies] structure remove failed: {ex.Message}"); }
+                    if (SafeDelete(kv.Value.go)) changes++;
                 }
                 // 2) add what is missing, 3) fix priorities of what matches
                 foreach (var kv in want)
@@ -308,7 +311,7 @@ namespace ONI_Together.Colonies
                     }
                 }
             }
-            finally { Applying = false; }
+            finally { Applying = false; _deleted.Clear(); }
             if (changes > 0)
             {
                 FixedBlocks++;
@@ -329,6 +332,32 @@ namespace ONI_Together.Colonies
 
         private static long Key(int cell, int layer) => ((long)cell << 8) | (uint)layer;
 
+        private static readonly HashSet<GameObject> _deleted = new HashSet<GameObject>();
+
+        /// <summary>True when every KMonoBehaviour on it has run OnSpawn (destroying an unspawned building runs its
+        /// OnCleanUp on null state: e.g. ManualGenerator -> NullReferenceException -> ONI's crash screen).</summary>
+        public static bool IsFullySpawned(GameObject go)
+        {
+            if (go == null || !go.activeSelf) return false;
+            foreach (var k in go.GetComponents<KMonoBehaviour>())
+                if (k != null && !k.isSpawned) return false;
+            return true;
+        }
+
+        /// <summary>Delete once per apply pass, never before the object finished spawning.</summary>
+        private static bool SafeDelete(GameObject go)
+        {
+            if (go == null || _deleted.Contains(go)) return false;
+            if (!IsFullySpawned(go))
+            {
+                Debug.LogWarning($"[ONIT-Colonies] structure sync: {go.name} not spawned yet, left for the next pass");
+                return false;
+            }
+            _deleted.Add(go);
+            try { go.DeleteObject(); return true; }
+            catch (Exception ex) { Debug.LogWarning($"[ONIT-Colonies] structure remove failed: {ex.Message}"); return false; }
+        }
+
         private static bool Create(StructureEntry e)
         {
             try
@@ -343,7 +372,11 @@ namespace ONI_Together.Colonies
 
                 // clear whatever stale object sits on that layer/cell first
                 var stale = Grid.Objects[e.Cell, e.Layer];
-                if (stale != null) { stale.DeleteObject(); Grid.Objects[e.Cell, e.Layer] = null; }
+                if (stale != null)
+                {
+                    if (!_deleted.Contains(stale) && !SafeDelete(stale)) return false; // can't clear it safely: try again later
+                    Grid.Objects[e.Cell, e.Layer] = null;
+                }
 
                 if (e.State == StateComplete)
                 {

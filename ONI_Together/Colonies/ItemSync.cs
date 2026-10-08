@@ -211,6 +211,7 @@ namespace ONI_Together.Colonies
         public static void ApplyDetail(ItemDetailPacket p)
         {
             if (MultiplayerSession.IsHost || global::Game.Instance == null || GameClient.IsHardSyncInProgress) return;
+            if (ColonySession.GameAge < 15f) return;
             var want = new Dictionary<int, ItemEntry>();
             foreach (var e in p.Entries) want[e.NetId] = e;
             var have = ItemsInBlock(p.Block);
@@ -247,6 +248,7 @@ namespace ONI_Together.Colonies
                         continue;
                     }
                     // 3) the host doesn't have it here: phantom
+                    if (!StructureSync.IsFullySpawned(it.gameObject)) continue;
                     Util.KDestroyGameObject(it.gameObject);
                     changes++;
                 }

@@ -35,6 +35,9 @@ your buildings/dupes.
 The host's rules are used for the session (sent to clients, stored in the save). Switching research back to
 shared hard-syncs everyone to the host's tree.
 
+## v0.10.6 notes
+- Crash/quit right after a sync on clients: the background structure sync deleted a building that had not finished spawning (ManualGenerator.OnCleanUp -> NullReferenceException -> ONI's crash handling quit the game). Structure/item/storage sync now wait 15 s after a world (re)load, never delete objects that haven't spawned, never delete the same object twice in one pass, and ManualGenerator cleanup errors are swallowed in multiplayer.
+
 ## v0.10.5 notes
 - The "Colonies" button can be dragged anywhere (click still opens the panel, right-click puts it back in the default spot). Position is remembered per computer.
 - The panel has a minimize button (— / □) next to X: only the header stays on screen. Window position and minimized state are remembered.

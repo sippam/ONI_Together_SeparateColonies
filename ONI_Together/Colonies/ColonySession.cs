@@ -14,6 +14,10 @@ namespace ONI_Together.Colonies
     public class ColonySession : MonoBehaviour
     {
         private static float _hardSyncAt = -1f;
+        private static float _gameStartedAt = -1f;
+
+        /// <summary>Seconds since the current world was loaded (0 when none).</summary>
+        public static float GameAge => _gameStartedAt < 0f ? 0f : Time.realtimeSinceStartup - _gameStartedAt;
         private static string _hardSyncWhy;
 
         private global::Game _lastGame;
@@ -40,6 +44,7 @@ namespace ONI_Together.Colonies
                 _gameInitDone = false;
                 _sessionInitDone = false;
                 _gameSeenAt = game != null ? Time.realtimeSinceStartup : -1f;
+                _gameStartedAt = _gameSeenAt;
                 if (game != null) { Logistics.AutoStore.OnGameStart(); Logistics.StorageIndex.Invalidate(); }
                 StructureSync.Reset();
                 ItemSync.Reset();
