@@ -104,7 +104,7 @@ namespace ONI_Together.Colonies
                 if (_hardSyncAt > 0f && Time.realtimeSinceStartup >= _hardSyncAt && MultiplayerSession.IsHost)
                 {
                     _hardSyncAt = -1f;
-                    if (MultiplayerSession.ConnectedPlayers.Count > 1)
+                    if (ColonyNet.HostHasClients)
                     {
                         Debug.Log($"[ONIT-Colonies] Hard sync ({_hardSyncWhy})");
                         GameServerHardSync.PerformHardSync(false);

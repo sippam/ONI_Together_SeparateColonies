@@ -35,6 +35,11 @@ your buildings/dupes.
 The host's rules are used for the session (sent to clients, stored in the save). Switching research back to
 shared hard-syncs everyone to the host's tree.
 
+## v0.10.1 notes
+- Host hard sync no longer drops a request while another hard sync is still running (e.g. a colony founded right after an auto/manual sync): it is queued and runs after the current one.
+- Host "Perform Hard Sync" button: 60 s cooldown instead of once per cycle (on a fresh world / long cycles it looked stuck on "Already hard synced this cycle"). A hard sync marked in progress for over 10 min is treated as interrupted.
+- "Has players" checks on the host counted the host itself: with a single joined player the post-founding hard sync, structure/item/food background sync and some upstream syncers (`SessionHasPlayers`) were skipped. Now they count joined players only.
+
 ## v0.10.0 notes
 - Built-in logistics (the former separate "Instant Logistics" mod, which did not cooperate with ONI Together): options "Auto-store new items", "Instant delivery from storage", "Logistics max distance" in "0) Separate colonies". Runs only where the world is simulated (single player / host); clients get the result through the normal storage and item sync. With separate colonies, new items go to their colony's storages (territory owner, else nearest base) and deliveries follow the colony fetch rules. Remove the standalone InstantLogistics mod.
 

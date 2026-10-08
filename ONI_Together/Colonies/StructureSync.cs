@@ -161,7 +161,7 @@ namespace ONI_Together.Colonies
         public static void HostTick()
         {
             if (!Enabled || !MultiplayerSession.IsHost || !MultiplayerSession.InSession) return;
-            if (MultiplayerSession.ConnectedPlayers.Count <= 1 || GameServerHardSync.IsHardSyncInProgress) return;
+            if (!ColonyNet.HostHasClients || GameServerHardSync.IsHardSyncInProgress) return;
             _hostTimer += Time.unscaledDeltaTime;
             if (_hostTimer < DigestInterval) return;
             _hostTimer = 0f;

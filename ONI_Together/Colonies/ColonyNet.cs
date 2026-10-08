@@ -24,6 +24,22 @@ namespace ONI_Together.Colonies
         public static bool IsHost => MultiplayerSession.IsHost;
         public static bool InSession => MultiplayerSession.InSession;
 
+        /// <summary>
+        /// Host: at least one other player is connected. ConnectedPlayers may or may not contain the host itself
+        /// (the lobby UI adds +1 for it), so "Count &gt; 1" skipped everything with a single joined player.
+        /// </summary>
+        public static bool HostHasClients
+        {
+            get
+            {
+                if (!MultiplayerSession.InSession) return false;
+                ulong me = MultiplayerSession.LocalUserID;
+                foreach (var id in MultiplayerSession.ConnectedPlayers.Keys)
+                    if (id != me && id != 0) return true;
+                return false;
+            }
+        }
+
         /// <summary>Host: colony context for a packet sent by `sender`. 0 = not a player action / mode off.</summary>
         public static int ContextForSender(ulong sender)
         {

@@ -318,7 +318,7 @@ namespace ONI_Together.Menus
                 });
 
                 // Hard Sync button
-                if (!GameServerHardSync.hardSyncDoneThisCycle)
+                if (GameServerHardSync.CanManualSync)
                 {
                     CreateActionButton(container.transform, STRINGS.UI.PAUSESCREEN.DOHARDSYNC.LABEL, () =>
                     {
@@ -335,7 +335,10 @@ namespace ONI_Together.Menus
                 }
                 else
                 {
-                    CreateActionButton(container.transform, STRINGS.UI.PAUSESCREEN.HARDSYNCNOTAVAILABLE.LABEL, null, true);
+                    string wait = GameServerHardSync.IsHardSyncInProgress
+                        ? (string)STRINGS.UI.PAUSESCREEN.CLIENTSYNCBUSY.LABEL
+                        : string.Format(STRINGS.UI.PAUSESCREEN.CLIENTSYNCCOOLDOWN.LABEL, GameServerHardSync.ManualCooldownLeft);
+                    CreateActionButton(container.transform, wait, null, true);
                 }
 
                 // End Session button

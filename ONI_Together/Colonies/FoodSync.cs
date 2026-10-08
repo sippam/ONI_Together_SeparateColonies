@@ -37,7 +37,7 @@ namespace ONI_Together.Colonies
         public static void HostTick()
         {
             if (!MultiplayerSession.IsHost || !MultiplayerSession.InSession) return;
-            if (MultiplayerSession.ConnectedPlayers.Count <= 1) return;
+            if (!ColonyNet.HostHasClients) return;
             _timer += Time.unscaledDeltaTime;
             if (_timer < SendInterval) return;
             _timer = 0f;

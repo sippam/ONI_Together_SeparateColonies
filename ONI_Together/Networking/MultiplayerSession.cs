@@ -30,7 +30,7 @@ namespace ONI_Together.Networking
 		public static int ServerPort { get; set; } = 7777;
 
 		public static bool InSession = false;
-		public static bool SessionHasPlayers => InSession && ConnectedPlayers.Count > 1;
+		public static bool SessionHasPlayers => IsHost ? ONI_Together.Colonies.ColonyNet.HostHasClients : (InSession && ConnectedPlayers.Count > 1); // was Count > 1, which needed 2+ joined players when the host is not in the list
 		public static bool NotInSession => !InSession;
 
 		public static bool IsHost { get; set; } //HostUserID == LocalUserID;

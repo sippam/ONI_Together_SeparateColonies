@@ -1,4 +1,4 @@
-﻿using ONI_Together.DebugTools;
+using ONI_Together.DebugTools;
 using ONI_Together.Misc;
 using ONI_Together.Networking;
 using ONI_Together.Networking.Transport.Steamworks;
@@ -129,9 +129,11 @@ namespace ONI_Together.UI
 				PerformHardSync.SetInteractable(ClientResync.CanRequest);
 				return;
 			}
-			bool hardSyncAlreadyDone = GameServerHardSync.hardSyncDoneThisCycle;
-			HardSyncText.SetText(hardSyncAlreadyDone ? HARDSYNCNOTAVAILABLE.LABEL : DOHARDSYNC.LABEL);
-			PerformHardSync.SetInteractable(!hardSyncAlreadyDone);
+			bool can = GameServerHardSync.CanManualSync;
+			HardSyncText.SetText(can ? (string)DOHARDSYNC.LABEL
+				: GameServerHardSync.IsHardSyncInProgress ? (string)CLIENTSYNCBUSY.LABEL
+				: string.Format(CLIENTSYNCCOOLDOWN.LABEL, GameServerHardSync.ManualCooldownLeft));
+			PerformHardSync.SetInteractable(can);
 		}
 		void SetLobbyCodeConfirmationIcon(bool confirmed)
 		{
