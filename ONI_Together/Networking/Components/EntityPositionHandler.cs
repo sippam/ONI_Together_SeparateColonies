@@ -21,6 +21,8 @@ namespace ONI_Together.Networking.Components
         public bool serverFlipX;
         public bool serverFlipY;
         public NavType serverNavType;
+        /// <summary>Client: Time.unscaledTime when the last position from the host arrived.</summary>
+        public float lastReceivedAt = -1f;
 
         private const float SNAP_DISTANCE = 1.5f;
         private const float LERP_SPEED = 20f;
@@ -72,7 +74,9 @@ namespace ONI_Together.Networking.Components
                 if (WorldStateSyncer.IsCellInRect(cell, viewport) && Time.unscaledTime - _lastRequestTime > REQUEST_COOLDOWN)
                 {
                     // serverTimestamp is stale or we've never heard from the host
-                    if (serverTimestamp == 0 || Time.unscaledTime - (serverTimestamp / 1000f) > STALE_THRESHOLD)
+                    // (this compared Time.unscaledTime with the host's Unix-ms timestamp, so after the first packet it
+                    //  was never "stale" again: a critter that moved while out of the client's view froze mid-hop)
+                    if (serverTimestamp == 0 || lastReceivedAt < 0f || Time.unscaledTime - lastReceivedAt > STALE_THRESHOLD)
                     {
                         PacketSender.SendToHost(new EntityPositionRequestPacket { NetId = this.GetNetId() });
                         _lastRequestTime = Time.unscaledTime;

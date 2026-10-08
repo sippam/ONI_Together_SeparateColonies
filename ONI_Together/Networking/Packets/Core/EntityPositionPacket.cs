@@ -61,6 +61,7 @@ public class EntityPositionPacket : IPacket, IViewportCullable
 			if (handler.serverTimestamp > Timestamp)
 				return;
 
+            handler.lastReceivedAt = Time.unscaledTime;
             handler.serverPosition = Position;
             handler.serverTimestamp = Timestamp;
             handler.serverFlipX = FlipX;

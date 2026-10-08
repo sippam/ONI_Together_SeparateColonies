@@ -35,6 +35,9 @@ your buildings/dupes.
 The host's rules are used for the session (sent to clients, stored in the save). Switching research back to
 shared hard-syncs everyone to the host's tree.
 
+## v0.10.3 notes
+- Critters (and other entities with EntityPositionHandler) frozen mid-air on clients: positions are only sent for cells in a client's view, and the client's "no update for 2 s, ask the host" check compared local game time with the host's Unix timestamp, so it never fired after the first packet. A critter that hopped/moved while out of view stayed at its old spot. Now the client tracks when the last update arrived and re-requests stale visible entities.
+
 ## v0.10.2 notes
 - A joined player's "Sync my world" no longer shows a sync/progress screen on the host: the client's download progress packets (meant for players joining) put the host's overlay up. The client doesn't send them during a personal sync and the host ignores them for players it is serving one.
 
