@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using ONI_Together.Misc;
@@ -10,6 +10,10 @@ namespace ONI_Together.Networking.Components.StructureStateSyncers
     public class StorageStateSyncer : StructureSyncerBase
     {
         private Storage storage;
+        public Storage SyncedStorage => storage;
+
+        /// <summary>Every live storage syncer (used by the colonies background storage sync).</summary>
+        public static readonly HashSet<StorageStateSyncer> All = new HashSet<StorageStateSyncer>();
         private float temperatureThreshold = 0.3f;
         private float lastStorageTemperature;
 
@@ -26,6 +30,7 @@ namespace ONI_Together.Networking.Components.StructureStateSyncers
         protected override void Initialize()
         {
             storage = GetComponent<Storage>();
+            All.Add(this);
             checkOptionalsValuesForChanges = false; // Skip checking optionals for changes since we check temperature in ShouldForceSync and mass is checked via value
         }
 
@@ -42,6 +47,14 @@ namespace ONI_Together.Networking.Components.StructureStateSyncers
         {
             if (storage == null || packet.OptionalValues.Count < 1) return;
             BuildingUtils.RebuildStorageFromData(storage, packet.OptionalValues);
+            // the rebuild stores with block_events, so meters / side screens never heard about it
+            try { storage.Trigger((int)GameHashes.OnStorageChange, null); } catch (Exception) { }
+        }
+
+        public override void OnCleanUp()
+        {
+            All.Remove(this);
+            base.OnCleanUp();
         }
 
         protected override bool ShouldForceSync()

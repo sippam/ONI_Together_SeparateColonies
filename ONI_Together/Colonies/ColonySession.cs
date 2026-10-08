@@ -43,6 +43,7 @@ namespace ONI_Together.Colonies
                 if (game != null) { Logistics.AutoStore.OnGameStart(); Logistics.StorageIndex.Invalidate(); }
                 StructureSync.Reset();
                 ItemSync.Reset();
+                StorageSync.Reset();
                 FoodSync.Reset();
             }
             try { ClientResync.Tick(); } catch (Exception ex) { Debug.LogWarning($"[ONIT-Colonies] resync tick: {ex.Message}"); }
@@ -90,6 +91,8 @@ namespace ONI_Together.Colonies
                 StructureSync.ClientTick();
                 ItemSync.HostTick();
                 ItemSync.ClientTick();
+                StorageSync.HostTick();
+                StorageSync.ClientTick();
                 FoodSync.HostTick();
                 ColonyPriority.Flush();
                 PlantPlotLink.ClientTick();

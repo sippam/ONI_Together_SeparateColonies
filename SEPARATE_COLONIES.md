@@ -35,6 +35,10 @@ your buildings/dupes.
 The host's rules are used for the session (sent to clients, stored in the save). Switching research back to
 shared hard-syncs everyone to the host's tree.
 
+## v0.10.4 notes
+- Background storage sync: every 4 s the host sends a content hash per player-facing storage (lockers, fridges, ration boxes, feeders... anything with a filter list); a client whose copy still differs after 2 s asks for that storage and gets the host's full content list. Fixes "host sees it full, others see it empty" (ONI Together only pushed storages on change, to viewers, unreliably, and the client re-request never ran; instant auto-store also stores items before clients know them). Uses the "background structure sync" option.
+- Storage rebuilds on clients now fire OnStorageChange so meters and the side screen update.
+
 ## v0.10.3 notes
 - Critters (and other entities with EntityPositionHandler) frozen mid-air on clients: positions are only sent for cells in a client's view, and the client's "no update for 2 s, ask the host" check compared local game time with the host's Unix timestamp, so it never fired after the first packet. A critter that hopped/moved while out of view stayed at its old spot. Now the client tracks when the last update arrived and re-requests stale visible entities.
 
