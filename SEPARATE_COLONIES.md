@@ -35,6 +35,10 @@ your buildings/dupes.
 The host's rules are used for the session (sent to clients, stored in the save). Switching research back to
 shared hard-syncs everyone to the host's tree.
 
+## v0.10.5 notes
+- The "Colonies" button can be dragged anywhere (click still opens the panel, right-click puts it back in the default spot). Position is remembered per computer.
+- The panel has a minimize button (— / □) next to X: only the header stays on screen. Window position and minimized state are remembered.
+
 ## v0.10.4 notes
 - Background storage sync: every 4 s the host sends a content hash per player-facing storage (lockers, fridges, ration boxes, feeders... anything with a filter list); a client whose copy still differs after 2 s asks for that storage and gets the host's full content list. Fixes "host sees it full, others see it empty" (ONI Together only pushed storages on change, to viewers, unreliably, and the client re-request never ran; instant auto-store also stores items before clients know them). Uses the "background structure sync" option.
 - Storage rebuilds on clients now fire OnStorageChange so meters and the side screen update.

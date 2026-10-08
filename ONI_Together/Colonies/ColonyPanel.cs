@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ONI_Together.Networking;
@@ -24,6 +25,15 @@ namespace ONI_Together.Colonies
         private bool _showTerritory = true;
         private bool _showHoverOwner = true;
         private Rect _window = new Rect(20, 100, 460, 680);
+        private bool _minimized;
+        private bool _prefsLoaded;
+        private bool _winMoved;
+
+        // "Colonies" toggle button: drag it anywhere (position remembered), click to open
+        private const float BtnW = 112f, BtnH = 28f;
+        private Vector2 _btnPos = new Vector2(-1f, -1f);
+        private bool _btnDown, _btnDragging;
+        private Vector2 _btnGrab, _btnStart;
         private Vector2 _scroll;
 
         // placement mode
@@ -154,15 +164,95 @@ namespace ONI_Together.Colonies
             }
 
             if (_placing) return; // window hidden while placing so the whole base preview is visible
+            LoadPrefs();
             if (!_visible)
             {
-                if (GUI.Button(new Rect(Screen.width - 124, 58, 104, 28), T("Colonies"), ColonyTheme.ButtonPrimary))
-                    _visible = true;
+                DrawToggleButton();
                 return;
             }
             _window.width = 500;
-            _window.height = Mathf.Min(720, Screen.height - 120);
+            _window.height = _minimized ? 64f : Mathf.Min(720, Screen.height - 120);
+            var before = _window.position;
             _window = GUI.Window(0x4A6C01, _window, DrawWindow, GUIContent.none, ColonyTheme.Window);
+            _window.x = Mathf.Clamp(_window.x, 40f - _window.width, Screen.width - 40f);
+            _window.y = Mathf.Clamp(_window.y, 0f, Screen.height - 40f);
+            if (_window.position != before) _winMoved = true;
+            if (_winMoved && Event.current.rawType == EventType.MouseUp) { _winMoved = false; SavePrefs(); }
+        }
+
+        private void LoadPrefs()
+        {
+            if (_prefsLoaded) return;
+            _prefsLoaded = true;
+            try
+            {
+                _btnPos = new Vector2(PlayerPrefs.GetFloat("ONIT_Colonies_BtnX", -1f), PlayerPrefs.GetFloat("ONIT_Colonies_BtnY", -1f));
+                float wx = PlayerPrefs.GetFloat("ONIT_Colonies_WinX", _window.x), wy = PlayerPrefs.GetFloat("ONIT_Colonies_WinY", _window.y);
+                _window.x = wx; _window.y = wy;
+                _minimized = PlayerPrefs.GetInt("ONIT_Colonies_Min", 0) == 1;
+            }
+            catch (Exception) { }
+        }
+
+        private void SavePrefs()
+        {
+            try
+            {
+                PlayerPrefs.SetFloat("ONIT_Colonies_BtnX", _btnPos.x);
+                PlayerPrefs.SetFloat("ONIT_Colonies_BtnY", _btnPos.y);
+                PlayerPrefs.SetFloat("ONIT_Colonies_WinX", _window.x);
+                PlayerPrefs.SetFloat("ONIT_Colonies_WinY", _window.y);
+                PlayerPrefs.SetInt("ONIT_Colonies_Min", _minimized ? 1 : 0);
+                PlayerPrefs.Save();
+            }
+            catch (Exception) { }
+        }
+
+        private Vector2 ClampButton(Vector2 p)
+            => new Vector2(Mathf.Clamp(p.x, 0f, Screen.width - BtnW), Mathf.Clamp(p.y, 0f, Screen.height - BtnH));
+
+        /// <summary>The closed-panel button. Drag to move it (remembered), click to open the panel.</summary>
+        private void DrawToggleButton()
+        {
+            if (_btnPos.x < 0f || _btnPos.y < 0f) _btnPos = new Vector2(Screen.width - BtnW - 20f, 58f);
+            _btnPos = ClampButton(_btnPos);
+            var r = new Rect(_btnPos.x, _btnPos.y, BtnW, BtnH);
+            var e = Event.current;
+            switch (e.type)
+            {
+                case EventType.MouseDown:
+                    if (e.button == 0 && r.Contains(e.mousePosition))
+                    {
+                        _btnDown = true; _btnDragging = false;
+                        _btnStart = e.mousePosition; _btnGrab = e.mousePosition - _btnPos;
+                        e.Use();
+                    }
+                    else if (e.button == 1 && r.Contains(e.mousePosition))
+                    {
+                        _btnPos = new Vector2(-1f, -1f); SavePrefs(); e.Use(); // right-click: back to the default spot
+                        return;
+                    }
+                    break;
+                case EventType.MouseDrag:
+                    if (_btnDown)
+                    {
+                        if (!_btnDragging && (e.mousePosition - _btnStart).sqrMagnitude > 36f) _btnDragging = true;
+                        if (_btnDragging) _btnPos = ClampButton(e.mousePosition - _btnGrab);
+                        e.Use();
+                    }
+                    break;
+                case EventType.MouseUp:
+                    if (_btnDown && e.button == 0)
+                    {
+                        _btnDown = false;
+                        if (_btnDragging) SavePrefs(); else _visible = true;
+                        _btnDragging = false;
+                        e.Use();
+                    }
+                    break;
+            }
+            r = new Rect(_btnPos.x, _btnPos.y, BtnW, BtnH);
+            GUI.Box(r, "≡  " + T("Colonies"), ColonyTheme.ButtonPrimary);
         }
 
         private void DrawWindow(int id)
@@ -188,9 +278,20 @@ namespace ONI_Together.Colonies
             GUILayout.Label(sub + ColonyTheme.Colored("   ·   Ctrl+Shift+C", ColonyTheme.Muted), ColonyTheme.Subtitle);
             GUILayout.EndVertical();
             GUILayout.FlexibleSpace();
+            if (GUILayout.Button(_minimized ? "□" : "—", ColonyTheme.CloseButton, GUILayout.Width(26), GUILayout.Height(24)))
+            {
+                _minimized = !_minimized;
+                SavePrefs();
+            }
             if (GUILayout.Button("X", ColonyTheme.CloseButton, GUILayout.Width(26), GUILayout.Height(24))) _visible = false;
             GUILayout.EndHorizontal();
             GUILayout.EndVertical();
+
+            if (_minimized)
+            {
+                GUI.DragWindow(new Rect(0, 0, _window.width - 70, 64));
+                return;
+            }
 
             // ---- tabs ----
             GUILayout.BeginHorizontal();
@@ -219,7 +320,7 @@ namespace ONI_Together.Colonies
                 if (l != _status) lines.Add("• " + l);
             if (lines.Count > 0) GUILayout.Label(string.Join("\n", lines), ColonyTheme.StatusBar);
 
-            GUI.DragWindow(new Rect(0, 0, _window.width - 40, 52)); // drag by the header only
+            GUI.DragWindow(new Rect(0, 0, _window.width - 70, 52)); // drag by the header only
         }
 
         private void TabButton(PanelTab tab, string label)
