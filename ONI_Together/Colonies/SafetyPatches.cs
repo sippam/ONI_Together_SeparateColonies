@@ -12,6 +12,22 @@ namespace ONI_Together.Colonies
     /// </summary>
     public static class SafetyPatches
     {
+        /// <summary>
+        /// BuildTool.Update dereferences its preview every frame. If anything destroyed the preview, that is an NRE per
+        /// frame until ONI gives up. Drop back to the select tool instead.
+        /// </summary>
+        [HarmonyPatch(typeof(BuildTool), nameof(BuildTool.Update))]
+        public static class BuildTool_Update_Safe
+        {
+            public static bool Prefix(BuildTool __instance)
+            {
+                if (__instance == null || !__instance.active || __instance.visualizer != null) return true;
+                Debug.LogWarning("[ONIT-Colonies] build preview was destroyed — switching back to the select tool");
+                try { PlayerController.Instance?.ActivateTool(SelectTool.Instance); } catch (Exception) { }
+                return false;
+            }
+        }
+
         [HarmonyPatch(typeof(ManualGenerator), "OnCleanUp")]
         public static class ManualGenerator_OnCleanUp_Safe
         {

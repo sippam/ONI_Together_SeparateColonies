@@ -348,6 +348,7 @@ namespace ONI_Together.Colonies
         private static bool SafeDelete(GameObject go)
         {
             if (go == null || _deleted.Contains(go)) return false;
+            if (go.GetComponent<BuildingPreview>() != null) return false;
             if (!IsFullySpawned(go))
             {
                 Debug.LogWarning($"[ONIT-Colonies] structure sync: {go.name} not spawned yet, left for the next pass");
@@ -372,6 +373,10 @@ namespace ONI_Together.Colonies
 
                 // clear whatever stale object sits on that layer/cell first
                 var stale = Grid.Objects[e.Cell, e.Layer];
+                // never touch the local player's build preview: BuildTool parks it in the tile layer while hovering,
+                // deleting it broke BuildTool.Update (NRE every frame -> game closed)
+                if (stale != null && stale.GetComponent<BuildingPreview>() != null) stale = null;
+                if (stale != null && !Classify(stale, out _, out _)) stale = null; // only real buildings / blueprints
                 if (stale != null)
                 {
                     if (!_deleted.Contains(stale) && !SafeDelete(stale)) return false; // can't clear it safely: try again later

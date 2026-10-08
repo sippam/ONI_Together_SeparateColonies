@@ -55,6 +55,7 @@ namespace ONI_Together.Patches.World
             const string name = nameof(KMonoBehaviour.OnSpawn);
             yield return AccessTools.Method(typeof(StorageLocker), name);
             yield return AccessTools.Method(typeof(RationBox), name);
+            yield return AccessTools.Method(typeof(Refrigerator), name);
             yield return AccessTools.Method(typeof(CargoBay), name);
             yield return AccessTools.Method(typeof(CargoBayCluster), name);
             //yield return AccessTools.Method(typeof(LiquidReservoir), name); // LiquidReservoir needs its actual class setting here

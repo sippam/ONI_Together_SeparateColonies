@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -123,7 +123,11 @@ namespace ONI_Together.Misc
         private static void ClearStorage(Storage storage)
         {
             for (int i = storage.items.Count - 1; i >= 0; i--)
-                storage.items[i].DeleteObject();
+            {
+                var item = storage.items[i];
+                if (item == null) continue; // already destroyed (Unity null): DeleteObject would throw
+                item.DeleteObject();
+            }
             storage.items.Clear();
         }
         

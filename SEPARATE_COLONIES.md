@@ -35,6 +35,11 @@ your buildings/dupes.
 The host's rules are used for the session (sent to clients, stored in the save). Switching research back to
 shared hard-syncs everyone to the host's tree.
 
+## v0.10.7 notes
+- Crash while building on clients: BuildTool parks its tile preview in the grid's tile layer while hovering; the background structure sync cleared "stale" objects at a cell before placing the host's building and deleted that preview -> BuildTool.Update NRE every frame -> game closed. Structure sync now only clears real buildings / blueprints and never a BuildingPreview; if the preview is destroyed anyway, BuildTool falls back to the select tool instead of throwing.
+- Storage rebuild skips already-destroyed items (NRE in ClearStorage on clients).
+- Refrigerators get the storage syncer too (covered by the background storage sync).
+
 ## v0.10.6 notes
 - Crash/quit right after a sync on clients: the background structure sync deleted a building that had not finished spawning (ManualGenerator.OnCleanUp -> NullReferenceException -> ONI's crash handling quit the game). Structure/item/storage sync now wait 15 s after a world (re)load, never delete objects that haven't spawned, never delete the same object twice in one pass, and ManualGenerator cleanup errors are swallowed in multiplayer.
 
