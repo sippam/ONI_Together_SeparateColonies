@@ -115,11 +115,6 @@ msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.HOST_SETTINGS.SAVE_FILE_
 msgid "Size (in kilobytes) of each data chunk used when transferring save files over the network.\nSmaller values reduce bandwidth spikes and improve reliability on unstable connections but increase transfer time due to more packets.\nLarger values speed up transfers but may cause higher bandwidth bursts or fragmentation.\n\nRecommended range: 16–256 KB (default: 256 KB)."
 msgstr "ขนาด (กิโลไบต์) ของแต่ละชิ้นข้อมูลตอนส่งไฟล์เซฟผ่านเครือข่าย\nค่าเล็กลดการใช้แบนด์วิดท์แบบพุ่ง และเสถียรกว่าบนเน็ตที่ไม่นิ่ง แต่ส่งนานขึ้นเพราะแพ็กเก็ตเยอะ\nค่าใหญ่ส่งเร็วขึ้น แต่แบนด์วิดท์อาจพุ่งหรือแตกแพ็กเก็ต\n\nช่วงที่แนะนำ: 16–256 KB (ค่าเริ่มต้น: 256 KB)"
 
-#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.HOST_SETTINGS.SERVER_SETTINGS.HARD_SYNC_AT_CYCLE_START
-msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.HOST_SETTINGS.SERVER_SETTINGS.HARD_SYNC_AT_CYCLE_START"
-msgid "Perform a hard sync at the start of every new cycle\n\nDoes not use up your one hard sync per cycle"
-msgstr "ทำ Hard Sync ทุกครั้งที่เริ่มรอบวันใหม่\n\nไม่นับรวมกับสิทธิ์ Hard Sync 1 ครั้งต่อรอบวัน"
-
 #. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.HOST_SETTINGS.SERVER_SETTINGS.TIMEOUT_SECONDS
 msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.HOST_SETTINGS.SERVER_SETTINGS.TIMEOUT_SECONDS"
 msgid "How long the server waits (in seconds) for a response from a connecting or loading client before timing out.\nIncrease this if your friends take a long time to load into the game.\n\nMinimum: 30. (default: 30)"
@@ -1614,3 +1609,33 @@ msgstr "ปล่องไอน้ำสำหรับโฮสต์"
 msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_HOST_WATER_GEYSERS"
 msgid "Cool Steam Vents for the host, using the game's own steam vent structure (jungle / marsh POI), placed in the jungle or marsh biome nearest to the host, where worldgen would put one, and away from every colony. Added once per save (existing saves too); raising the number later adds the difference. 0 = off."
 msgstr "Cool Steam Vent สำหรับโฮสต์ ใช้โครงสร้างปล่องไอน้ำของเกมเอง (POI ในป่า/หนองน้ำ) วางในไบโอมป่าหรือหนองน้ำที่ใกล้โฮสต์ที่สุด ตรงที่การสร้างโลกจะวางไว้ และห่างจากทุกโคโลนี เพิ่มครั้งเดียวต่อเซฟ (เซฟเก่าก็ได้) ถ้าเพิ่มจำนวนทีหลังจะวางเพิ่มเฉพาะส่วนที่ขาด 0 = ปิด"
+
+#. ONI_Together.STRINGS.UI.PAUSESCREEN.CLIENTSYNC.LABEL
+msgctxt "ONI_Together.STRINGS.UI.PAUSESCREEN.CLIENTSYNC.LABEL"
+msgid "Sync my world (only me)"
+msgstr "ซิงก์โลกของฉัน (เฉพาะฉัน)"
+
+#. ONI_Together.STRINGS.UI.PAUSESCREEN.CLIENTSYNCBUSY.LABEL
+msgctxt "ONI_Together.STRINGS.UI.PAUSESCREEN.CLIENTSYNCBUSY.LABEL"
+msgid "Syncing..."
+msgstr "กำลังซิงก์..."
+
+#. ONI_Together.STRINGS.UI.PAUSESCREEN.CLIENTSYNCCOOLDOWN.LABEL
+msgctxt "ONI_Together.STRINGS.UI.PAUSESCREEN.CLIENTSYNCCOOLDOWN.LABEL"
+msgid "Sync again in {0}s"
+msgstr "ซิงก์ได้อีกครั้งใน {0} วินาที"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.HOST_SETTINGS.SERVER_SETTINGS.HARD_SYNC_EVERY_CYCLES
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.HOST_SETTINGS.SERVER_SETTINGS.HARD_SYNC_EVERY_CYCLES"
+msgid "Auto Hard Sync Every N Cycles"
+msgstr "Hard Sync อัตโนมัติทุก N รอบวัน"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.HOST_SETTINGS.SERVER_SETTINGS.HARD_SYNC_EVERY_CYCLES
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.HOST_SETTINGS.SERVER_SETTINGS.HARD_SYNC_EVERY_CYCLES"
+msgid "With \"Hard Sync On Cycle Start\" on: hard sync automatically at the start of every N-th cycle (1 = every cycle, 3 = every third cycle...)."
+msgstr "เมื่อเปิด \"Hard Sync ตอนเริ่มรอบวัน\": ทำ Hard Sync อัตโนมัติตอนเริ่มรอบวันทุก ๆ N รอบ (1 = ทุกรอบวัน, 3 = ทุก 3 รอบวัน...)"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.HOST_SETTINGS.SERVER_SETTINGS.HARD_SYNC_AT_CYCLE_START
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.HOST_SETTINGS.SERVER_SETTINGS.HARD_SYNC_AT_CYCLE_START"
+msgid "Perform an automatic hard sync at the start of a cycle (how often: \"Auto Hard Sync Every N Cycles\")\n\nDoes not use up your one hard sync per cycle"
+msgstr "ทำ Hard Sync อัตโนมัติตอนเริ่มรอบวัน (ความถี่ตั้งได้ที่ \"Hard Sync อัตโนมัติทุก N รอบวัน\")\n\nไม่นับรวมกับสิทธิ์ Hard Sync 1 ครั้งต่อรอบวัน"

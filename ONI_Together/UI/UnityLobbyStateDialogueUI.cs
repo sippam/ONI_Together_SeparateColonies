@@ -98,6 +98,14 @@ namespace ONI_Together.UI
 		{
 			using var _ = Profiler.Scope();
 
+			// joined players: personal sync of their own world only (see ClientResync)
+			if (MultiplayerSession.IsClient)
+			{
+				ClientResync.Request();
+				Show(false);
+				return;
+			}
+
 			if (MultiplayerSession.ConnectedPlayers.Count > 0)
 			{
 				GameServerHardSync.PerformHardSync(true);
@@ -112,6 +120,15 @@ namespace ONI_Together.UI
 		{
 			using var _ = Profiler.Scope();
 
+			if (MultiplayerSession.IsClient)
+			{
+				string label = ClientResync.CanRequest ? (string)CLIENTSYNC.LABEL
+					: ClientResync.Active || GameClient.IsHardSyncInProgress ? (string)CLIENTSYNCBUSY.LABEL
+					: string.Format(CLIENTSYNCCOOLDOWN.LABEL, ClientResync.CooldownLeft);
+				HardSyncText.SetText(label);
+				PerformHardSync.SetInteractable(ClientResync.CanRequest);
+				return;
+			}
 			bool hardSyncAlreadyDone = GameServerHardSync.hardSyncDoneThisCycle;
 			HardSyncText.SetText(hardSyncAlreadyDone ? HARDSYNCNOTAVAILABLE.LABEL : DOHARDSYNC.LABEL);
 			PerformHardSync.SetInteractable(!hardSyncAlreadyDone);

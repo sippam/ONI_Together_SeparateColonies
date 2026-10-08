@@ -44,6 +44,7 @@ namespace ONI_Together.Colonies
                 ItemSync.Reset();
                 FoodSync.Reset();
             }
+            try { ClientResync.Tick(); } catch (Exception ex) { Debug.LogWarning($"[ONIT-Colonies] resync tick: {ex.Message}"); }
             bool inSession = MultiplayerSession.InSession;
             if (inSession != _lastInSession)
             {

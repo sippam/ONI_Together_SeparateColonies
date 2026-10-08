@@ -16,6 +16,7 @@ namespace ONI_Together.Patches.GamePatches
 
 		private static float _lastSentTime = 0f;
 		private static int _lastCycle = -1;
+		private static int _lastAutoSyncCycle = -1;
 
 		[HarmonyPatch(nameof(GameClock.OnPrefabInit))]
 		[HarmonyPostfix]
@@ -95,8 +96,13 @@ namespace ONI_Together.Patches.GamePatches
 
 					DebugConsole.Log($"[HardSync] New cycle detected ({currentCycle}) — Hard Sync disabled.");
 
-                    if (Configuration.Instance.HardSyncOnCycleStart)
+                    // every N-th cycle (N from the options, 1 = every cycle)
+                    int every = Mathf.Max(1, Configuration.Instance.HardSyncEveryCycles);
+                    if (Configuration.Instance.HardSyncOnCycleStart && (_lastAutoSyncCycle < 0 || currentCycle - _lastAutoSyncCycle >= every))
+                    {
+                        _lastAutoSyncCycle = currentCycle;
                         CoroutineRunner.RunOne(DelayedHardSync());
+                    }
 				}
 			}
 			catch (Exception ex)

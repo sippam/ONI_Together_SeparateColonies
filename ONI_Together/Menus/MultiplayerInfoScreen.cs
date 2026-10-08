@@ -347,6 +347,23 @@ namespace ONI_Together.Menus
             }
             else
             {
+                // Personal sync: reload the host's world for this player only
+                if (ClientResync.CanRequest)
+                {
+                    CreateActionButton(container.transform, STRINGS.UI.PAUSESCREEN.CLIENTSYNC.LABEL, () =>
+                    {
+                        Close();
+                        ClientResync.Request();
+                    });
+                }
+                else
+                {
+                    string busy = ClientResync.Active || GameClient.IsHardSyncInProgress
+                        ? (string)STRINGS.UI.PAUSESCREEN.CLIENTSYNCBUSY.LABEL
+                        : string.Format(STRINGS.UI.PAUSESCREEN.CLIENTSYNCCOOLDOWN.LABEL, ClientResync.CooldownLeft);
+                    CreateActionButton(container.transform, busy, null, true);
+                }
+
                 // Leave Session button for clients
                 CreateActionButton(container.transform, STRINGS.UI.PAUSESCREEN.LEAVESESSION.LABEL, () =>
                 {

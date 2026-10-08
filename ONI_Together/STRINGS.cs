@@ -54,6 +54,7 @@ namespace ONI_Together
 						public class SERVER_SETTINGS
 						{
 							public static LocString HARD_SYNC_AT_CYCLE_START = "Hard Sync On Cycle Start";
+							public static LocString HARD_SYNC_EVERY_CYCLES = "Auto Hard Sync Every N Cycles";
 							public static LocString TIMEOUT_SECONDS = "Connection Timeout (seconds)";
 							public static LocString PAUSE_SIM_ON_PLAYER_DISCONNECT = "Pause Simulation On Player Disconnect";
 						}
@@ -116,7 +117,8 @@ namespace ONI_Together
 
                         public class SERVER_SETTINGS
                         {
-                            public static LocString HARD_SYNC_AT_CYCLE_START = "Perform a hard sync at the start of every new cycle\n\nDoes not use up your one hard sync per cycle";
+                            public static LocString HARD_SYNC_AT_CYCLE_START = "Perform an automatic hard sync at the start of a cycle (how often: \"Auto Hard Sync Every N Cycles\")\n\nDoes not use up your one hard sync per cycle";
+                            public static LocString HARD_SYNC_EVERY_CYCLES = "With \"Hard Sync On Cycle Start\" on: hard sync automatically at the start of every N-th cycle (1 = every cycle, 3 = every third cycle...).";
                             public static LocString TIMEOUT_SECONDS = "How long the server waits (in seconds) for a response from a connecting or loading client before timing out.\nIncrease this if your friends take a long time to load into the game.\n\nMinimum: 30. (default: 30)";
                             public static LocString PAUSE_SIM_ON_PLAYER_DISCONNECT = "Automatically pauses the simulation when a player disconnects from the server.";
                         }
@@ -356,6 +358,18 @@ namespace ONI_Together
 				public class HARDSYNCNOTAVAILABLE
 				{
 					public static LocString LABEL = "Already hard synced this cycle!";
+				}
+				public class CLIENTSYNC
+				{
+					public static LocString LABEL = "Sync my world (only me)";
+				}
+				public class CLIENTSYNCBUSY
+				{
+					public static LocString LABEL = "Syncing...";
+				}
+				public class CLIENTSYNCCOOLDOWN
+				{
+					public static LocString LABEL = "Sync again in {0}s";
 				}
 				public class ENDSESSION
 				{

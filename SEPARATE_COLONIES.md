@@ -35,6 +35,10 @@ your buildings/dupes.
 The host's rules are used for the session (sent to clients, stored in the save). Switching research back to
 shared hard-syncs everyone to the host's tree.
 
+## v0.9.9 notes
+- Joined players' sync button ("Sync my world (only me)"): it used to run the host's hard sync on the client, which never finished and left the client stuck on "Already hard synced this cycle" forever (only the host resets that flag). Now it asks the host for its world and reloads it for that player only — same full transfer as a hard sync, nobody else is paused or sees the sync screen, the host's once-per-cycle hard sync is untouched. 60 s cooldown, gives up after 5 min.
+- New host option "Auto Hard Sync Every N Cycles" (1-100): with "Hard Sync On Cycle Start" on, the automatic hard sync runs every N-th cycle instead of every cycle.
+
 ## v0.9.8 notes
 - Item sync (background, part of "Background structure sync"): a client's Player.log on a cycle-30 save showed ~500 failed item lookups per minute (pickup / store / eat packets for NetIds the client didn't have), so loose items drifted further apart every cycle. The host now sends a hash per 16x16 block of its loose items (NetId + prefab + cell) every 6 s; blocks that still differ after 3 s are requested and fixed: the client adopts the host NetId for its own copy, moves strays, removes phantoms, spawns what is missing and corrects mass/temperature. Stored/carried items, critters and duplicants are left alone.
 - Crash fixes on clients: Operational.IsActive patch threw on destroyed buildings during OnNewDay (aborting the new-day event), FallingObjectPacket during world load (Grid not ready), ToggleEffect / ToggleAnimOverride on missing entities. The pending pickup id sets are now bounded.

@@ -292,7 +292,9 @@ namespace ONI_Together.Networking
 
 			DebugConsole.Log($"[GameClient] ContinueConnectionFlow - IsInMenu: {Utils.IsInMenu()}, IsInGame: {Utils.IsInGame()}, HardSyncInProgress: {IsHardSyncInProgress}");
 
-			ReadyManager.SendReadyStatusPacket(ClientReadyState.Unready);
+			// a personal "sync my world" must not put everybody on the "waiting for players" screen
+			if (!ClientResync.Active)
+				ReadyManager.SendReadyStatusPacket(ClientReadyState.Unready);
 
 			if (Utils.IsInMenu())
 			{
@@ -317,8 +319,9 @@ namespace ONI_Together.Networking
 				else
 				{
 					DebugConsole.Log("[GameClient] Hard sync in progress, sending ready status");
-					// Tell the host we're ready
-					ReadyManager.SendReadyStatusPacket(ClientReadyState.Ready);
+					// Tell the host we're ready (not for a personal sync: the host never waited for us)
+					if (!ClientResync.Active)
+						ReadyManager.SendReadyStatusPacket(ClientReadyState.Ready);
 				}
 			}
 			else if (Utils.IsInGame())
@@ -339,7 +342,8 @@ namespace ONI_Together.Networking
 				}
 
 				Game.Instance?.Trigger(MP_HASHES.GameClient_OnConnectedInGame);
-                ReadyManager.SendReadyStatusPacket(ClientReadyState.Ready);
+				if (ClientResync.Active) ClientResync.Finished();
+				else ReadyManager.SendReadyStatusPacket(ClientReadyState.Ready);
 				MultiplayerSession.CreateConnectedPlayerCursors();
 
 				//CursorManager.Instance.AssignColor();
