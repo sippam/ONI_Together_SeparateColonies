@@ -40,6 +40,7 @@ namespace ONI_Together.Colonies
                 _gameInitDone = false;
                 _sessionInitDone = false;
                 _gameSeenAt = game != null ? Time.realtimeSinceStartup : -1f;
+                if (game != null) { Logistics.AutoStore.OnGameStart(); Logistics.StorageIndex.Invalidate(); }
                 StructureSync.Reset();
                 ItemSync.Reset();
                 FoodSync.Reset();
@@ -66,6 +67,13 @@ namespace ONI_Together.Colonies
                 }
             }
             if (!_gameInitDone) return;
+
+            // built-in logistics (auto-store / instant delivery): single player or host only
+            if (Logistics.LogisticsCfg.Simulates)
+            {
+                try { Logistics.AutoStore.Tick(); Logistics.InstantDelivery.Tick(); }
+                catch (Exception ex) { Debug.LogWarning($"[ONIT-Logistics] tick: {ex.Message}"); }
+            }
 
             if (inSession && !_sessionInitDone)
             {

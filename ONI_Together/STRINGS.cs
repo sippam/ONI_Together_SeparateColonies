@@ -26,6 +26,9 @@ namespace ONI_Together
                 {
                     public class COLONIES
                     {
+                        public static LocString LOGISTICS_AUTO_STORE = "Auto-store new items";
+                        public static LocString LOGISTICS_INSTANT_DELIVERY = "Instant delivery from storage";
+                        public static LocString LOGISTICS_MAX_DISTANCE = "Logistics max distance (cells)";
                         public static LocString SEPARATE_COLONIES_ENABLED = "Separate colonies";
                         public static LocString COLONY_TERRITORY_PROTECTION = "Territory protection";
                         public static LocString COLONY_BUILDING_PROTECTION = "Building protection";
@@ -90,6 +93,9 @@ namespace ONI_Together
                 {
                     public class COLONIES
                     {
+                        public static LocString LOGISTICS_AUTO_STORE = "Dug-out material, harvests, critter drops, deconstruction leftovers, machine and kitchen products go straight into the nearest storage bin / fridge / ration box that accepts them and has room (of the colony they belong to). Host only.";
+                        public static LocString LOGISTICS_INSTANT_DELIVERY = "Construction, machines, kitchens, farm seeds, critter feeders... take what they need straight out of storage, no duplicant has to fetch it. Only when the storages hold the full amount. Host only.";
+                        public static LocString LOGISTICS_MAX_DISTANCE = "Storages farther away than this are ignored by auto-store and instant delivery. 0 = any distance.";
                         public static LocString SEPARATE_COLONIES_ENABLED = "Host: each player gets their own colony on the same asteroid (own dupes, territory). Applied when you host.";
                         public static LocString COLONY_TERRITORY_PROTECTION = "On: other colonies can't build or dig inside your territory circle. Off: anyone can build/dig anywhere.";
                         public static LocString COLONY_BUILDING_PROTECTION = "On: other colonies can't deconstruct, prioritize, configure or cancel orders on your buildings and dupes. Off: anyone can.";

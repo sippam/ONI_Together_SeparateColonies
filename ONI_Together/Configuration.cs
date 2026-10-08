@@ -123,6 +123,31 @@ namespace ONI_Together
             set => Colonies.HostWaterGeysers = Mathf.Clamp(value, 0, 4);
         }
 
+        [Option("STRINGS.UI.CONFIGURATION.TITLES.COLONIES.LOGISTICS_AUTO_STORE", "STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.LOGISTICS_AUTO_STORE", "STRINGS.UI.CONFIGURATION.HEADERS.A0_SEPARATE_COLONIES")]
+        [JsonIgnore]
+        public bool LogisticsAutoStore
+        {
+            get => Colonies.LogisticsAutoStore;
+            set => Colonies.LogisticsAutoStore = value;
+        }
+
+        [Option("STRINGS.UI.CONFIGURATION.TITLES.COLONIES.LOGISTICS_INSTANT_DELIVERY", "STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.LOGISTICS_INSTANT_DELIVERY", "STRINGS.UI.CONFIGURATION.HEADERS.A0_SEPARATE_COLONIES")]
+        [JsonIgnore]
+        public bool LogisticsInstantDelivery
+        {
+            get => Colonies.LogisticsInstantDelivery;
+            set => Colonies.LogisticsInstantDelivery = value;
+        }
+
+        [Option("STRINGS.UI.CONFIGURATION.TITLES.COLONIES.LOGISTICS_MAX_DISTANCE", "STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.LOGISTICS_MAX_DISTANCE", "STRINGS.UI.CONFIGURATION.HEADERS.A0_SEPARATE_COLONIES")]
+        [Limit(0, 1000)]
+        [JsonIgnore]
+        public int LogisticsMaxDistance
+        {
+            get => Colonies.LogisticsMaxDistance;
+            set => Colonies.LogisticsMaxDistance = Mathf.Clamp(value, 0, 1000);
+        }
+
         [Option("STRINGS.UI.CONFIGURATION.TITLES.COLONIES.COLONY_BACKGROUND_STRUCTURE_SYNC", "STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.COLONY_BACKGROUND_STRUCTURE_SYNC", "STRINGS.UI.CONFIGURATION.HEADERS.A0_SEPARATE_COLONIES")]
         [JsonIgnore]
         public bool ColonyBackgroundStructureSync
@@ -376,6 +401,9 @@ namespace ONI_Together
         [JsonProperty] public bool CancelOnlyOwnOrders { get; set; } = true;
         [JsonProperty] public int ExtraWaterGeysers { get; set; } = 2;
         [JsonProperty] public int HostWaterGeysers { get; set; } = 1;
+        [JsonProperty] public bool LogisticsAutoStore { get; set; } = true;
+        [JsonProperty] public bool LogisticsInstantDelivery { get; set; } = true;
+        [JsonProperty] public int LogisticsMaxDistance { get; set; } = 0;
         [JsonProperty] public bool BackgroundStructureSync { get; set; } = true;
         [JsonProperty] public bool SharedResources { get; set; } = false;
         [JsonProperty] public bool PrefixDupeNames { get; set; } = true;

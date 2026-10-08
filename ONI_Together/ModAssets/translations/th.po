@@ -1639,3 +1639,33 @@ msgstr "เมื่อเปิด \"Hard Sync ตอนเริ่มรอ�
 msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.HOST_SETTINGS.SERVER_SETTINGS.HARD_SYNC_AT_CYCLE_START"
 msgid "Perform an automatic hard sync at the start of a cycle (how often: \"Auto Hard Sync Every N Cycles\")\n\nDoes not use up your one hard sync per cycle"
 msgstr "ทำ Hard Sync อัตโนมัติตอนเริ่มรอบวัน (ความถี่ตั้งได้ที่ \"Hard Sync อัตโนมัติทุก N รอบวัน\")\n\nไม่นับรวมกับสิทธิ์ Hard Sync 1 ครั้งต่อรอบวัน"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.LOGISTICS_AUTO_STORE
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.LOGISTICS_AUTO_STORE"
+msgid "Auto-store new items"
+msgstr "เก็บของใหม่เข้าคลังทันที"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.LOGISTICS_AUTO_STORE
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.LOGISTICS_AUTO_STORE"
+msgid "Dug-out material, harvests, critter drops, deconstruction leftovers, machine and kitchen products go straight into the nearest storage bin / fridge / ration box that accepts them and has room (of the colony they belong to). Host only."
+msgstr "ของที่ขุด เก็บเกี่ยว ของตกจากสัตว์ เศษจากการรื้อ ของจากเครื่องจักรและครัว เข้าคลัง/ตู้เย็น/กล่องอาหารที่ใกล้ที่สุดที่รับของชนิดนั้นและยังไม่เต็ม (ของ colony เจ้าของ) ทำงานที่โฮสต์"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.LOGISTICS_INSTANT_DELIVERY
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.LOGISTICS_INSTANT_DELIVERY"
+msgid "Instant delivery from storage"
+msgstr "ส่งของจากคลังทันที"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.LOGISTICS_INSTANT_DELIVERY
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.LOGISTICS_INSTANT_DELIVERY"
+msgid "Construction, machines, kitchens, farm seeds, critter feeders... take what they need straight out of storage, no duplicant has to fetch it. Only when the storages hold the full amount. Host only."
+msgstr "งานสร้าง เครื่องจักร ครัว เมล็ดลงแปลง อาหารสัตว์ ดึงวัสดุจากคลังเข้าไปเลยโดยไม่ต้องมีดูปลิแคนท์ขน (เมื่อในคลังมีครบจำนวน) ทำงานที่โฮสต์"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.LOGISTICS_MAX_DISTANCE
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TITLES.COLONIES.LOGISTICS_MAX_DISTANCE"
+msgid "Logistics max distance (cells)"
+msgstr "ระยะสูงสุดของการเก็บ/ส่งของ (ช่อง)"
+
+#. ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.LOGISTICS_MAX_DISTANCE
+msgctxt "ONI_Together.STRINGS.UI.CONFIGURATION.TOOLTIPS.COLONIES.LOGISTICS_MAX_DISTANCE"
+msgid "Storages farther away than this are ignored by auto-store and instant delivery. 0 = any distance."
+msgstr "คลังที่ไกลกว่านี้จะไม่ถูกใช้ทั้งการเก็บและการส่งของ 0 = ไม่จำกัด"
