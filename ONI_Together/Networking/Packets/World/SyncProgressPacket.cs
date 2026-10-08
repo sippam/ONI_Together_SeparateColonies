@@ -66,6 +66,13 @@ namespace ONI_Together.Networking.Packets.World
             if (!MultiplayerSession.IsHost)
                 return;
 
+            // a player's own "sync my world": nobody else should see a sync screen (and the host would keep it up)
+            if (ClientResync.HostIsServing(ClientSteamID) && !GameServerHardSync.IsHardSyncInProgress)
+            {
+                if (ProgressPercent >= 100) DebugConsole.Log($"[SyncProgress] {ClientName} finished a personal sync");
+                return;
+            }
+
             // Update client information
             ClientProgress[ClientSteamID] = new ClientSyncInfo
             {

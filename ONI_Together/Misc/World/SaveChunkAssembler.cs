@@ -1,4 +1,4 @@
-﻿using ONI_Together.DebugTools;
+using ONI_Together.DebugTools;
 using ONI_Together.Menus;
 using ONI_Together.Networking;
 using ONI_Together.Networking.Packets.World;
@@ -298,6 +298,7 @@ namespace ONI_Together.Misc.World
 		{
 			using var _ = Profiler.Scope();
 
+			if (ClientResync.Active) return; // personal sync: the host shows nothing for it
 			try
 			{
 				// Get local player name to display on host

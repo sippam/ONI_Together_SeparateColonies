@@ -35,6 +35,9 @@ your buildings/dupes.
 The host's rules are used for the session (sent to clients, stored in the save). Switching research back to
 shared hard-syncs everyone to the host's tree.
 
+## v0.10.2 notes
+- A joined player's "Sync my world" no longer shows a sync/progress screen on the host: the client's download progress packets (meant for players joining) put the host's overlay up. The client doesn't send them during a personal sync and the host ignores them for players it is serving one.
+
 ## v0.10.1 notes
 - Host hard sync no longer drops a request while another hard sync is still running (e.g. a colony founded right after an auto/manual sync): it is queued and runs after the current one.
 - Host "Perform Hard Sync" button: 60 s cooldown instead of once per cycle (on a fresh world / long cycles it looked stuck on "Already hard synced this cycle"). A hard sync marked in progress for over 10 min is treated as interrupted.

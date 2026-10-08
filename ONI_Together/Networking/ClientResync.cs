@@ -63,6 +63,10 @@ namespace ONI_Together.Networking
             DebugConsole.LogWarning("[ClientResync] timed out — the host did not send its world");
         }
 
+        /// <summary>Host: this player is downloading a personal sync (no progress overlay on the host).</summary>
+        public static bool HostIsServing(ulong player)
+            => _hostLastServed.TryGetValue(player, out float t) && Time.realtimeSinceStartup - t < Timeout;
+
         /// <summary>Host: send the world to that one player, without pausing or overlays for anyone.</summary>
         internal static void HostServe(ulong requester)
         {
