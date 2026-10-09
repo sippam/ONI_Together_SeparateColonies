@@ -258,6 +258,7 @@ namespace ONI_Together.Colonies
             foreach (var kv in _pending)
             {
                 if (now - kv.Value.Since < ClientGrace) continue;
+                if (BlockPaused(kv.Key)) { drop.Add(kv.Key); continue; }
                 // still different after the grace period (in-flight packets had their chance)?
                 if (ComputeBlockHash(kv.Key) != kv.Value.HostHash) request.Add(kv.Key);
                 drop.Add(kv.Key);
@@ -285,6 +286,7 @@ namespace ONI_Together.Colonies
             int changes = 0;
             Applying = true;
             _deleted.Clear();
+            _notes.Clear();
             try
             {
                 // 1) remove what the host doesn't have (or has differently)
@@ -292,7 +294,7 @@ namespace ONI_Together.Colonies
                 {
                     if (want.TryGetValue(kv.Key, out var e) && e.Id == kv.Value.id && e.State == kv.Value.state) continue;
                     if (kv.Value.state == StatePlant && want.TryGetValue(kv.Key, out var pe) && pe.State == StatePlant) continue; // plant packet handles
-                    if (SafeDelete(kv.Value.go)) changes++;
+                    if (SafeDelete(kv.Value.go)) { changes++; Note($"removed {kv.Value.id}/{kv.Value.state} @{kv.Key >> 8}"); }
                 }
                 // 2) add what is missing, 3) fix priorities of what matches
                 foreach (var kv in want)
@@ -301,12 +303,13 @@ namespace ONI_Together.Colonies
                     if (e.State == StatePlant) continue; // arrives as PlantLifecyclePacket
                     if (have.TryGetValue(kv.Key, out var h) && h.id == e.Id && h.state == e.State)
                     {
-                        if (ApplyPriority(h.go, e.Priority)) changes++;
+                        if (ApplyPriority(h.go, e.Priority)) { changes++; Note($"priority {e.Id} @{e.Cell} -> {e.Priority}"); }
                         continue;
                     }
                     if (Create(e))
                     {
                         changes++;
+                        Note($"created {e.Id}/{e.State} @{e.Cell} L{e.Layer}" + (have.TryGetValue(kv.Key, out var old2) ? $" (was {old2.id}/{old2.state})" : ""));
                         ApplyPriority(Grid.Objects[e.Cell, e.Layer], e.Priority);
                     }
                 }
@@ -315,7 +318,8 @@ namespace ONI_Together.Colonies
             if (changes > 0)
             {
                 FixedBlocks++;
-                Debug.Log($"[ONIT-Colonies] Structure sync fixed block {p.Block} ({changes} changes)");
+                Debug.Log($"[ONIT-Colonies] Structure sync fixed block {p.Block} ({changes} changes: {string.Join("; ", _notes)})");
+                RecordFix(p.Block, changes);
             }
         }
 
@@ -326,11 +330,59 @@ namespace ONI_Together.Colonies
             if (p == null) return false;
             var want = new PrioritySetting((PriorityScreen.PriorityClass)(code / 32 - 2), code % 32);
             if (p.GetMasterPriority().Equals(want)) return false;
-            try { p.SetMasterPriority(want); return true; }
+            try { p.SetMasterPriority(want); }
             catch { return false; }
+            bool ok = p.GetMasterPriority().Equals(want);
+            if (!ok) Note($"priority on {go.name} refused ({PrioCode(go)} != {code})");
+            return ok;
         }
 
         private static long Key(int cell, int layer) => ((long)cell << 8) | (uint)layer;
+
+        // ---- diagnostics / loop protection ----
+        private static readonly List<string> _notes = new List<string>();
+        private static void Note(string s) { if (_notes.Count < 12) _notes.Add(s); }
+
+        private struct BlockHistory { public int Count; public float First; public float PausedUntil; public float LastLog; }
+        private static readonly Dictionary<int, BlockHistory> _history = new Dictionary<int, BlockHistory>();
+        private const int LoopFixes = 4;          // fixed this many times...
+        private const float LoopWindow = 180f;    // ...within this many seconds = it doesn't stick
+        private const float LoopPause = 120f;
+
+        private static bool BlockPaused(int block)
+            => _history.TryGetValue(block, out var h) && Time.realtimeSinceStartup < h.PausedUntil;
+
+        private static void RecordFix(int block, int changes)
+        {
+            float now = Time.realtimeSinceStartup;
+            _history.TryGetValue(block, out var h);
+            if (now - h.First > LoopWindow) { h.Count = 0; h.First = now; }
+            h.Count++;
+            bool loop = h.Count >= LoopFixes;
+            if (loop)
+            {
+                h.PausedUntil = now + LoopPause;
+                h.Count = 0; h.First = now;
+                if (now - h.LastLog > 60f)
+                {
+                    h.LastLog = now;
+                    Debug.LogWarning($"[ONIT-Colonies] structure sync: block {block} keeps differing ({changes} changes) — paused {LoopPause:0}s. Changes: {string.Join("; ", _notes)}");
+                }
+            }
+            _history[block] = h;
+        }
+
+        /// <summary>Client: ask the host for the block of this cell right now (selecting / clicking something).</summary>
+        private static float _lastManualRequest;
+        public static void RequestCellNow(int cell)
+        {
+            if (!Enabled || MultiplayerSession.IsHost || !MultiplayerSession.InSession || !Grid.IsValidCell(cell)) return;
+            if (Time.realtimeSinceStartup - _lastManualRequest < 0.5f) return;
+            _lastManualRequest = Time.realtimeSinceStartup;
+            int b = BlockOf(cell);
+            if (_history.TryGetValue(b, out var h)) { h.PausedUntil = 0f; _history[b] = h; } // explicit ask overrides a pause
+            PacketSender.SendToHost(new StructureDetailRequestPacket { Blocks = new List<int> { b } });
+        }
 
         private static readonly HashSet<GameObject> _deleted = new HashSet<GameObject>();
 
@@ -339,9 +391,10 @@ namespace ONI_Together.Colonies
         public static bool IsFullySpawned(GameObject go)
         {
             if (go == null || !go.activeSelf) return false;
-            foreach (var k in go.GetComponents<KMonoBehaviour>())
-                if (k != null && !k.isSpawned) return false;
-            return true;
+            // KPrefabID only: some buildings carry components that legitimately never spawn (tiles, ladders, farm
+            // tiles...), requiring all of them left stale blueprints on clients forever (v0.10.6 regression)
+            var kpid = go.GetComponent<KPrefabID>();
+            return kpid == null || kpid.isSpawned;
         }
 
         /// <summary>Delete once per apply pass, never before the object finished spawning.</summary>

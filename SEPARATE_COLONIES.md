@@ -35,6 +35,11 @@ your buildings/dupes.
 The host's rules are used for the session (sent to clients, stored in the save). Switching research back to
 shared hard-syncs everyone to the host's tree.
 
+## v0.10.11 notes
+- Blueprints / tiles / pipes / wires staying "under construction" on clients after the host finished them: the v0.10.6 "never delete unspawned objects" check required EVERY component to have spawned, but tiles, ladders, farm tiles... carry components that never do, so stale blueprints were never replaced. Now only the KPrefabID must have spawned.
+- Structure sync loop protection: a block that is "fixed" 4 times within 3 minutes is paused for 2 minutes and the log lists exactly what changed (one client log had one block fixed 600 times). Priority fixes only count when they stick.
+- Selecting anything on a client (tile, pipe, wire, blueprint, plant, storage...) immediately asks the host for that 16x16 area and, for storages, their contents.
+
 ## v0.10.10 notes
 - Separate schedules: the per-duplicant "move to schedule" dropdown only lists the local colony's schedules, the blank "add duplicant" dropdown only the local colony's duplicants, and the widget refuses to move a duplicant to another colony's schedule.
 - (Schedule names reverting after a hard sync was the host crashing on the screen-entry lookup before storing a client's new name — fixed in v0.10.9.)

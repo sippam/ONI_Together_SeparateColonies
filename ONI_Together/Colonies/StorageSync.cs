@@ -186,6 +186,16 @@ namespace ONI_Together.Colonies
             }
         }
 
+        /// <summary>Client: refresh this storage from the host right now (the player selected it).</summary>
+        public static void RequestNow(GameObject go)
+        {
+            if (!Enabled || MultiplayerSession.IsHost || !MultiplayerSession.InSession || go == null) return;
+            var s = go.GetComponent<StorageStateSyncer>();
+            var id = go.GetComponent<NetworkIdentity>();
+            if (s == null || id == null || id.NetId == 0) return;
+            PacketSender.SendToHost(new StorageContentRequestPacket { NetIds = new List<int> { id.NetId } });
+        }
+
         #endregion
     }
 
