@@ -45,6 +45,47 @@ namespace ONI_Together.Colonies
             }
         }
 
+        /// <summary>World id of a cell (Spaced Out: every asteroid / rocket interior is its own world), -1 if invalid.</summary>
+        public static int WorldOf(int cell)
+        {
+            if (!Grid.IsValidCell(cell) || Grid.WorldIdx == null) return -1;
+            int w = Grid.WorldIdx[cell];
+            return w == byte.MaxValue ? -1 : w;
+        }
+
+        /// <summary>Is the cell on the asteroid the local camera is looking at? (always true in the base game)</summary>
+        public static bool OnActiveWorld(int cell)
+        {
+            var cm = ClusterManager.Instance;
+            if (cm == null || !DlcManager.IsExpansion1Active()) return true;
+            return WorldOf(cell) == cm.activeWorldId;
+        }
+
+        public static bool SameWorld(int a, int b)
+        {
+            int wa = WorldOf(a), wb = WorldOf(b);
+            return wa >= 0 && wa == wb;
+        }
+
+        /// <summary>
+        /// May a colony be founded at this cell? Base game: inside the asteroid. Spaced Out: any discovered asteroid
+        /// (not only the start one) that isn't a rocket interior, away from that asteroid's edge.
+        /// </summary>
+        public static bool InColonyWorld(int cell, int margin)
+        {
+            if (!Grid.IsValidCell(cell)) return false;
+            var cm = ClusterManager.Instance;
+            if (cm == null) return true;
+            int wid = WorldOf(cell);
+            var world = wid >= 0 ? cm.GetWorld(wid) : null;
+            if (world == null) return false;
+            if (world.IsModuleInterior) return false;
+            if (!world.IsStartWorld && !world.IsDiscovered) return false;
+            Grid.CellToXY(cell, out int x, out int y);
+            var min = world.minimumBounds; var max = world.maximumBounds;
+            return x >= min.x + margin && x <= max.x - margin && y >= min.y + margin && y <= max.y - margin;
+        }
+
         public static bool InStartWorld(int cell, int margin)
         {
             if (!Grid.IsValidCell(cell)) return false;
@@ -80,7 +121,7 @@ namespace ONI_Together.Colonies
         /// <summary>Why the start template can't cover this cell (null = fine). Shared by validation and the placement overlay.</summary>
         public static string CellBlockReason(int tc)
         {
-            if (!InStartWorld(tc, 2)) return T("Too close to the edge of the asteroid");
+            if (!InColonyWorld(tc, 2)) return T("Too close to the edge of the asteroid");
             if (Grid.Element[tc].id == SimHashes.Unobtanium) return T("Neutronium in the way");
             for (int layer = 0; layer < (int)ObjectLayer.NumLayers; layer++)
             {

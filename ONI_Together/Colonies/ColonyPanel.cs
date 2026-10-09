@@ -712,7 +712,7 @@ namespace ONI_Together.Colonies
             var prev = GUI.color;
             foreach (var c in ColonyRegistry.Colonies)
             {
-                if (!Grid.IsValidCell(c.HomeCell)) continue;
+                if (!Grid.IsValidCell(c.HomeCell) || !ColonyWorldTools.OnActiveWorld(c.HomeCell)) continue;
                 Vector3 center = Grid.CellToPosCCC(c.HomeCell, Grid.SceneLayer.Front);
                 GUI.color = new Color(c.ColorR, c.ColorG, c.ColorB, 0.85f);
                 for (int i = 0; i < CirclePoints; i++)

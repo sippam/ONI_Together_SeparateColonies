@@ -25,15 +25,17 @@ namespace ONI_Together.Colonies.Logistics
             int t = ColonyRegistry.GetTerritoryOwner(cell);
             if (t != ColonyRegistry.NoColony) return t;
             Grid.CellToXY(cell, out int x, out int y);
-            int best = 0; long bestD = long.MaxValue;
+            // nearest colony home on the same asteroid first (Spaced Out), else the nearest anywhere
+            int best = 0, bestSame = 0; long bestD = long.MaxValue, bestSameD = long.MaxValue;
             foreach (var c in ColonyRegistry.Colonies)
             {
                 if (!Grid.IsValidCell(c.HomeCell)) continue;
                 Grid.CellToXY(c.HomeCell, out int hx, out int hy);
                 long d = (long)(hx - x) * (hx - x) + (long)(hy - y) * (hy - y);
                 if (d < bestD) { bestD = d; best = c.Id; }
+                if (ColonyWorldTools.SameWorld(cell, c.HomeCell) && d < bestSameD) { bestSameD = d; bestSame = c.Id; }
             }
-            return best;
+            return bestSame != 0 ? bestSame : best;
         }
     }
 }

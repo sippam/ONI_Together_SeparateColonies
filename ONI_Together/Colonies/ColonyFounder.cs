@@ -48,13 +48,13 @@ namespace ONI_Together.Colonies
             if (me == 0 || ColonyRegistry.GetColonyOfPlayer(me) != ColonyRegistry.NoColony) return;
 
             int home = -1;
+            var startWorld = ClusterManager.Instance?.GetStartWorld();
             foreach (Telepad pad in global::Components.Telepads.Items)
             {
-                if (pad != null && ColonyRegistry.GetOwner(pad.gameObject) == ColonyRegistry.NoColony)
-                {
-                    home = Grid.PosToCell(pad);
-                    break;
-                }
+                if (pad == null || ColonyRegistry.GetOwner(pad.gameObject) != ColonyRegistry.NoColony) continue;
+                int c = Grid.PosToCell(pad);
+                if (home < 0) home = c;
+                if (startWorld != null && pad.GetMyWorldId() == startWorld.id) { home = c; break; } // Spaced Out: the start asteroid's pod
             }
             var info = NewInfo(ColonyRegistry.NextColonyId(), "Host colony", me, LocalPlayerName(), home);
             ColonyRegistry.AddColony(info);
@@ -126,6 +126,7 @@ namespace ONI_Together.Colonies
             foreach (var c in ColonyRegistry.Colonies)
             {
                 if (!Grid.IsValidCell(c.HomeCell)) continue;
+                if (!ColonyWorldTools.SameWorld(cell, c.HomeCell)) continue; // another asteroid: no distance rule
                 Grid.CellToXY(c.HomeCell, out int hx, out int hy);
                 int dx = x - hx, dy = y - hy;
                 if (dx * dx + dy * dy < minDist * minDist)
@@ -248,6 +249,17 @@ namespace ONI_Together.Colonies
 
         private static void SpawnBase(ColonyInfo info, List<MinionStartingStats> starters, Telepad existingPad)
         {
+            // Spaced Out: a colony on another asteroid makes it a visited world (planetoid list, inventory, alerts)
+            try
+            {
+                var w = ClusterManager.Instance?.GetWorld(ColonyWorldTools.WorldOf(info.HomeCell));
+                if (w != null && !w.IsStartWorld)
+                {
+                    if (!w.IsDiscovered) w.SetDiscovered(true);
+                    if (!w.IsDupeVisited) w.SetDupeVisited();
+                }
+            }
+            catch (Exception ex) { Debug.LogWarning($"[ONIT-Colonies] world discovery: {ex.Message}"); }
             var telepad = existingPad;
             if (telepad == null)
             {

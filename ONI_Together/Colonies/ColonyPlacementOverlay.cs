@@ -186,7 +186,7 @@ namespace ONI_Together.Colonies
             // keep-out rings around existing colonies + the new colony's territory
             int minDist = ColonyFounder.MinColonyDistance;
             foreach (var c in ColonyRegistry.Colonies)
-                if (Grid.IsValidCell(c.HomeCell)) DottedCircle(cam, c.HomeCell, minDist, ColKeepOut);
+                if (Grid.IsValidCell(c.HomeCell) && ColonyWorldTools.SameWorld(c.HomeCell, origin)) DottedCircle(cam, c.HomeCell, minDist, ColKeepOut);
             if (ColonyRules.TerritoryProtection && ColonyRegistry.TerritoryRadius > 0)
                 DottedCircle(cam, origin, ColonyRegistry.TerritoryRadius, valid ? new Color(1f, 1f, 1f, 0.7f) : new Color(1f, 0.5f, 0.4f, 0.7f));
 

@@ -215,6 +215,7 @@ namespace ONI_Together.Colonies
             foreach (var c in Colonies)
             {
                 if (!Grid.IsValidCell(c.HomeCell)) continue;
+                if (!ColonyWorldTools.SameWorld(cell, c.HomeCell)) continue; // Spaced Out: territory never crosses asteroids
                 Grid.CellToXY(c.HomeCell, out int hx, out int hy);
                 int dx = x - hx, dy = y - hy;
                 int d2 = dx * dx + dy * dy;

@@ -35,6 +35,13 @@ your buildings/dupes.
 The host's rules are used for the session (sent to clients, stored in the save). Switching research back to
 shared hard-syncs everyone to the host's tree.
 
+## v0.11.1 notes (Spaced Out)
+- Colonies can be founded on any discovered asteroid (not rocket interiors), not only the start asteroid; the asteroid's edge margin uses that asteroid's bounds. Founding on another asteroid marks it discovered + duplicant-visited (planetoid list, inventory, alerts).
+- Territory, minimum colony distance and keep-out rings only apply within the same asteroid; territory circles are drawn for the asteroid you're viewing.
+- Logistics: new items belong to the nearest colony on the same asteroid (storages were already same-asteroid only).
+- The host colony takes the start asteroid's Printing Pod.
+- Base game behaviour is unchanged.
+
 ## v0.11.0 notes (from host + client logs)
 Performance
 - Entity positions (critters, duplicants) were one unreliable packet per entity per frame while moving (MIN_DT 16 ms). Now ~10/s per critter and ~15/s per duplicant, batched into one MTU-sized packet per player per frame containing only the entities in that player's view (EntityPositionBatchPacket); stationary heartbeat 2 s (client re-requests after 3.5 s). Client smoothing slightly softer.
