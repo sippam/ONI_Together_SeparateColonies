@@ -16,6 +16,8 @@ namespace ONI_Together.Colonies
     {
         private static float _timer;
         public static int Linked;
+        // plants whose relink threw: retrying every 2 s only spammed the log (~1000 NREs per session)
+        private static readonly Dictionary<int, int> _failures = new Dictionary<int, int>();
 
         public static void ClientTick()
         {
@@ -60,23 +62,35 @@ namespace ONI_Together.Colonies
                     if (!Grid.IsValidCell(expected) || !loose.TryGetValue(expected, out var g) || g == null) continue;
                     var go = g.gameObject;
                     loose.Remove(Grid.PosToCell(g));
-                    Link(plot, go);
+                    int key = go.GetInstanceID();
+                    if (_failures.TryGetValue(key, out int n) && n >= 2) continue;
+                    if (!Link(plot, go))
+                    {
+                        _failures[key] = n + 1;
+                        if (_failures.Count > 2048) _failures.Clear();
+                    }
                 }
             }
         }
 
-        private static void Link(PlantablePlot plot, GameObject plant)
+        private static bool Link(PlantablePlot plot, GameObject plant)
         {
             ColonyPriority.Suppress++;
             try
             {
+                if (plant.GetComponent<StateMachineController>() == null || !StructureSync.IsFullySpawned(plant)) return false;
                 plot.ReplacePlant(plant, true);
                 var rm = plant.GetComponent<ReceptacleMonitor>();
                 if (rm != null) rm.SetReceptacle(plot);
                 Linked++;
                 Debug.Log($"[ONIT-Colonies] Linked {plant.PrefabID()} into plot at {Grid.PosToCell(plot)}");
+                return true;
             }
-            catch (Exception ex) { Debug.LogWarning($"[ONIT-Colonies] link plant failed: {ex.Message}"); }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[ONIT-Colonies] link plant {plant.PrefabID()} at {Grid.PosToCell(plot)} failed: {ex.GetType().Name} {ex.Message}\n{ex.StackTrace}");
+                return false;
+            }
             finally { ColonyPriority.Suppress--; }
         }
     }

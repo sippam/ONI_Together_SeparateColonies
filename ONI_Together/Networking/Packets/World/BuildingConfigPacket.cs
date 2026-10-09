@@ -1,4 +1,4 @@
-﻿using ONI_Together.Networking.Components;
+using ONI_Together.Networking.Components;
 using ONI_Together.Networking.Packets.Architecture;
 using ONI_Together.Networking.Packets.World.Handlers;
 using ONI_Together.DebugTools;
@@ -86,20 +86,14 @@ namespace ONI_Together.Networking.Packets.World
 				{
 					// For multi-layered buildings, we might need a more specific search, but usually
 					// we just look for BuildingComplete components.
-					GameObject buildingGO = Grid.Objects[Cell, (int)ObjectLayer.Building];
+					GameObject buildingGO = Grid.Objects[Cell, (int)ObjectLayer.Building]
+						?? NetResolve.AtCell(Cell, 0, o => o.GetComponent<BuildingComplete>() != null);
 					if (buildingGO != null)
 					{
-						identity = buildingGO.GetComponent<NetworkIdentity>();
-						if (identity)
-						{
-							identity.OverrideNetId(NetId); // Override properly from the host
-						}
-						else
-						{
-							identity = buildingGO.AddOrGet<NetworkIdentity>();
-							identity.NetId = NetId; // Client forces the NetId from Host
-							identity.RegisterIdentity();
-						}
+						// only a client adopts the host's NetId; the host never renumbers its own objects
+						NetResolve.AdoptIfClient(buildingGO, NetId);
+						identity = buildingGO.AddOrGet<NetworkIdentity>();
+						if (identity.NetId == 0) identity.RegisterIdentity();
 
                         //DebugConsole.Log($"[BuildingConfigPacket] Resolved missing identity for {buildingGO.name} at cell {Cell}. Assigned NetId: {NetId}");
 					}

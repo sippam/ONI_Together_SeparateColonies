@@ -49,28 +49,33 @@ public class EntityPositionPacket : IPacket, IViewportCullable
 	public void OnDispatched()
 	{
 		using var _ = Profiler.Scope();
-
 		if (MultiplayerSession.IsHost) return;
+		Apply(NetId, Position, FlipX, FlipY, NavType, Timestamp, 0);
+	}
 
-		if (NetworkIdentityRegistry.TryGet(NetId, out var entity))
+	/// <summary>Client: apply one host position (single packet or batch entry).</summary>
+	public static void Apply(int netId, Vector3 position, bool flipX, bool flipY, NavType navType, long timestamp, int prefabHash)
+	{
+		EntityPositionHandler handler = null;
+		if (NetworkIdentityRegistry.TryGet(netId, out var entity) && entity != null)
+			handler = entity.GetComponent<EntityPositionHandler>();
+		else if (prefabHash != 0)
+			handler = EntityPositionHandler.TryAdopt(netId, prefabHash, position); // NetIds of critters differ per machine
+		if (!handler)
 		{
-			EntityPositionHandler handler = entity.GetComponent<EntityPositionHandler>();
-			if (!handler)
-				return;
-
-			if (handler.serverTimestamp > Timestamp)
-				return;
-
-            handler.lastReceivedAt = Time.unscaledTime;
-            handler.serverPosition = Position;
-            handler.serverTimestamp = Timestamp;
-            handler.serverFlipX = FlipX;
-			handler.serverFlipY = FlipY;
-			handler.serverNavType = NavType;
-        }
-		else
-		{
-			DebugConsole.LogWarning($"[Packets] Could not find entity with NetId {NetId}");
+			EntityPositionHandler.NoteMissing(netId);
+			return;
 		}
+
+		if (handler.serverTimestamp > timestamp)
+			return;
+
+		if (float.IsNaN(position.z)) position.z = handler.transform.position.z; // batch entries carry x/y only
+		handler.lastReceivedAt = Time.unscaledTime;
+		handler.serverPosition = position;
+		handler.serverTimestamp = timestamp;
+		handler.serverFlipX = flipX;
+		handler.serverFlipY = flipY;
+		handler.serverNavType = navType;
 	}
 }

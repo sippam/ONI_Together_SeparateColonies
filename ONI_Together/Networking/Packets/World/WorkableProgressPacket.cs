@@ -213,7 +213,7 @@ namespace ONI_Together.Networking.Packets.World
 					yield break;
 			}
 
-			DebugConsole.LogWarning($"[WorkableProgressPacket] Failed to resolve target {packet.TargetNetId} ({packet.TargetTypeName})");
+			if (ONI_Together.Misc.LogThrottle.Allow("WPP", packet.TargetNetId)) DebugConsole.LogWarning($"[WorkableProgressPacket] Failed to resolve target {packet.TargetNetId} ({packet.TargetTypeName})");
 		}
 	}
 }

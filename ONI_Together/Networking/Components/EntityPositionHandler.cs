@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using ONI_Together.Networking.Packets.Core;
 using Shared.Profiling;
 using UnityEngine;
@@ -13,8 +14,17 @@ namespace ONI_Together.Networking.Components
         private Vector3 lastSentPosition;
 		private float lastSendTime;
 
-		private const float PositionThreshold = 0.05f;
-		private const float MIN_DT = 0.016f;
+		private const float PositionThreshold = 0.08f;
+		// was 0.016 (every frame while moving, one packet per entity): with many critters/dupes that was thousands
+		// of packets a second. Now ~10/s for critters, ~15/s for duplicants, batched per player (EntityPositionBatcher).
+		private const float MIN_DT_CRITTER = 0.1f;
+		private const float MIN_DT_MINION = 0.066f;
+		private bool _isMinion;
+		private int _prefabHash;
+		public int PrefabHash => _prefabHash;
+
+		/// <summary>Every live handler (client: adopting host NetIds for critters that differ per machine).</summary>
+		public static readonly HashSet<EntityPositionHandler> All = new HashSet<EntityPositionHandler>();
 
         public Vector3 serverPosition;
         public long serverTimestamp;
@@ -25,12 +35,12 @@ namespace ONI_Together.Networking.Components
         public float lastReceivedAt = -1f;
 
         private const float SNAP_DISTANCE = 1.5f;
-        private const float LERP_SPEED = 20f;
+        private const float LERP_SPEED = 14f; // a bit softer: updates now arrive ~10/s instead of every frame
 
         private float _lastRequestTime;
         private const float REQUEST_COOLDOWN = 0.5f;
-        private const float STALE_THRESHOLD = 2f;
-		private const float HEARTBEAT_INTERVAL = 1f;
+        private const float STALE_THRESHOLD = 3.5f;
+		private const float HEARTBEAT_INTERVAL = 2f; // stationary entities: the client re-requests if one goes stale
 
         public override void OnSpawn()
 		{
@@ -39,6 +49,60 @@ namespace ONI_Together.Networking.Components
 
 			lastSentPosition = transform.position;
 			lastSendTime = Time.unscaledTime;
+			_isMinion = GetComponent<MinionIdentity>() != null;
+			var kpid = GetComponent<KPrefabID>();
+			_prefabHash = kpid != null ? kpid.PrefabTag.GetHash() : 0;
+			All.Add(this);
+		}
+
+		public override void OnCleanUp()
+		{
+			All.Remove(this);
+			base.OnCleanUp();
+		}
+
+		// ---- client: adopt host NetIds ----
+		private static readonly Dictionary<int, float> _adoptTried = new Dictionary<int, float>();
+		private static readonly Dictionary<int, float> _missingLogged = new Dictionary<int, float>();
+
+		/// <summary>
+		/// Client: a host position arrived for a NetId we don't know. Critters born/spawned after the last load get
+		/// a NetId from their spawn cell/mass/temperature, which differs per machine, so their positions were dropped
+		/// forever ("Could not find entity", ~35k per session) and they froze. Adopt the nearest local entity of the
+		/// same prefab that isn't receiving updates of its own.
+		/// </summary>
+		public static EntityPositionHandler TryAdopt(int netId, int prefabHash, Vector3 pos)
+		{
+			float now = Time.unscaledTime;
+			if (_adoptTried.TryGetValue(netId, out float t) && now - t < 5f) return null;
+			_adoptTried[netId] = now;
+			if (_adoptTried.Count > 4096) _adoptTried.Clear();
+
+			EntityPositionHandler best = null;
+			float bestD = 10f * 10f;
+			foreach (var h in All)
+			{
+				if (h == null || h._isMinion || h._prefabHash != prefabHash) continue; // critters only: duplicants share a prefab
+				if (h.lastReceivedAt >= 0f && now - h.lastReceivedAt < STALE_THRESHOLD) continue; // has its own updates
+				float d = (h.transform.position - pos).sqrMagnitude;
+				if (d < bestD) { bestD = d; best = h; }
+			}
+			if (best == null) return null;
+			var id = best.GetComponent<NetworkIdentity>();
+			if (id == null) return null;
+			id.OverrideNetId(netId);
+			best.serverTimestamp = 0;
+			Debug.Log($"[ONIT-Colonies] adopted host NetId {netId} for {best.name}");
+			return best;
+		}
+
+		public static void NoteMissing(int netId)
+		{
+			float now = Time.unscaledTime;
+			if (_missingLogged.TryGetValue(netId, out float t) && now - t < 60f) return; // once a minute per NetId
+			_missingLogged[netId] = now;
+			if (_missingLogged.Count > 4096) _missingLogged.Clear();
+			ONI_Together.DebugTools.DebugConsole.LogWarning($"[Packets] Could not find entity with NetId {netId}");
 		}
 
 		private void Update()
@@ -94,7 +158,7 @@ namespace ONI_Together.Networking.Components
 		        Vector3 currentPosition = transform.position;
 		        float currentTime = Time.unscaledTime;
 
-                if (currentTime - lastSendTime < MIN_DT)
+                if (currentTime - lastSendTime < (_isMinion ? MIN_DT_MINION : MIN_DT_CRITTER))
 			        return;
 
                 bool moved = Vector3.Distance(currentPosition, lastSentPosition) >= PositionThreshold;
@@ -106,17 +170,16 @@ namespace ONI_Together.Networking.Components
 		        if (navigator != null && navigator.CurrentNavType != NavType.NumNavTypes)
 			        navType = navigator.CurrentNavType;
 
-		        var packet = new EntityPositionPacket
+		        EntityPositionBatcher.Add(new EntityPositionBatchPacket.Entry
 		        {
 			        NetId = this.GetNetId(),
-			        Position = currentPosition,
+			        X = currentPosition.x,
+			        Y = currentPosition.y,
 			        FlipX = kbac != null && kbac.FlipX,
 			        FlipY = kbac != null && kbac.FlipY,
 			        NavType = navType,
-			        Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
-		        };
-
-		        PacketSender.SendToAllClients(packet, sendType: PacketSendMode.Unreliable);
+			        Prefab = _prefabHash
+		        });
 
 		        lastSentPosition = currentPosition;
 		        lastSendTime = currentTime;

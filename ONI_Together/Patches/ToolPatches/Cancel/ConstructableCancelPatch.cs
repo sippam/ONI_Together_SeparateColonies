@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using ONI_Together.DebugTools;
 using ONI_Together.Networking;
 using ONI_Together.Networking.Components;
@@ -32,6 +32,8 @@ namespace ONI_Together.Patches.ToolPatches.Cancel
 				PacketSender.SendToAllOtherPeers(new BuildingActionPacket
 				{
 					NetId = identity.NetId,
+					Cell = Grid.PosToCell(identity.gameObject),
+					Prefab = identity.gameObject.PrefabID().GetHash(),
 					Action = BuildingActionKind.CancelConstruct,
 				});
 				DebugConsole.Log($"[BuildingAction] send NetId={identity.NetId} kind=CancelConstruct src=ConstructCancelPatch");

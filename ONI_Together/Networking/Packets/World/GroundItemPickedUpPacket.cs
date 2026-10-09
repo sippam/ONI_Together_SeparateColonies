@@ -53,7 +53,7 @@ namespace ONI_Together.Networking.Packets.World
 			{
 				if (PendingPickupNetIds.Count > 4096) PendingPickupNetIds.Clear(); // nothing consumes stale ids; ItemSync fixes the item
                 PendingPickupNetIds.Add(NetId);
-				DebugConsole.LogWarning($"[GroundItemPickedUpPacket] Pickupable NetId {NetId} not yet registered; queued pending removal");
+				if (ONI_Together.Misc.LogThrottle.Allow("GIP", NetId)) DebugConsole.LogWarning($"[GroundItemPickedUpPacket] Pickupable NetId {NetId} not yet registered; queued pending removal");
 				return;
 			}
 

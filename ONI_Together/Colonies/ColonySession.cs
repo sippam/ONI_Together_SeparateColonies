@@ -89,6 +89,8 @@ namespace ONI_Together.Colonies
 
             if (inSession)
             {
+                try { ONI_Together.Networking.Components.EntityPositionBatcher.Flush(); }
+                catch (Exception ex) { Debug.LogWarning($"[ONIT-Colonies] position flush: {ex.Message}"); }
                 ColonyNet.Tick();
                 ColonyResearch.Tick();
                 ColonyImmigration.Tick();

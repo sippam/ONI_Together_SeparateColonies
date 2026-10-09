@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using ONI_Together.DebugTools;
 using ONI_Together.Misc;
 using ONI_Together.Networking.Packets.Architecture;
@@ -28,6 +28,8 @@ namespace ONI_Together.Networking.Packets.Tools
 		public static bool ProcessingIncoming;
 
 		public int NetId;
+		public int Cell = -1;   // fallback when the NetId differs between machines
+		public int Prefab;
 		public BuildingActionKind Action;
 
 		public void Serialize(BinaryWriter writer)
@@ -36,6 +38,8 @@ namespace ONI_Together.Networking.Packets.Tools
 
 			writer.Write(NetId);
 			writer.Write((byte)Action);
+			writer.Write(Cell);
+			writer.Write(Prefab);
 		}
 
 		public void Deserialize(BinaryReader reader)
@@ -44,6 +48,8 @@ namespace ONI_Together.Networking.Packets.Tools
 
 			NetId = reader.ReadInt32();
 			Action = (BuildingActionKind)reader.ReadByte();
+			Cell = reader.ReadInt32();
+			Prefab = reader.ReadInt32();
 		}
 
 		public void OnDispatched()
@@ -52,13 +58,21 @@ namespace ONI_Together.Networking.Packets.Tools
 
 			try
 			{
-				if (!NetworkIdentityRegistry.TryGet(NetId, out var identity) || identity == null || identity.gameObject == null)
+				GameObject go = null;
+				if (NetworkIdentityRegistry.TryGet(NetId, out var identity) && identity != null && identity.gameObject != null)
+					go = identity.gameObject;
+				else
 				{
-					DebugConsole.LogWarning($"[BuildingActionPacket] NetId {NetId} not found (action={Action})");
-					return;
+					go = NetResolve.AtCell(Cell, Prefab, o => Action == BuildingActionKind.CancelConstruct
+						? o.GetComponent<Constructable>() != null
+						: o.GetComponent<Deconstructable>() != null);
+					if (go == null)
+					{
+						DebugConsole.LogWarning($"[BuildingActionPacket] NetId {NetId} not found (action={Action}, cell={Cell})");
+						return;
+					}
+					NetResolve.AdoptIfClient(go, NetId);
 				}
-
-				var go = identity.gameObject;
 				ProcessingIncoming = true;
 				try
 				{

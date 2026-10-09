@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using ONI_Together.DebugTools;
 using ONI_Together.Networking.Packets.Architecture;
 using System;
@@ -101,7 +101,7 @@ namespace ONI_Together.Networking.Packets.Animation
 			{
 				if (logFailure)
 				{
-					DebugConsole.LogWarning($"[StandardWorker_WorkingState_Packet] Could not resolve workable {WorkableNetId} for worker {worker.name}");
+					if (ONI_Together.Misc.LogThrottle.Allow("SWWS", WorkableNetId)) DebugConsole.LogWarning($"[StandardWorker_WorkingState_Packet] Could not resolve workable {WorkableNetId} for worker {worker.name}");
 				}
 				return false;
 			}

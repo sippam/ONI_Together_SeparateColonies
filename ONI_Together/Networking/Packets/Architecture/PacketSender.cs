@@ -1,4 +1,4 @@
-﻿using Epic.OnlineServices.P2P;
+using Epic.OnlineServices.P2P;
 using ONI_Together.DebugTools;
 using ONI_Together.Misc;
 using ONI_Together.Networking.Packets;
@@ -228,7 +228,8 @@ namespace ONI_Together.Networking
 
 			if (!MultiplayerSession.ConnectedPlayers.TryGetValue(steamID, out var player) || player.Connection == null)
 			{
-				DebugConsole.LogWarning($"[PacketSender] No connection found for SteamID {steamID}");
+				if (ONI_Together.Misc.LogThrottle.Allow("NOCONN", (long)steamID, 30f))
+					DebugConsole.LogWarning($"[PacketSender] No connection found for SteamID {steamID} ({packet.GetType().Name})");
 				return false;
 			}
 

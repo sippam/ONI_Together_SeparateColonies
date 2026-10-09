@@ -35,6 +35,16 @@ your buildings/dupes.
 The host's rules are used for the session (sent to clients, stored in the save). Switching research back to
 shared hard-syncs everyone to the host's tree.
 
+## v0.11.0 notes (from host + client logs)
+Performance
+- Entity positions (critters, duplicants) were one unreliable packet per entity per frame while moving (MIN_DT 16 ms). Now ~10/s per critter and ~15/s per duplicant, batched into one MTU-sized packet per player per frame containing only the entities in that player's view (EntityPositionBatchPacket); stationary heartbeat 2 s (client re-requests after 3.5 s). Client smoothing slightly softer.
+- Hot "unknown NetId" warnings (registry lookups, pickups, stores, workable progress, worker state, missing entity, no connection) are logged once per id per minute instead of every time (100k+ lines per client session).
+Fixes
+- Critters frozen on clients because their NetId differs per machine (born/spawned after the last load): position batches carry the prefab and a client adopts the host NetId for the nearest local critter of that kind that isn't receiving its own updates.
+- Client cancel / cancel-deconstruct / deconstruct, building assignment and building settings that failed on the host with "NetId ... not found": BuildingActionPacket carries cell + prefab and every resolver falls back to any object layer at the cell. The host no longer renumbers its own buildings to a client's NetId (that made other clients' ids stale).
+- Plant relink on clients: plants whose relink throws are skipped after 2 tries (1000+ NREs per session) and the first failure logs the stack trace.
+- Duplicant rename packets with NetId 0 (name set during spawn) are not sent.
+
 ## v0.10.11 notes
 - Blueprints / tiles / pipes / wires staying "under construction" on clients after the host finished them: the v0.10.6 "never delete unspawned objects" check required EVERY component to have spawned, but tiles, ladders, farm tiles... carry components that never do, so stale blueprints were never replaced. Now only the KPrefabID must have spawned.
 - Structure sync loop protection: a block that is "fixed" 4 times within 3 minutes is paused for 2 minutes and the log lists exactly what changed (one client log had one block fixed 600 times). Priority fixes only count when they stick.

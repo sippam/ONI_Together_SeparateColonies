@@ -54,13 +54,12 @@ namespace ONI_Together.Networking.Packets.World
 				// Fallback: find building by cell
 				if (Grid.IsValidCell(Cell))
 				{
-					GameObject buildingGO = Grid.Objects[Cell, (int)ObjectLayer.Building];
+					GameObject buildingGO = NetResolve.AtCell(Cell, 0, o => o.GetComponent<Assignable>() != null);
 					if (buildingGO != null)
 					{
+						NetResolve.AdoptIfClient(buildingGO, BuildingNetId); // the host keeps its own ids
 						buildingIdentity = buildingGO.AddOrGet<NetworkIdentity>();
-						buildingIdentity.NetId = BuildingNetId;
-						buildingIdentity.RegisterIdentity();
-						DebugConsole.Log($"[AssignmentPacket] Resolved building by cell {Cell}, assigned NetId {BuildingNetId}");
+						DebugConsole.Log($"[AssignmentPacket] Resolved building by cell {Cell}");
 					}
 				}
 			}

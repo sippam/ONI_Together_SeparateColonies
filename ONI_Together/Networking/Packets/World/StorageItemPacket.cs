@@ -1,4 +1,4 @@
-﻿using ONI_Together.DebugTools;
+using ONI_Together.DebugTools;
 using ONI_Together.Networking.Packets.Architecture;
 using System.Collections.Generic;
 using System.IO;
@@ -89,7 +89,7 @@ namespace ONI_Together.Networking.Packets.World
             {
                 if (PendingPickupNetIds.Count > 4096) PendingPickupNetIds.Clear(); // nothing consumes stale ids; ItemSync fixes the item
                 PendingPickupNetIds.Add(NetId);
-                DebugConsole.LogWarning($"[StoreItemPacket] Pickupable NetId {NetId} not yet registered; queued pending removal");
+                if (ONI_Together.Misc.LogThrottle.Allow("SIP", NetId)) DebugConsole.LogWarning($"[StoreItemPacket] Pickupable NetId {NetId} not yet registered; queued pending removal");
                 return;
             }
 

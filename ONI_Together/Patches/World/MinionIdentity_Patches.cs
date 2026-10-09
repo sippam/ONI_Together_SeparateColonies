@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using ONI_Together.Networking;
 using ONI_Together.Networking.Packets.World;
 using ONI_Together.Networking.Packets.World.Buildings;
@@ -35,7 +35,10 @@ namespace ONI_Together.Patches.World
 
 				if (ApplyingPacket)
 					return;
-				PacketSender.SendToAllOtherPeers(new MinionIdentitySetNamePacket(__instance.GetNetId(), name));
+				int netId = __instance.GetNetId();
+				if (netId == 0)
+					return; // not registered yet (name set during spawn): every peer derives it itself, and NetId 0 never resolves
+				PacketSender.SendToAllOtherPeers(new MinionIdentitySetNamePacket(netId, name));
 			}
 		}
 	}
