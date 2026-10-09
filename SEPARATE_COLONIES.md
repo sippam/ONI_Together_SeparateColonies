@@ -35,6 +35,10 @@ your buildings/dupes.
 The host's rules are used for the session (sent to clients, stored in the save). Switching research back to
 shared hard-syncs everyone to the host's tree.
 
+## v0.10.10 notes
+- Separate schedules: the per-duplicant "move to schedule" dropdown only lists the local colony's schedules, the blank "add duplicant" dropdown only the local colony's duplicants, and the widget refuses to move a duplicant to another colony's schedule.
+- (Schedule names reverting after a hard sync was the host crashing on the screen-entry lookup before storing a client's new name — fixed in v0.10.9.)
+
 ## v0.10.9 notes
 - Entity position requests (client: "this critter/dupe in view hasn't moved for 2 s, where is it?") never carried the requester, so the host answered "SteamID 0" — dropped (~150k warnings per session in the host log) and frozen critters were never corrected. The host now answers the transport's sender; clients also fill RequesterId.
 - Schedule packets: the schedule screen can list fewer schedules than the manager (separate schedules hide other colonies'), so entries are found by schedule instead of index (host error "ScheduleDetailsUpdatePacket ... Index was out of range", and edits landing on the wrong schedule's row).
