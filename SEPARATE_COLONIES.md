@@ -35,6 +35,10 @@ your buildings/dupes.
 The host's rules are used for the session (sent to clients, stored in the save). Switching research back to
 shared hard-syncs everyone to the host's tree.
 
+## v0.10.8 notes
+- Wrangle / attack from joined players: the per-critter buttons were never sent, and the drag tools only sent a rectangle the host re-checked against its own critter positions. Every local wrangle/attack change is now sent by NetId (fallback: nearest critter of that kind within 5 cells), applied by the host under the sender's colony, and relayed so everyone sees the order.
+- Incubators / receptacles: a client's choice is applied by the host and relayed back; clients mirror the requested egg/seed (CreateOrder is blocked on clients), so the side screen no longer keeps asking to choose. The host logs each applied order ("receptacle order ...").
+
 ## v0.10.7 notes
 - Crash while building on clients: BuildTool parks its tile preview in the grid's tile layer while hovering; the background structure sync cleared "stale" objects at a cell before placing the host's building and deleted that preview -> BuildTool.Update NRE every frame -> game closed. Structure sync now only clears real buildings / blueprints and never a BuildingPreview; if the preview is destroyed anyway, BuildTool falls back to the select tool instead of throwing.
 - Storage rebuild skips already-destroyed items (NRE in ClearStorage on clients).

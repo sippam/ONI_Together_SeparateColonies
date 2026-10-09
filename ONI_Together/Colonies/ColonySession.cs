@@ -100,6 +100,7 @@ namespace ONI_Together.Colonies
                 StorageSync.ClientTick();
                 FoodSync.HostTick();
                 ColonyPriority.Flush();
+                CritterOrders.Flush();
                 PlantPlotLink.ClientTick();
 
                 // client: keep asking until the host answered (registry may arrive before/after the world)
