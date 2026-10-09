@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -79,6 +79,8 @@ namespace ONI_Together.Networking.Packets.Social
             if (schedules == null)
                 return;
 
+            if (ScheduleIndex < 0 || ScheduleIndex >= schedules.Count)
+                return;
             Schedule schedule = schedules[ScheduleIndex];
             if (schedule == null)
                 return;
@@ -98,7 +100,13 @@ namespace ONI_Together.Networking.Packets.Social
                 return;
             }
 
-            ScheduleScreenEntry entry = ScheduleScreen.Instance.scheduleEntries[ScheduleIndex];
+            // the screen may list fewer schedules than the manager (separate colonies hide other colonies'
+            // schedules), so find the entry by its schedule instead of by index
+            ScheduleScreenEntry entry = null;
+            var entries = ScheduleScreen.Instance.scheduleEntries;
+            if (entries != null)
+                foreach (var e in entries)
+                    if (e != null && e.schedule == schedule) { entry = e; break; }
             switch (UpdateType)
             {
                 case DetailsUpdateType.NAME:

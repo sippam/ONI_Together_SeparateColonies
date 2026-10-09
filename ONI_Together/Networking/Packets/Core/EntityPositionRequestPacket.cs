@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -44,7 +44,11 @@ namespace ONI_Together.Networking.Packets.Core
                 Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
             };
 
-            PacketSender.SendToPlayer(RequesterId, packet, PacketSendMode.ReliableImmediate);
+            // the client never filled RequesterId, so every answer went to "SteamID 0" (dropped, ~150k warnings per
+            // session in host logs) and frozen critters/dupes were never corrected: use the transport's sender
+            ulong to = RequesterId != 0 ? RequesterId : ONI_Together.Colonies.ColonyNet.CurrentSender;
+            if (to == 0) return;
+            PacketSender.SendToPlayer(to, packet, PacketSendMode.ReliableImmediate);
         }
     }
 }

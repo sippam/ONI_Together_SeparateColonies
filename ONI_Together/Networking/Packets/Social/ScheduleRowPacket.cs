@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -101,6 +101,8 @@ namespace ONI_Together.Networking.Packets.Social
             if (schedules == null)
                 return;
 
+            if (ScheduleIndex < 0 || ScheduleIndex >= schedules.Count)
+                return;
             Schedule schedule = schedules[ScheduleIndex];
             if (schedule == null)
                 return;
@@ -177,14 +179,22 @@ namespace ONI_Together.Networking.Packets.Social
                 return;
             }
 
-            if (ScheduleScreen.Instance.scheduleEntries.Count <= ScheduleIndex)
-                return;
-
-            ScheduleScreenEntry entry = ScheduleScreen.Instance.scheduleEntries[ScheduleIndex];
+            ScheduleScreenEntry entry = EntryFor(schedule);
             if (entry == null)
                 return;
 
             entry.DuplicateTimetableRow(TimetableToIndex);
+        }
+
+        /// <summary>The screen entry showing this schedule (the screen can list fewer schedules than the manager
+        /// when separate colonies hide other colonies' schedules, so indexes don't line up).</summary>
+        private static ScheduleScreenEntry EntryFor(Schedule schedule)
+        {
+            var entries = ScheduleScreen.Instance?.scheduleEntries;
+            if (entries == null || schedule == null) return null;
+            foreach (var e in entries)
+                if (e != null && e.schedule == schedule) return e;
+            return null;
         }
 
         public void DeleteRow(Schedule schedule)
@@ -206,11 +216,8 @@ namespace ONI_Together.Networking.Packets.Social
                 return;
             }
 
-            if (ScheduleScreen.Instance.scheduleEntries.Count <= ScheduleIndex)
-                return;
-
             // TimetableToIndex in this instance is the index of the timetableRows for the assosiated row
-            ScheduleScreenEntry entry = ScheduleScreen.Instance.scheduleEntries[ScheduleIndex];
+            ScheduleScreenEntry entry = EntryFor(schedule);
             if(entry != null)
             {
                 if (entry.timetableRows.Count == 0 || entry.timetableRows.Count <= TimetableToIndex)

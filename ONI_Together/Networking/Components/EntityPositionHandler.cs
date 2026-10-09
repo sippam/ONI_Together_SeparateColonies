@@ -78,7 +78,7 @@ namespace ONI_Together.Networking.Components
                     //  was never "stale" again: a critter that moved while out of the client's view froze mid-hop)
                     if (serverTimestamp == 0 || lastReceivedAt < 0f || Time.unscaledTime - lastReceivedAt > STALE_THRESHOLD)
                     {
-                        PacketSender.SendToHost(new EntityPositionRequestPacket { NetId = this.GetNetId() });
+                        PacketSender.SendToHost(new EntityPositionRequestPacket { NetId = this.GetNetId(), RequesterId = MultiplayerSession.LocalUserID });
                         _lastRequestTime = Time.unscaledTime;
                     }
                 }

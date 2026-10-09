@@ -35,6 +35,10 @@ your buildings/dupes.
 The host's rules are used for the session (sent to clients, stored in the save). Switching research back to
 shared hard-syncs everyone to the host's tree.
 
+## v0.10.9 notes
+- Entity position requests (client: "this critter/dupe in view hasn't moved for 2 s, where is it?") never carried the requester, so the host answered "SteamID 0" — dropped (~150k warnings per session in the host log) and frozen critters were never corrected. The host now answers the transport's sender; clients also fill RequesterId.
+- Schedule packets: the schedule screen can list fewer schedules than the manager (separate schedules hide other colonies'), so entries are found by schedule instead of index (host error "ScheduleDetailsUpdatePacket ... Index was out of range", and edits landing on the wrong schedule's row).
+
 ## v0.10.8 notes
 - Wrangle / attack from joined players: the per-critter buttons were never sent, and the drag tools only sent a rectangle the host re-checked against its own critter positions. Every local wrangle/attack change is now sent by NetId (fallback: nearest critter of that kind within 5 cells), applied by the host under the sender's colony, and relayed so everyone sees the order.
 - Incubators / receptacles: a client's choice is applied by the host and relayed back; clients mirror the requested egg/seed (CreateOrder is blocked on clients), so the side screen no longer keeps asking to choose. The host logs each applied order ("receptacle order ...").
